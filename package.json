@@ -1,0 +1,48 @@
+{
+  "name": "@esaio/esa-mcp-server",
+  "version": "0.1.0",
+  "description": "Official MCP server for esa.io - STDIO transport version",
+  "main": "bin/index.js",
+  "type": "module",
+  "bin": {
+    "esa-mcp-server": "./bin/index.js"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check . --error-on-warnings",
+    "lint:fix": "biome check --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "esa",
+    "esa.io",
+    "documentation",
+    "knowledge-base"
+  ],
+  "author": "esa LLC",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "i18next": "^25.5.2",
+    "openapi-fetch": "^0.14.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@types/node": "^20.19.14",
+    "@vitest/coverage-v8": "^3.2.4",
+    "openapi-typescript": "^7.9.1",
+    "tsdown": "^0.15.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.19.4"
+  }
+}

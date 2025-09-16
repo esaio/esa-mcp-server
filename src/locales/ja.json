@@ -1,0 +1,13 @@
+{
+  "prompts": {
+    "summarize_post": {
+      "title": "esaの記事の要約",
+      "description": "esa記事を指定した形式で要約します(bullet: 箇条書き, paragraph: 文章, keywords: キーワード)",
+      "args": {
+        "team_name": "esaチーム名",
+        "post_number": "要約する記事番号",
+        "format": "要約形式 (bullet/paragraph/keywords)"
+      }
+    }
+  }
+}

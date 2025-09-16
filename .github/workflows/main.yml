@@ -1,0 +1,41 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  NODE_VERSION: 20.19.4
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # https://github.com/actions/checkout/tree/v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # https://github.com/actions/setup-node/tree/v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run linting
+        run: |
+          output=$(npm run lint 2>&1)
+          echo "$output"
+          if echo "$output" | grep -q "schema version does not match"; then
+            echo "::error::Biome schema version mismatch detected. Please run 'npx biome migrate --write' to update biome.json"
+            exit 1
+          fi
+      - name: Run type checking
+        run: npm run type-check
+      - name: Run tests
+        run: npm run test:coverage
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # https://github.com/actions/upload-artifact/tree/v4
+        with:
+          name: coverage
+          path: coverage/
+      - name: Build
+        run: npm run build

@@ -1,0 +1,13 @@
+{
+  "prompts": {
+    "summarize_post": {
+      "title": "Summarize esa post",
+      "description": "Summarize an esa post in various formats (bullet points, paragraph, or keywords)",
+      "args": {
+        "team_name": "The name of the esa team",
+        "post_number": "The post number to summarize",
+        "format": "Summary format (bullet/paragraph/keywords)"
+      }
+    }
+  }
+}
