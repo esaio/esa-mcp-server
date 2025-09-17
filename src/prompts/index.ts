@@ -7,7 +7,7 @@ import { createSummarizePostSchema, summarizePost } from "./summarize-post.js";
 
 export function setupPrompts(server: McpServer, context: MCPContext): void {
   console.error("Setting up MCP prompts...");
-  // NOTE: Stremable HTTP Stransport では ユーザーの LANG 設定に応じて i18next の lang 設定を変える
+  // NOTE: Streamable HTTP transport では ユーザーの LANG 設定に応じて i18next の lang 設定を変える
   server.registerPrompt(
     "esa_summarize_post",
     {
