@@ -70,7 +70,8 @@ Add to your MCP client configuration file:
    - [PAT v2](https://docs.esa.io/posts/559) is recommended.
 - LANG: Language for UI
 
-### Claude Desktop Example
+<details>
+<summary><b>Install in Claude Desktop</b></summary>
 
 Add to `claude_desktop_config.json`:
 
@@ -106,7 +107,7 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "esa": {
-      "command": "/Users/your-username/.nodenv/shims/npx",
+      "command": "/path/to/your/npx",
       "args": [
         "@esaio/esa-mcp-server"
       ],
@@ -119,7 +120,71 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
-> **Note**: Replace `/path/to/your/node` with the output of `which node` command.
+> **Note**: Replace `/path/to/your/npx` with the output of `which npx` command.
+
+
+</details>
+
+
+<details>
+<summary><b>Install in Cursor</b></summary>
+
+Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
+
+Pasting the following configuration into your Cursor `~/.cursor/mcp.json` file is the recommended approach. You may also install in a specific project by creating `.cursor/mcp.json` in your project folder. See [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) for more info.
+
+
+#### Cursor Local Server Connection with `npx`
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=esa&config=ewogICAgICAiY29tbWFuZCI6ICJucHgiLAogICAgICAiYXJncyI6IFsKICAgICAgICAiQGVzYWlvL2VzYS1tY3Atc2VydmVyIgogICAgICBdLAogICAgICAiZW52IjogewogICAgICAgICJFU0FfQUNDRVNTX1RPS0VOIjogInlvdXJfcGVyc29uYWxfYWNjZXNzX3Rva2VuIiwKICAgICAgICAiTEFORyI6ICJlbiIKICAgICAgfQogICAgfQ==)
+
+```json
+{
+  "mcpServers": {
+    "esa": {
+      "command": "npx",
+      "args": [
+        "@esaio/esa-mcp-server"
+      ],
+      "env": {
+        "ESA_ACCESS_TOKEN": "your_personal_access_token",
+        "LANG": "en"
+      }
+    },
+  }
+}
+
+```
+
+</details>
+
+<details>
+<summary><b>Install in VS Code</b></summary>
+
+[<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Esa%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22esa%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40esaio%2Fesa-mcp-server%40latest%22%5D%2C%20%22env%22%3A%7B%22ESA_ACCESS_TOKEN%22%3A%22your_personal_access_token%22%2C%22LANG%22%3A%22en%22%7D%7D)
+
+Add this to your VS Code MCP config file. See [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
+
+#### VS Code Local Server Connection with `npx`
+
+```json
+"mcp": {
+  "servers": {
+    "esa": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@esaio/esa-mcp-server"],
+      "env": {
+        "ESA_ACCESS_TOKEN": "your_personal_access_token",
+        "LANG": "en"
+      }
+    }
+  }
+}
+```
+
+</details>
+
 
 ## Links
 

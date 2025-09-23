@@ -70,7 +70,8 @@ MCP クライアントの設定ファイルに以下を追加します：
    - [PAT v2](https://docs.esa.io/posts/559)を推奨します。
 - LANG: UI の言語設定
 
-### Claude Desktop の例
+<details>
+<summary><b>Claude Desktop でのインストール</b></summary>
 
 `claude_desktop_config.json` への追加方法：
 
@@ -106,7 +107,7 @@ MCP クライアントの設定ファイルに以下を追加します：
 {
   "mcpServers": {
     "esa": {
-      "command": "/Users/your-username/.nodenv/shims/npx",
+      "command": "/path/to/your/npx",
       "args": [
         "@esaio/esa-mcp-server"
       ],
@@ -119,7 +120,72 @@ MCP クライアントの設定ファイルに以下を追加します：
 }
 ```
 
-> **注意**: `/path/to/your/node` は `which node` で調べたパスに置き換えてください。
+> **注意**: `/path/to/your/npx` は `which npx` で調べたパスに置き換えてください。
+
+
+</details>
+
+
+<details>
+<summary><b>Cursor でのインストール</b></summary>
+
+`設定` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server` に移動します
+
+Cursor の `~/.cursor/mcp.json` ファイルに以下の設定を貼り付けることを推奨します。プロジェクトフォルダに `.cursor/mcp.json` を作成することで、特定のプロジェクトにインストールすることも可能です。詳細は [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) を参照してください。
+
+
+#### Cursor ローカルサーバー接続（`npx` 使用）
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=esa&config=ewogICAgICAiY29tbWFuZCI6ICJucHgiLAogICAgICAiYXJncyI6IFsKICAgICAgICAiQGVzYWlvL2VzYS1tY3Atc2VydmVyIgogICAgICBdLAogICAgICAiZW52IjogewogICAgICAgICJFU0FfQUNDRVNTX1RPS0VOIjogInlvdXJfcGVyc29uYWxfYWNjZXNzX3Rva2VuIiwKICAgICAgICAiTEFORyI6ICJlbiIKICAgICAgfQogICAgfQ==)
+
+```json
+{
+  "mcpServers": {
+    "esa": {
+      "command": "npx",
+      "args": [
+        "@esaio/esa-mcp-server"
+      ],
+      "env": {
+        "ESA_ACCESS_TOKEN": "your_personal_access_token",
+        "LANG": "ja"
+      }
+    },
+  }
+}
+
+```
+
+</details>
+
+<details>
+<summary><b>VS Code でのインストール</b></summary>
+
+[<img alt="Install in VS Code (npx)" src="https://img.shields.io/badge/VS_Code-VS_Code?style=flat-square&label=Install%20Esa%20MCP&color=0098FF">](https://insiders.vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%7B%22name%22%3A%22esa%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40esaio%2Fesa-mcp-server%40latest%22%5D%2C%20%22env%22%3A%7B%22ESA_ACCESS_TOKEN%22%3A%22your_personal_access_token%22%2C%22LANG%22%3A%22ja%22%7D%7D)
+
+VS Code の MCP 設定ファイルに以下を追加してください。詳細は [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) を参照してください。
+
+#### VS Code ローカルサーバー接続（`npx` 使用）
+
+```json
+"mcp": {
+  "servers": {
+    "esa": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@esaio/esa-mcp-server"],
+      "env": {
+        "ESA_ACCESS_TOKEN": "your_personal_access_token",
+        "LANG": "ja"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+
 
 ## リンク
 
