@@ -493,6 +493,13 @@ export interface paths {
         query?: {
           /** @description 追加で含める情報（カンマ区切り） */
           include?: components["parameters"]["include"];
+          /**
+           * @description 本文中のsecure attachment URL（https://files.esa.io/ または https://dl.esa.io/）を署名付きURLに変換するかどうか。
+           *     - `false`: 変換しない（デフォルト）
+           *     - `true`: 60秒の有効期限で署名付きURLに変換
+           *     - 整数値（1-604800）: 指定した秒数の有効期限で署名付きURLに変換
+           */
+          sign_attachment_urls?: components["parameters"]["sign_attachment_urls"];
         };
         header?: never;
         path: {
@@ -783,6 +790,13 @@ export interface paths {
         query?: {
           /** @description 追加で含める情報 */
           include?: "stargazers";
+          /**
+           * @description 本文中のsecure attachment URL（https://files.esa.io/ または https://dl.esa.io/）を署名付きURLに変換するかどうか。
+           *     - `false`: 変換しない（デフォルト）
+           *     - `true`: 60秒の有効期限で署名付きURLに変換
+           *     - 整数値（1-604800）: 指定した秒数の有効期限で署名付きURLに変換
+           */
+          sign_attachment_urls?: components["parameters"]["sign_attachment_urls"];
         };
         header?: never;
         path: {
@@ -1488,6 +1502,77 @@ export interface paths {
           };
           content: {
             "application/json": components["schemas"]["CategoryList"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/categories/paths": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * カテゴリパス一覧取得
+     * @description チームのカテゴリパスの一覧を取得します。フィルタリングオプションにより、特定の条件に合致するカテゴリのみを取得できます
+     */
+    get: {
+      parameters: {
+        query?: {
+          /** @description 指定した文字列で始まるカテゴリパスのみを取得 */
+          prefix?: string;
+          /** @description 指定した文字列で終わるカテゴリパスのみを取得 */
+          suffix?: string;
+          /** @description 指定した文字列を含むカテゴリパスのみを取得 */
+          match?: string;
+          /** @description 指定したパスと完全一致するカテゴリのみを取得 */
+          exact_match?: string;
+        };
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              /**
+               * @description カテゴリのパス（先頭と末尾のスラッシュは除去される）
+               * @example dev/docs
+               */
+              path: string | null;
+              /**
+               * @description カテゴリ内の記事数
+               * @example 42
+               */
+              posts: number;
+            }[];
           };
         };
         400: components["responses"]["BadRequestError"];
@@ -2496,7 +2581,7 @@ export interface components {
         categories: components["schemas"]["Category"][];
       }[];
       /** @description READMEの記事情報 */
-      readme?: components["schemas"]["Post"];
+      readme?: components["schemas"]["Post"] | null;
       /** @description カテゴリなし記事の情報（topカテゴリの場合） */
       no_category?: components["schemas"]["Category"];
       /** @description 子孫記事を含むかどうか */
@@ -2542,10 +2627,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Bad Request",
          *       "message": "Invalid request parameters"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2555,10 +2642,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Unauthorized",
          *       "message": "Invalid or expired token"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2568,10 +2657,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Payment Required",
          *       "message": "Payment required to access this resource"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2581,10 +2672,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Forbidden",
          *       "message": "Insufficient permissions"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2594,10 +2687,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Not Found",
          *       "message": "Resource not found"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2607,10 +2702,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Method Not Allowed",
          *       "message": "HTTP method not allowed for this endpoint"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2620,10 +2717,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Not Acceptable",
          *       "message": "Requested format not supported"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2633,10 +2732,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Conflict",
          *       "message": "Resource conflict detected"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2648,10 +2749,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Too Many Requests",
          *       "message": "Rate limit exceeded"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2661,10 +2764,12 @@ export interface components {
         [name: string]: unknown;
       };
       content: {
-        /** @example {
+        /**
+         * @example {
          *       "error": "Internal Server Error",
          *       "message": "An unexpected error occurred"
-         *     } */
+         *     }
+         */
         "application/json": components["schemas"]["Error"];
       };
     };
@@ -2682,6 +2787,13 @@ export interface components {
     comment_id: number;
     /** @description 追加で含める情報（カンマ区切り） */
     include: "comments" | "stargazers" | "comments.stargazers";
+    /**
+     * @description 本文中のsecure attachment URL（https://files.esa.io/ または https://dl.esa.io/）を署名付きURLに変換するかどうか。
+     *     - `false`: 変換しない（デフォルト）
+     *     - `true`: 60秒の有効期限で署名付きURLに変換
+     *     - 整数値（1-604800）: 指定した秒数の有効期限で署名付きURLに変換
+     */
+    sign_attachment_urls: boolean | number;
   };
   requestBodies: never;
   headers: never;
