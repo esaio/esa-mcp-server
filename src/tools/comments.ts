@@ -32,6 +32,7 @@ export async function getComment(
           path: { team_name: args.teamName, comment_id: args.commentId },
           query: {
             include: args.include,
+            sign_attachment_urls: 600,
           },
         },
       },

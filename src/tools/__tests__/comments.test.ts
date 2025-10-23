@@ -47,7 +47,7 @@ describe("getComment", () => {
       {
         params: {
           path: { team_name: "test-team", comment_id: 123 },
-          query: { include: undefined },
+          query: { include: undefined, sign_attachment_urls: 600 },
         },
       },
     );
@@ -90,7 +90,7 @@ describe("getComment", () => {
       {
         params: {
           path: { team_name: "test-team", comment_id: 123 },
-          query: { include: "stargazers" },
+          query: { include: "stargazers", sign_attachment_urls: 600 },
         },
       },
     );

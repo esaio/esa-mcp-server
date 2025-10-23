@@ -41,7 +41,7 @@ describe("getPost", () => {
       {
         params: {
           path: { team_name: "test-team", post_number: 123 },
-          query: { include: undefined },
+          query: { include: undefined, sign_attachment_urls: 600 },
         },
       },
     );
@@ -123,7 +123,7 @@ describe("getPost", () => {
       {
         params: {
           path: { team_name: "test-team", post_number: 456 },
-          query: { include: "comments" },
+          query: { include: "comments", sign_attachment_urls: 600 },
         },
       },
     );

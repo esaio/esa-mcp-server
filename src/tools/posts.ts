@@ -33,6 +33,7 @@ export async function getPost(
           path: { team_name: args.teamName, post_number: args.postNumber },
           query: {
             include: args.include,
+            sign_attachment_urls: 600,
           },
         },
       },
