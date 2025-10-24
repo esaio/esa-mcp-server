@@ -33,7 +33,7 @@ jobs:
       - name: Run tests
         run: npm run test:coverage
       - name: Upload coverage reports
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # https://github.com/actions/upload-artifact/tree/v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # https://github.com/actions/upload-artifact/tree/v4
         with:
           name: coverage
           path: coverage/
