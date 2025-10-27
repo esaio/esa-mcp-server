@@ -4,7 +4,7 @@
 
 **日本語** | [English](README.en.md)
 
-esa.io の公式 MCP(Model Context Protocol)サーバー(STDIO Transport版)
+esa.io の公式 MCP(Model Context Protocol)サーバー(STDIO Transport 版)
 
 ## 概要
 
@@ -13,6 +13,7 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 ## 使えるツール
 
 ### チーム管理
+
 - `esa_get_teams` - 所属している esa チームの一覧
 - `esa_get_team_stats` - チームの統計情報（メンバー数、記事数、コメント数など）
 - `esa_get_team_tags` - チーム内で使われているタグと使用回数
@@ -21,16 +22,18 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 ### 記事管理
 
 - `esa_search_posts` - 記事を検索
-- `esa_get_post` - 記事IDから記事を取得
+- `esa_get_post` - 記事 ID から記事を取得
 - `esa_create_post` - 新しい記事を作成（タグ、カテゴリー、WIP ステータス付き）
 - `esa_update_post` - 記事を更新（タイトル、本文、タグ、カテゴリー、WIP ステータス）
 
 ### 記事の操作
+
 - `esa_archive_post` - 記事をアーカイブ（Archived/ カテゴリーへ移動）
 - `esa_ship_post` - 記事を Ship It!（WIP を外して公開）
 - `esa_duplicate_post` - 記事を複製するための準備（タイトルと本文を取得）
 
 ### コメント管理
+
 - `esa_get_comment` - コメント ID からコメントを取得
 - `esa_create_comment` - 記事にコメントを追加
 - `esa_update_comment` - コメントを編集
@@ -39,10 +42,16 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 - `esa_get_team_comments` - チーム全体のコメント一覧（ページング対応）
 
 ### カテゴリー管理
+
 - `esa_get_categories` - 指定パス配下のカテゴリー一覧
 - `esa_get_top_categories` - トップレベルのカテゴリー一覧
 
+### 添付ファイル
+
+- `esa_get_attachment` - Web 上で esa にログイン時のみアクセス可能な添付ファイルの取得（テキスト、画像、PDF などに対応）
+
 ### ヘルプとドキュメント
+
 - `esa_get_search_options_help` - esa の検索構文ヘルプ
 - `esa_get_markdown_syntax_help` - esa の Markdown 記法ヘルプ
 - `esa_search_help` - esa のドキュメントから機能や用語を検索
@@ -56,7 +65,7 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 ## プロンプト
 
 - `esa_summarize_post` - esa の記事を要約
-  - 入力: チーム名と記事ID
+  - 入力: チーム名と記事 ID
   - 出力: 記事の構造化された要約
 
 ## MCP クライアントの設定
@@ -66,8 +75,8 @@ MCP クライアントの設定ファイルに以下を追加します：
 ### 用意する環境変数
 
 - ESA_ACCESS_TOKEN: アクセストークン
-   - 必要なスコープ: `read write` または `admin:comment read:post write:post read:category read:tag read:team read:member`
-   - [PAT v2](https://docs.esa.io/posts/559)を推奨します。
+  - 必要なスコープ: `read write` または `admin:comment read:post write:post read:category read:tag read:team read:member`
+  - [PAT v2](https://docs.esa.io/posts/559)を推奨します。
 - LANG: UI の言語設定
 
 ### Claude Desktop の例
@@ -107,9 +116,7 @@ MCP クライアントの設定ファイルに以下を追加します：
   "mcpServers": {
     "esa": {
       "command": "/Users/your-username/.nodenv/shims/npx",
-      "args": [
-        "@esaio/esa-mcp-server"
-      ],
+      "args": ["@esaio/esa-mcp-server"],
       "env": {
         "ESA_ACCESS_TOKEN": "your_personal_access_token",
         "LANG": "ja"

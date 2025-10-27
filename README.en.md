@@ -13,6 +13,7 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 ## Available Tools
 
 ### Team Management
+
 - `esa_get_teams` - Get user's accessible esa teams
 - `esa_get_team_stats` - Get team statistics (members, posts, comments, stars, watches, active users)
 - `esa_get_team_tags` - Get all tags used in team posts with count
@@ -26,11 +27,13 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 - `esa_update_post` - Update existing post (title, content, tags, category, WIP status)
 
 ### Post Actions
+
 - `esa_archive_post` - Archive a post by moving to Archived/ category
 - `esa_ship_post` - Ship a post (mark as complete by setting wip to false)
 - `esa_duplicate_post` - Prepare a post for duplication (retrieve name and body_md)
 
 ### Comment Management
+
 - `esa_get_comment` - Get a specific comment by ID
 - `esa_create_comment` - Create a new comment on a post
 - `esa_update_comment` - Update an existing comment
@@ -39,10 +42,16 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 - `esa_get_team_comments` - Get team comments with pagination
 
 ### Category Management
+
 - `esa_get_categories` - Get categories and subcategories for a specific path
 - `esa_get_top_categories` - Get all top-level categories for a team
 
+### Attachments
+
+- `esa_get_attachment` - Retrieve attachment files that are only accessible when logged into esa on the web (supports text, images, PDFs, etc.)
+
 ### Help & Documentation
+
 - `esa_get_search_options_help` - Get esa search syntax documentation
 - `esa_get_markdown_syntax_help` - Get esa Markdown syntax documentation
 - `esa_search_help` - Search esa documentation for features and terminology
@@ -66,8 +75,8 @@ Add to your MCP client configuration file:
 ### Required Environment Variables
 
 - ESA_ACCESS_TOKEN: Access Token
-   - Required scopes: `read write` or `admin:comment read:post write:post read:category read:tag read:team read:member`
-   - [PAT v2](https://docs.esa.io/posts/559) is recommended.
+  - Required scopes: `read write` or `admin:comment read:post write:post read:category read:tag read:team read:member`
+  - [PAT v2](https://docs.esa.io/posts/559) is recommended.
 - LANG: Language for UI
 
 ### Claude Desktop Example
@@ -107,9 +116,7 @@ Add to `claude_desktop_config.json`:
   "mcpServers": {
     "esa": {
       "command": "/Users/your-username/.nodenv/shims/npx",
-      "args": [
-        "@esaio/esa-mcp-server"
-      ],
+      "args": ["@esaio/esa-mcp-server"],
       "env": {
         "ESA_ACCESS_TOKEN": "your_personal_access_token",
         "LANG": "en"
