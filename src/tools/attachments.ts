@@ -5,11 +5,13 @@ import { MissingTeamNameError } from "../errors/missing-team-name-error.js";
 import { formatToolError } from "../formatters/mcp-response.js";
 import { createSchemaWithTeamName } from "../schemas/team-name-schema.js";
 
-export const getAttachmentSchema = createSchemaWithTeamName({
-  url: z
-    .string()
+export const getAttachmentsSchema = createSchemaWithTeamName({
+  urls: z
+    .array(z.string())
+    .min(1, "At least one URL is required")
+    .max(10, "Maximum 10 URLs allowed")
     .describe(
-      "The attachment URL (e.g., 'https://dl.esa.io/uploads/xxx/yyy.png') or file path (e.g., '/uploads/xxx/yyy.png')",
+      "Array of attachment URLs (e.g., 'https://dl.esa.io/uploads/xxx/yyy.png') or file paths (e.g., '/uploads/xxx/yyy.png'). Maximum 10 URLs.",
     ),
 });
 
@@ -60,25 +62,92 @@ function isImageContentType(contentType: string | null): boolean {
   );
 }
 
-export async function getAttachment(
+/**
+ * Process a single file: fetch and return content based on content type
+ */
+async function processSingleFile(
+  originalUrl: string,
+  signedUrl: string,
+): Promise<CallToolResult["content"]> {
+  try {
+    const fileResponse = await fetch(signedUrl);
+    if (!fileResponse.ok) {
+      return [
+        {
+          type: "text",
+          text: `Error fetching ${originalUrl}: HTTP ${fileResponse.status}`,
+        },
+      ];
+    }
+
+    const contentType = fileResponse.headers.get("content-type");
+
+    // Handle text files
+    if (isTextContentType(contentType)) {
+      const textContent = await fileResponse.text();
+      return [
+        {
+          type: "text",
+          text: `File: ${originalUrl}\nContent-Type: ${contentType}\n\n${textContent}`,
+        },
+      ];
+    }
+
+    // Handle image files
+    if (isImageContentType(contentType)) {
+      const arrayBuffer = await fileResponse.arrayBuffer();
+      const base64Data = Buffer.from(arrayBuffer).toString("base64");
+      return [
+        {
+          type: "text",
+          text: `File: ${originalUrl}\nContent-Type: ${contentType}`,
+        },
+        {
+          type: "image",
+          data: base64Data,
+          mimeType: contentType || "application/octet-stream",
+        },
+      ];
+    }
+
+    // Handle other binary files (PDF, etc.) as base64 text
+    const arrayBuffer = await fileResponse.arrayBuffer();
+    const base64Data = Buffer.from(arrayBuffer).toString("base64");
+    return [
+      {
+        type: "text",
+        text: `File: ${originalUrl}\nContent-Type: ${contentType}\nBase64-encoded content:\n${base64Data}`,
+      },
+    ];
+  } catch (err) {
+    return [
+      {
+        type: "text",
+        text: `Error processing ${originalUrl}: ${err instanceof Error ? err.message : String(err)}`,
+      },
+    ];
+  }
+}
+
+export async function getAttachments(
   client: ReturnType<typeof createEsaClient>,
-  args: z.infer<typeof getAttachmentSchema>,
+  args: z.infer<typeof getAttachmentsSchema>,
 ): Promise<CallToolResult> {
   try {
     if (!args.teamName) {
       throw new MissingTeamNameError();
     }
 
-    // Extract file path from URL or use path as-is
-    const filePath = extractFilePath(args.url);
+    // Extract file paths from URLs or use paths as-is
+    const filePaths = args.urls.map((url) => extractFilePath(url));
 
-    // Get signed URL from esa API
+    // Get signed URLs from esa API (supports comma-separated URLs)
     const { data, error, response } = await client.GET(
       "/v1/teams/{team_name}/signed_urls",
       {
         params: {
           path: { team_name: args.teamName },
-          query: { urls: filePath },
+          query: { urls: filePaths.join(",") },
         },
       },
     );
@@ -87,63 +156,41 @@ export async function getAttachment(
       return formatToolError(error || response.status);
     }
 
-    // Extract signed URL from response
+    // Extract signed URLs from response
     const signedUrls = data.signed_urls;
     if (!signedUrls || signedUrls.length === 0) {
-      return formatToolError("No signed URL returned from API");
+      return formatToolError("No signed URLs returned from API");
     }
 
-    const [_originalPath, signedUrl] = signedUrls[0];
-    if (!signedUrl) {
-      return formatToolError("File not found or inaccessible");
-    }
+    // Process all files and collect results
+    const allContent: CallToolResult["content"] = [];
 
-    // Fetch the actual file content
-    const fileResponse = await fetch(signedUrl);
-    if (!fileResponse.ok) {
-      return formatToolError(`Failed to fetch file: ${fileResponse.status}`);
-    }
+    for (let i = 0; i < signedUrls.length; i++) {
+      const [_originalPath, signedUrl] = signedUrls[i];
+      const originalUrl = args.urls[i];
 
-    const contentType = fileResponse.headers.get("content-type");
-
-    // Handle text files
-    if (isTextContentType(contentType)) {
-      const textContent = await fileResponse.text();
-      return {
-        content: [
-          {
-            type: "text",
-            text: textContent,
-          },
-        ],
-      };
-    }
-
-    // Handle image files
-    if (isImageContentType(contentType)) {
-      const arrayBuffer = await fileResponse.arrayBuffer();
-      const base64Data = Buffer.from(arrayBuffer).toString("base64");
-      return {
-        content: [
-          {
-            type: "image",
-            data: base64Data,
-            mimeType: contentType || "application/octet-stream",
-          },
-        ],
-      };
-    }
-
-    // Handle other binary files (PDF, etc.) as base64 text
-    const arrayBuffer = await fileResponse.arrayBuffer();
-    const base64Data = Buffer.from(arrayBuffer).toString("base64");
-    return {
-      content: [
-        {
+      if (!signedUrl) {
+        allContent.push({
           type: "text",
-          text: `Base64-encoded file (${contentType || "unknown type"}):\n${base64Data}`,
-        },
-      ],
+          text: `File not found or inaccessible: ${originalUrl}`,
+        });
+        continue;
+      }
+
+      const fileContent = await processSingleFile(originalUrl, signedUrl);
+      allContent.push(...fileContent);
+
+      // Add separator between files (except for the last one)
+      if (i < signedUrls.length - 1) {
+        allContent.push({
+          type: "text",
+          text: "\n---\n",
+        });
+      }
+    }
+
+    return {
+      content: allContent,
     };
   } catch (err) {
     return formatToolError(err);

@@ -2,7 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { z } from "zod";
 import { withContext } from "../api_client/with-context.js";
 import type { MCPContext } from "../context/mcp-context.js";
-import { getAttachment, getAttachmentSchema } from "./attachments.js";
+import { getAttachments, getAttachmentsSchema } from "./attachments.js";
 import {
   getCategories,
   getCategoriesSchema,
@@ -324,13 +324,13 @@ or request help with esa workflows that you're not familiar with.`,
   );
 
   server.registerTool(
-    "esa_get_attachment",
+    "esa_get_attachments",
     {
-      title: "Get attachment file content",
-      description: `Retrieves the content of an attachment file from esa.io. Supports both full URLs (https://dl.esa.io/uploads/..., https://files.esa.io/uploads/...) and file paths (/uploads/...). Returns text files as text, images (JPEG, PNG, GIF, WebP) as base64-encoded data that can be displayed, and other binary files as base64-encoded text.`,
-      inputSchema: getAttachmentSchema.shape,
+      title: "Get attachment files content",
+      description: `Retrieves the content of attachment files from esa.io (up to 10 files at once). Supports both full URLs (https://dl.esa.io/uploads/..., https://files.esa.io/uploads/...) and file paths (/uploads/...). Returns text files as text, images (JPEG, PNG, GIF, WebP) as base64-encoded data that can be displayed, and other binary files as base64-encoded text.`,
+      inputSchema: getAttachmentsSchema.shape,
     },
-    async (params: z.infer<typeof getAttachmentSchema>) =>
-      withContext(context, getAttachment, params),
+    async (params: z.infer<typeof getAttachmentsSchema>) =>
+      withContext(context, getAttachments, params),
   );
 }

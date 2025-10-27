@@ -48,7 +48,7 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 
 ### Attachments
 
-- `esa_get_attachment` - Retrieve attachment files that are only accessible when logged into esa on the web (supports text, images, PDFs, etc.)
+- `esa_get_attachments` - Retrieve attachment files that are only accessible when logged into esa on the web (up to 10 files at once, supports text, images, PDFs, etc.)
 
 ### Help & Documentation
 
