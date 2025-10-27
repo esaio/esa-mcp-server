@@ -75,7 +75,7 @@ MCP クライアントの設定ファイルに以下を追加します：
 ### 用意する環境変数
 
 - ESA_ACCESS_TOKEN: アクセストークン
-  - 必要なスコープ: `read write` または `admin:comment read:post write:post read:category read:tag read:team read:member`
+  - 必要なスコープ: `read write` または `admin:comment read:post write:post read:category read:tag read:attachment read:team read:member`
   - [PAT v2](https://docs.esa.io/posts/559)を推奨します。
 - LANG: UI の言語設定
 

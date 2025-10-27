@@ -75,7 +75,7 @@ Add to your MCP client configuration file:
 ### Required Environment Variables
 
 - ESA_ACCESS_TOKEN: Access Token
-  - Required scopes: `read write` or `admin:comment read:post write:post read:category read:tag read:team read:member`
+  - Required scopes: `read write` or `admin:comment read:post write:post read:category read:tag read:attachment read:team read:member`
   - [PAT v2](https://docs.esa.io/posts/559) is recommended.
 - LANG: Language for UI
 
