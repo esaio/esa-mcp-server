@@ -2105,6 +2105,157 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/v1/teams/{team_name}/signed_urls": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 署名付きURL取得（複数）
+     * @description 複数のファイルパスに対して署名付きURLを取得します。
+     *     最大1000個のURLを一度に処理できます。
+     */
+    get: {
+      parameters: {
+        query: {
+          /**
+           * @description カンマ区切りのファイルパス（最大1000個）
+           *     ただし、URLの長さの制限があるため多数指定する場合はPOSTメソッドを使用してください
+           * @example /uploads/example/file1.png,/uploads/example/file2.png
+           */
+          urls: string;
+          /**
+           * @description 署名付きURLの有効期限（秒数）。1〜604800（1週間）の範囲で指定可能。指定しない場合はデフォルトの60秒
+           * @example 3600
+           */
+          expires_in?: number;
+        };
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              /**
+               * @description 入力URLと署名付きURLのペアの配列。
+               *     各要素は[入力URL, 署名付きURL]の形式。
+               *     ファイルが見つからない場合、署名付きURLはnullになります。
+               * @example [
+               *       [
+               *         "/uploads/example/file1.png",
+               *         "https://s3.amazonaws.com/bucket/uploads/example/file1.png?signature=..."
+               *       ],
+               *       [
+               *         "uploads/example/file2.png",
+               *         "https://s3.amazonaws.com/bucket/uploads/example/file2.png?signature=..."
+               *       ]
+               *     ]
+               */
+              signed_urls?: string[][];
+            };
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    /**
+     * 署名付きURL取得（複数）
+     * @description 複数のファイルパスに対して署名付きURLを取得します。
+     *     最大1000個のURLを一度に処理できます。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            /**
+             * @description ファイルパスの配列（最大1000個）
+             * @example [
+             *       "/uploads/example/file1.png",
+             *       "uploads/example/file2.png",
+             *       "https://example.com/uploads/example/file3.png"
+             *     ]
+             */
+            urls: string[];
+            /**
+             * @description 署名付きURLの有効期限（秒数）。1〜604800（1週間）の範囲で指定可能。指定しない場合はデフォルトの60秒
+             * @example 3600
+             */
+            expires_in?: number;
+          };
+        };
+      };
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              /**
+               * @description 入力URLと署名付きURLのペアの配列。
+               *     各要素は[入力URL, 署名付きURL]の形式。
+               *     ファイルが見つからない場合、署名付きURLはnullになります。
+               * @example [
+               *       [
+               *         "/uploads/example/file1.png",
+               *         "https://s3.amazonaws.com/bucket/uploads/example/file1.png?signature=..."
+               *       ],
+               *       [
+               *         "uploads/example/file2.png",
+               *         "https://s3.amazonaws.com/bucket/uploads/example/file2.png?signature=..."
+               *       ]
+               *     ]
+               */
+              signed_urls?: string[][];
+            };
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/v1/user": {
     parameters: {
       query?: never;
