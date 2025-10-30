@@ -2115,14 +2115,13 @@ export interface paths {
     /**
      * 署名付きURL取得（複数）
      * @description 複数のファイルパスに対して署名付きURLを取得します。
-     *     最大1000個のURLを一度に処理できます。
+     *     最大10個のURLを一度に処理できます。
      */
     get: {
       parameters: {
         query: {
           /**
-           * @description カンマ区切りのファイルパス（最大1000個）
-           *     ただし、URLの長さの制限があるため多数指定する場合はPOSTメソッドを使用してください
+           * @description カンマ区切りのファイルパス（最大10個）
            * @example /uploads/example/file1.png,/uploads/example/file2.png
            */
           urls: string;
@@ -2131,6 +2130,13 @@ export interface paths {
            * @example 3600
            */
           expires_in?: number;
+          /**
+           * @description 署名付きURLのフォーマットバージョン。
+           *     2を指定すると esa-signed-url-v2 形式の署名付きURLが返されます。
+           *     指定しない場合は従来の形式が使用されます。
+           * @example 2
+           */
+          v?: 2;
         };
         header?: never;
         path: {
@@ -2210,6 +2216,14 @@ export interface paths {
              * @example 3600
              */
             expires_in?: number;
+            /**
+             * @description 署名付きURLのフォーマットバージョン。
+             *     2を指定すると esa-signed-url-v2 形式の署名付きURLが返されます。
+             *     指定しない場合は従来の形式が使用されます。
+             * @example 2
+             * @enum {integer}
+             */
+            v?: 2;
           };
         };
       };
