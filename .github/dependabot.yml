@@ -11,6 +11,11 @@ updates:
     time: "03:00"
     timezone: Asia/Tokyo
   open-pull-requests-limit: 10
+  groups:
+    vitest:
+      patterns:
+        - "vitest"
+        - "@vitest/*"
   ignore:
     - dependency-name: "zod"
       update-types: ["version-update:semver-major"]
