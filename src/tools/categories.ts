@@ -91,3 +91,57 @@ export async function getTopCategories(
     return formatToolError(error);
   }
 }
+
+export const getAllCategoryPathsSchema = createSchemaWithTeamName({
+  prefix: z
+    .string()
+    .optional()
+    .describe("Filter paths starting with specified string"),
+  suffix: z
+    .string()
+    .optional()
+    .describe("Filter paths ending with specified string"),
+  match: z
+    .string()
+    .optional()
+    .describe("Filter paths containing specified substring"),
+  exactMatch: z
+    .string()
+    .optional()
+    .describe(
+      "Filter paths matching exactly (ignores leading/trailing slashes)",
+    ),
+});
+
+export async function getAllCategoryPaths(
+  client: ReturnType<typeof createEsaClient>,
+  args: z.infer<typeof getAllCategoryPathsSchema>,
+) {
+  try {
+    if (!args.teamName) {
+      throw new MissingTeamNameError();
+    }
+    const { data, error, response } = await client.GET(
+      "/v1/teams/{team_name}/categories/paths",
+      {
+        params: {
+          path: { team_name: args.teamName },
+          query: {
+            prefix: args.prefix,
+            suffix: args.suffix,
+            match: args.match,
+            exact_match: args.exactMatch,
+          },
+        },
+      },
+    );
+
+    if (error || !response.ok) {
+      return formatToolError(error || response.status);
+    }
+
+    return formatToolResponse(data);
+  } catch (error) {
+    return formatToolError(error);
+  }
+}

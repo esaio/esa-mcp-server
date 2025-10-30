@@ -41,6 +41,7 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 ### カテゴリー管理
 - `esa_get_categories` - 指定パス配下のカテゴリー一覧
 - `esa_get_top_categories` - トップレベルのカテゴリー一覧
+- `esa_get_all_category_paths` - チーム内の全カテゴリーパス一覧（記事数付き、フィルタリング対応）
 
 ### 添付ファイル
 - `esa_get_attachment` - 記事やコメントの添付ファイルを取得
