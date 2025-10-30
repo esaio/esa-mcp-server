@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { createEsaClient } from "../../api_client/index.js";
-import { getAttachments } from "../attachments.js";
+import { getAttachment } from "../attachments.js";
 
 // Mock global fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-describe("getAttachments", () => {
+describe("getAttachment", () => {
   const mockClient = {
     GET: vi.fn(),
   } as unknown as ReturnType<typeof createEsaClient> & {
@@ -53,9 +53,9 @@ describe("getAttachments", () => {
       },
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["https://dl.esa.io/uploads/example/image.png"],
+      url: "https://dl.esa.io/uploads/example/image.png",
     });
 
     expect(mockClient.GET).toHaveBeenCalledWith(
@@ -110,9 +110,9 @@ describe("getAttachments", () => {
       },
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/large.png"],
+      url: "/uploads/example/large.png",
     });
 
     expect(result).toEqual({
@@ -150,9 +150,9 @@ describe("getAttachments", () => {
       },
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["https://files.esa.io/uploads/example/doc.pdf"],
+      url: "https://files.esa.io/uploads/example/doc.pdf",
     });
 
     expect(result).toEqual({
@@ -160,63 +160,6 @@ describe("getAttachments", () => {
         {
           type: "text",
           text: signedUrl,
-        },
-      ],
-    });
-  });
-
-  it("should return signed URLs for multiple files automatically", async () => {
-    const signedUrl1 = "https://s3.amazonaws.com/bucket/img1.png?signature=123";
-    const signedUrl2 = "https://s3.amazonaws.com/bucket/doc.pdf?signature=456";
-
-    mockClient.GET.mockResolvedValue({
-      data: {
-        signed_urls: [
-          ["/uploads/example/img1.png", signedUrl1],
-          ["/uploads/example/doc.pdf", signedUrl2],
-        ],
-      },
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    const result = await getAttachments(mockClient, {
-      teamName: "test-team",
-      urls: [
-        "https://dl.esa.io/uploads/example/img1.png",
-        "/uploads/example/doc.pdf",
-      ],
-    });
-
-    expect(mockClient.GET).toHaveBeenCalledWith(
-      "/v1/teams/{team_name}/signed_urls",
-      {
-        params: {
-          path: { team_name: "test-team" },
-          query: {
-            urls: "/uploads/example/img1.png,/uploads/example/doc.pdf",
-            v: 2,
-          },
-        },
-      },
-    );
-
-    // When multiple URLs are provided, forceSignedUrl is automatically true
-    // so fetch should not be called
-    expect(mockFetch).not.toHaveBeenCalled();
-
-    expect(result).toEqual({
-      content: [
-        {
-          type: "text",
-          text: signedUrl1,
-        },
-        {
-          type: "text",
-          text: signedUrl2,
         },
       ],
     });
@@ -234,9 +177,9 @@ describe("getAttachments", () => {
       } as Response,
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/missing.png"],
+      url: "/uploads/example/missing.png",
     });
 
     expect(result).toEqual({
@@ -269,9 +212,9 @@ describe("getAttachments", () => {
       statusText: "Forbidden",
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/image.png"],
+      url: "/uploads/example/image.png",
     });
 
     expect(result).toEqual({
@@ -296,9 +239,9 @@ describe("getAttachments", () => {
       } as Response,
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/image.png"],
+      url: "/uploads/example/image.png",
     });
 
     expect(result).toEqual({
@@ -312,9 +255,9 @@ describe("getAttachments", () => {
   });
 
   it("should handle missing teamName", async () => {
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "",
-      urls: ["/uploads/example/image.png"],
+      url: "/uploads/example/image.png",
     });
 
     expect(result).toEqual({
@@ -373,9 +316,9 @@ describe("getAttachments", () => {
         },
       });
 
-      const result = await getAttachments(mockClient, {
+      const result = await getAttachment(mockClient, {
         teamName: "test-team",
-        urls: [url],
+        url,
       });
 
       expect(result).toEqual({
@@ -404,9 +347,9 @@ describe("getAttachments", () => {
       } as Response,
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/image.png"],
+      url: "/uploads/example/image.png",
       forceSignedUrl: true,
     });
 
@@ -457,9 +400,9 @@ describe("getAttachments", () => {
       },
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/image.png"],
+      url: "/uploads/example/image.png",
     });
 
     expect(result).toEqual({
@@ -499,9 +442,9 @@ describe("getAttachments", () => {
       },
     });
 
-    const result = await getAttachments(mockClient, {
+    const result = await getAttachment(mockClient, {
       teamName: "test-team",
-      urls: ["/uploads/example/image.svg"],
+      url: "/uploads/example/image.svg",
     });
 
     expect(result).toEqual({

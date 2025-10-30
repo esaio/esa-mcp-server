@@ -16,19 +16,17 @@ const SUPPORTED_IMAGE_TYPES = [
   "image/webp",
 ] as const;
 
-export const getAttachmentsSchema = createSchemaWithTeamName({
-  urls: z
-    .array(z.string())
-    .min(1)
-    .max(10)
+export const getAttachmentSchema = createSchemaWithTeamName({
+  url: z
+    .string()
     .describe(
-      "Array of attachment URLs (up to 10). Can be full URLs (https://files.esa.io/..., https://dl.esa.io/...) or paths (/uploads/...). Note: When multiple URLs are provided, signed URLs are automatically returned for all files.",
+      "Attachment URL. Can be a full URL (https://files.esa.io/..., https://dl.esa.io/...) or a path (/uploads/...)",
     ),
   forceSignedUrl: z
     .boolean()
     .optional()
     .describe(
-      "If true, always return signed URLs instead of base64-encoded images. Default is false. This parameter is automatically set to true when multiple URLs are provided.",
+      "If true, always return signed URLs instead of base64-encoded images. Default is false.",
     ),
 });
 
@@ -110,26 +108,26 @@ async function fetchAttachment(
   };
 }
 
-export async function getAttachments(
+export async function getAttachment(
   client: ReturnType<typeof createEsaClient>,
-  args: z.infer<typeof getAttachmentsSchema>,
+  args: z.infer<typeof getAttachmentSchema>,
 ): Promise<CallToolResult> {
   try {
     if (!args.teamName) {
       throw new MissingTeamNameError();
     }
 
-    // Normalize URLs to paths
-    const normalizedUrls = args.urls.map(normalizeUrl);
+    // Normalize URL to path
+    const normalizedUrl = normalizeUrl(args.url);
 
-    // Get signed URLs from esa API
+    // Get signed URL from esa API
     const { data, error, response } = await client.GET(
       "/v1/teams/{team_name}/signed_urls",
       {
         params: {
           path: { team_name: args.teamName },
           query: {
-            urls: normalizedUrls.join(","),
+            urls: normalizedUrl,
             v: 2,
           },
         },
@@ -144,34 +142,24 @@ export async function getAttachments(
       throw new Error("No signed URLs returned from API");
     }
 
-    // Process each signed URL
-    const content: Array<
-      | { type: "image"; data: string; mimeType: string }
-      | { type: "text"; text: string }
-    > = [];
+    const [originalUrl, signedUrl] = data.signed_urls[0];
 
-    // Force signed URLs when multiple files are requested
-    const forceSignedUrl =
-      args.urls.length > 1 || (args.forceSignedUrl ?? false);
-
-    for (const [originalUrl, signedUrl] of data.signed_urls) {
-      if (signedUrl === null) {
-        throw new Error(`File not found: ${originalUrl}`);
-      }
-
-      try {
-        const result = await fetchAttachment(signedUrl, forceSignedUrl);
-        content.push(result);
-      } catch (err) {
-        throw new Error(
-          `Failed to fetch attachment for ${originalUrl}: ${
-            err instanceof Error ? err.message : String(err)
-          }`,
-        );
-      }
+    if (signedUrl === null) {
+      throw new Error(`File not found: ${originalUrl}`);
     }
 
-    return { content };
+    const forceSignedUrl = args.forceSignedUrl ?? false;
+
+    try {
+      const result = await fetchAttachment(signedUrl, forceSignedUrl);
+      return { content: [result] };
+    } catch (err) {
+      throw new Error(
+        `Failed to fetch attachment for ${originalUrl}: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
   } catch (err) {
     return formatToolError(err);
   }
