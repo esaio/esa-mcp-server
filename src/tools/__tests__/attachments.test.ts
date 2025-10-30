@@ -66,6 +66,7 @@ describe("getAttachment", () => {
           query: {
             urls: "/uploads/example/image.png",
             v: 2,
+            expires_in: 300,
           },
         },
       },

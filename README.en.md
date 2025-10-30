@@ -45,7 +45,7 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 ### Attachments
 - `esa_get_attachment` - Retrieve an attachment file from esa posts and comments
   - Returns base64-encoded data for supported images (JPEG, PNG, GIF, WebP) under 30MB
-  - Returns signed URLs for other file types, larger images, or when forceSignedUrl is specified
+  - Returns signed URLs (valid for 5 minutes) for other file types, larger images, or when forceSignedUrl is specified
 
 ### Help & Documentation
 - `esa_get_search_options_help` - Get esa search syntax documentation

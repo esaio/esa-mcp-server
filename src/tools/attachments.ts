@@ -129,6 +129,7 @@ export async function getAttachment(
           query: {
             urls: normalizedUrl,
             v: 2,
+            expires_in: 300, // 5 minutes
           },
         },
       },
