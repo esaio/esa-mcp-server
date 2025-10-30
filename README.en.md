@@ -42,6 +42,12 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 - `esa_get_categories` - Get categories and subcategories for a specific path
 - `esa_get_top_categories` - Get all top-level categories for a team
 
+### Attachments
+- `esa_get_attachments` - Retrieve attachment files from esa posts and comments
+  - Single file: Returns base64-encoded data for supported images (JPEG, PNG, GIF, WebP) under 30MB
+  - Multiple files: Automatically returns signed URLs for all files
+  - Returns signed URLs for other file types, larger images, or when forceSignedUrl is specified
+
 ### Help & Documentation
 - `esa_get_search_options_help` - Get esa search syntax documentation
 - `esa_get_markdown_syntax_help` - Get esa Markdown syntax documentation

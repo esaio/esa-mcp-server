@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { z } from "zod";
 import { withContext } from "../api_client/with-context.js";
 import type { MCPContext } from "../context/mcp-context.js";
+import { getAttachments, getAttachmentsSchema } from "./attachments.js";
 import {
   getCategories,
   getCategoriesSchema,
@@ -320,5 +321,17 @@ or request help with esa workflows that you're not familiar with.`,
     },
     async (params: z.infer<typeof searchHelpSchema>) =>
       withContext(context, searchHelp, params),
+  );
+
+  server.registerTool(
+    "esa_get_attachments",
+    {
+      title: "Get attachment files from esa",
+      description:
+        "Retrieves attachment files from esa with signed URLs. For a single supported image (JPEG, PNG, GIF, WebP) under 30MB, returns base64-encoded data. For multiple files, other file types, larger images, or when forceSignedUrl is true, returns signed URLs.",
+      inputSchema: getAttachmentsSchema.shape,
+    },
+    async (params: z.infer<typeof getAttachmentsSchema>) =>
+      withContext(context, getAttachments, params),
   );
 }
