@@ -42,6 +42,11 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 - `esa_get_categories` - 指定パス配下のカテゴリー一覧
 - `esa_get_top_categories` - トップレベルのカテゴリー一覧
 
+### 添付ファイル
+- `esa_get_attachment` - 記事やコメントの添付ファイルを取得
+  - サポート形式（JPEG, PNG, GIF, WebP）で30MB以下の画像はbase64エンコードで返却
+  - その他のファイル、大きな画像、またはforceSignedUrl指定時は署名付きURL（有効期限5分）を返却
+
 ### ヘルプとドキュメント
 - `esa_get_search_options_help` - esa の検索構文ヘルプ
 - `esa_get_markdown_syntax_help` - esa の Markdown 記法ヘルプ
