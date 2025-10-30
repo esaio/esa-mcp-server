@@ -96,20 +96,26 @@ export const getAllCategoryPathsSchema = createSchemaWithTeamName({
   prefix: z
     .string()
     .optional()
-    .describe("Filter paths starting with specified string"),
+    .describe(
+      "Filter paths starting with specified string (e.g., 'dev' finds 'dev', 'dev/api', 'dev/docs')",
+    ),
   suffix: z
     .string()
     .optional()
-    .describe("Filter paths ending with specified string"),
+    .describe(
+      "Filter paths ending with specified string (e.g., 'api' finds 'dev/api', 'backend/api')",
+    ),
   match: z
     .string()
     .optional()
-    .describe("Filter paths containing specified substring"),
+    .describe(
+      "Filter paths containing specified substring anywhere (e.g., 'doc' finds 'docs', 'dev/docs', 'documentation')",
+    ),
   exactMatch: z
     .string()
     .optional()
     .describe(
-      "Filter paths matching exactly (ignores leading/trailing slashes)",
+      "Filter paths matching exactly (e.g., 'dev/api' matches only 'dev/api', ignores leading/trailing slashes)",
     ),
 });
 
