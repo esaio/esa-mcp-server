@@ -1,3 +1,4 @@
+import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { withContext } from "../../api_client/with-context.js";
 import type { MCPContext } from "../../context/mcp-context.js";
@@ -9,7 +10,7 @@ vi.mock("../../tools/teams.js");
 
 describe("createRecentPostsResourceList", () => {
   let context: MCPContext;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let consoleErrorSpy: MockInstance<typeof console.error>;
 
   beforeEach(() => {
     context = {} as unknown as MCPContext;

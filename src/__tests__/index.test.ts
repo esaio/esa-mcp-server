@@ -52,8 +52,15 @@ describe("MCP Server", () => {
       initI18n?: ReturnType<typeof vi.fn>;
     },
   ) => {
-    const MockMcpServer = vi.fn().mockReturnValue(mockServer);
-    const MockStdioServerTransport = vi.fn().mockReturnValue(mockTransport);
+    // Use function keyword for constructor mocks (required in vitest v4)
+    // biome-ignore lint/complexity/useArrowFunction: Constructor mocks in vitest v4 require function keyword, not arrow functions
+    const MockMcpServer = vi.fn(function (..._args: unknown[]) {
+      return mockServer;
+    });
+    // biome-ignore lint/complexity/useArrowFunction: Constructor mocks in vitest v4 require function keyword, not arrow functions
+    const MockStdioServerTransport = vi.fn(function (..._args: unknown[]) {
+      return mockTransport;
+    });
 
     vi.doMock("../config/index.js", () => mockConfig);
     vi.doMock("@modelcontextprotocol/sdk/server/mcp.js", () => ({

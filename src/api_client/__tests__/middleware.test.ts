@@ -1,9 +1,10 @@
+import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAuthMiddleware } from "../middleware.js";
 
 describe("createAuthMiddleware", () => {
   // Mock console.error to verify rate limit and error logging without console output
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let consoleErrorSpy: MockInstance<typeof console.error>;
 
   // Create test request for authorization header testing
   const createTestRequest = (url = "https://api.esa.example.com/test") =>
