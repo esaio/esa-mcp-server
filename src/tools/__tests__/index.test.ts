@@ -23,14 +23,14 @@ describe("setupTools", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("should register all 23 tools with correct handlers", () => {
+  it("should register all 24 tools with correct handlers", () => {
     const registerToolSpy = vi.spyOn(server, "registerTool");
 
     setupTools(server, context);
 
-    expect(registerToolSpy).toHaveBeenCalledTimes(23);
+    expect(registerToolSpy).toHaveBeenCalledTimes(24);
 
-    for (let i = 0; i < 23; i++) {
+    for (let i = 0; i < 24; i++) {
       const [toolName, schema, handler] = registerToolSpy.mock.calls[i];
       expect(typeof toolName).toBe("string");
       expect(toolName).toMatch(/^esa_/); // All tools should start with 'esa_'
