@@ -1,4 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MCPContext } from "../../context/mcp-context.js";
 import { setupResources } from "../index.js";
@@ -6,7 +7,7 @@ import { setupResources } from "../index.js";
 describe("setupResources", () => {
   let server: McpServer;
   let context: MCPContext;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  let consoleErrorSpy: MockInstance<typeof console.error>;
 
   beforeEach(() => {
     server = new McpServer({
