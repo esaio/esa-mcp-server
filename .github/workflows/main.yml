@@ -30,6 +30,12 @@ jobs:
           fi
       - name: Run type checking
         run: npm run type-check
+      - name: Check package.json version and package-log.json version are same
+        run: |
+          if [ "$(node -pe "require('./package.json').version")" != "$(node -pe "require('./package-lock.json').version")" ]; then
+            echo "::error::package.json version and package-lock.json version are different"
+            exit 1
+          fi
       - name: Run tests
         run: npm run test:coverage
       - name: Upload coverage reports
