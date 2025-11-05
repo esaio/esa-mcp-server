@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[日本語](README.md) | **English**
+[日本語](https://github.com/esaio/esa-mcp-server#readme) | **English**
 
 Official Model Context Protocol (MCP) server for esa.io - STDIO transport version.
 

@@ -7,6 +7,24 @@
   "bin": {
     "esa-mcp-server": "./bin/index.js"
   },
+  "files": [
+    "bin",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esaio/esa-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/esaio/esa-mcp-server/issues"
+  },
+  "homepage": "https://github.com/esaio/esa-mcp-server#readme",
   "scripts": {
     "build": "tsdown",
     "test": "vitest",
@@ -15,7 +33,8 @@
     "lint": "biome check . --error-on-warnings",
     "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit",
-    "update-esa-api": "openapi-typescript ../esa/api/openapi.yaml --output src/generated/api-types.ts && npm run lint:fix"
+    "update-esa-api": "openapi-typescript ../esa/api/openapi.yaml --output src/generated/api-types.ts && npm run lint:fix",
+    "prepublishOnly": "npm run build && npm run test:run && npm run lint && npm run type-check"
   },
   "keywords": [
     "mcp",

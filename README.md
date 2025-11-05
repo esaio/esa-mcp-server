@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**日本語** | [English](README.en.md)
+**日本語** | [English](https://github.com/esaio/esa-mcp-server/blob/main/README.en.md)
 
 esa.io の公式 MCP(Model Context Protocol)サーバー(STDIO Transport 版)
 
