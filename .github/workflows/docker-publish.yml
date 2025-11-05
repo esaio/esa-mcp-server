@@ -41,7 +41,7 @@ jobs:
 
     - name: Extract metadata
       id: meta
-      uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # https://github.com/docker/metadata-action/tree/v5
+      uses: docker/metadata-action@318604b99e75e41977312d83839a89be02ca4893 # https://github.com/docker/metadata-action/tree/v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -101,7 +101,7 @@ jobs:
 
     - name: Extract metadata
       id: meta
-      uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # https://github.com/docker/metadata-action/tree/v5
+      uses: docker/metadata-action@318604b99e75e41977312d83839a89be02ca4893 # https://github.com/docker/metadata-action/tree/v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
