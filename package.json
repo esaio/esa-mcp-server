@@ -1,6 +1,6 @@
 {
   "name": "@esaio/esa-mcp-server",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Official MCP server for esa.io - STDIO transport version",
   "main": "bin/index.js",
   "type": "module",
