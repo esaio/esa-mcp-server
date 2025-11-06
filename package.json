@@ -26,13 +26,15 @@
   },
   "homepage": "https://github.com/esaio/esa-mcp-server#readme",
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown && npm run bin-check",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:release": "npm run test:run && npm run type-check && npm run lint",
     "lint": "biome check . --error-on-warnings",
     "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit",
+    "bin-check": "node -e \"if (!require('fs').existsSync('./bin/index.js')) { console.error('Error: ./bin/index.js does not exist. Please run npm run build first.'); process.exit(1); }\"",
     "update-esa-api": "openapi-typescript ../esa/api/openapi.yaml --output src/generated/api-types.ts && npm run lint:fix"
   },
   "keywords": [
