@@ -92,6 +92,11 @@ jobs:
       packages: write
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # https://github.com/actions/checkout/tree/v5
+        with:
+          # workflow_run の場合、すべてのタグを取得
+          fetch-depth: 0
       - name: Download digests
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # https://github.com/actions/download-artifact/tree/v5
         with:
