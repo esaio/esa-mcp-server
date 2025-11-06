@@ -1,6 +1,7 @@
 name: After NPM Publish
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["Publish to npm registry"]
     types: [completed]

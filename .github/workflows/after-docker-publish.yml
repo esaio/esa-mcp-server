@@ -33,6 +33,7 @@ jobs:
           echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}"
 
       - name: Check Docker Image Runs
+        shell: bash {0}
         run: |
           RESULT=$(timeout 5 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
           echo "Docker run result: ${RESULT}"
