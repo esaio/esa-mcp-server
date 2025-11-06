@@ -29,6 +29,7 @@ jobs:
       - name: Check npx runs
         shell: bash {0}
         run: |
+          cd /tmp
           RESULT=$(timeout 5 bash -c 'ESA_ACCESS_TOKEN=dummy npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }}' 2>&1 || true)
           echo "npx run result: ${RESULT}"
 
