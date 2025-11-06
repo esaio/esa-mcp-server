@@ -34,11 +34,6 @@ jobs:
         run: |
           cd /tmp
 
-          echo "debug"
-          pwd
-          ESA_ACCESS_TOKEN=dummy timeout 5 npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }} 2>&1
-          echo "debug end"
-
           RESULT=$(ESA_ACCESS_TOKEN=dummy timeout 5 npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }} 2>&1)
           echo "npx run result: ${RESULT}"
 
