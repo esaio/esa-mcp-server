@@ -3,6 +3,10 @@ name: Docker Build and Push
 on:
   push:
     tags: [ 'v*' ]
+  workflow_run:
+    workflows: ["Version Bump"]
+    types: [completed]
+    branches: [main]
 
 env:
   REGISTRY: ghcr.io
@@ -10,6 +14,8 @@ env:
 
 jobs:
   build:
+    # workflow_run の場合、元のワークフローが成功した場合のみ実行
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     strategy:
       fail-fast: true
       matrix:
@@ -31,6 +37,9 @@ jobs:
 
     - name: Checkout repository
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # https://github.com/actions/checkout/tree/v5
+      with:
+        # workflow_run の場合、すべてのタグを取得
+        fetch-depth: 0
 
     - name: Log in to Container Registry
       uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # https://github.com/docker/login-action/tree/v3
