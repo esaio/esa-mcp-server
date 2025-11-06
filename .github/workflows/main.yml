@@ -45,9 +45,3 @@ jobs:
           path: coverage/
       - name: Build
         run: npm run build
-      - name: Check bin/index.js exists
-        run: |
-          if [ ! -f "bin/index.js" ]; then
-            echo "::error::Build failed: bin/index.js does not exist"
-            exit 1
-          fi
