@@ -10,8 +10,8 @@ on:
 jobs:
   after-publish:
     runs-on: ubuntu-latest
-    # 元のワークフローが成功した場合のみ実行
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # 元のワークフローが成功した場合のみ実行（workflow_dispatchの場合は常に実行）
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
 
@@ -33,10 +33,9 @@ jobs:
           RESULT=$(timeout 5 bash -c 'ESA_ACCESS_TOKEN=dummy npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }}' 2>&1 || true)
           echo "npx run result: ${RESULT}"
 
-          # RESULT must contain esa-mcp-server v${{ steps.version.outputs.version }}) started
-          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }}) started"* ]]; then
+          # RESULT must contain esa-mcp-server v${{ steps.version.outputs.version }} started
+          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
             echo "Error: Unexpected npx run result"
-            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }}) started"
-            echo "Actual: ${RESULT}"
+            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
             exit 1
           fi

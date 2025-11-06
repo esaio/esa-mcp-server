@@ -38,10 +38,9 @@ jobs:
           RESULT=$(timeout 5 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
           echo "Docker run result: ${RESULT}"
 
-          # RESULT must contain esa-mcp-server v${{ steps.version.outputs.version }}) started
-          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }}) started"* ]]; then
+          # RESULT must contain esa-mcp-server v${{ steps.version.outputs.version }} started
+          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
             echo "Error: Unexpected docker run result"
-            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }}) started"
-            echo "Actual: ${RESULT}"
+            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
             exit 1
           fi
