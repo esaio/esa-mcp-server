@@ -1,0 +1,46 @@
+name: After Docker Publish
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types: [completed]
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  after-publish:
+    runs-on: ubuntu-latest
+    # 元のワークフローが成功した場合のみ実行（workflow_dispatchの場合は常に実行）
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # https://github.com/actions/checkout/tree/v5
+
+      - name: Get published version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Published version: ${VERSION}"
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}"
+
+      - name: Check Docker Image Runs
+        run: |
+          RESULT=$(timeout 5 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
+          echo "Docker run result: ${RESULT}"
+
+          # RESULT must contain esa-mcp-server v${{ steps.version.outputs.version }}) started
+          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }}) started"* ]]; then
+            echo "Error: Unexpected docker run result"
+            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }}) started"
+            echo "Actual: ${RESULT}"
+            exit 1
+          fi
