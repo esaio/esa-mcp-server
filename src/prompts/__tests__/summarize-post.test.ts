@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { createEsaClient } from "../../api_client/index.js";
 import { createSummarizePostSchema, summarizePost } from "../summarize-post.js";
@@ -107,7 +108,7 @@ describe("summarizePost", () => {
     expect(result.messages[0].role).toBe("user");
     expect(result.messages[0].content.type).toBe("text");
 
-    const promptText = result.messages[0].content.text;
+    const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).toContain("Please summarize the following post:");
     expect(promptText).toContain("Title: test-post.md");
     expect(promptText).toContain(
@@ -136,7 +137,7 @@ describe("summarizePost", () => {
       format: "paragraph",
     });
 
-    const promptText = result.messages[0].content.text;
+    const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).toContain("Please provide a summary in 2-3 paragraphs");
   });
 
@@ -156,7 +157,7 @@ describe("summarizePost", () => {
       format: "keywords",
     });
 
-    const promptText = result.messages[0].content.text;
+    const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).toContain(
       "Please extract and list 10-15 important keywords",
     );
@@ -179,7 +180,7 @@ describe("summarizePost", () => {
       postNumber: "456",
     });
 
-    const promptText = result.messages[0].content.text;
+    const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).not.toContain("Category:");
     expect(promptText).not.toContain("Tags:");
   });
@@ -204,7 +205,7 @@ describe("summarizePost", () => {
       postNumber: "789",
     });
 
-    const promptText = result.messages[0].content.text;
+    const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).not.toContain("Content:");
     expect(promptText).toContain("Please provide a summary in bullet points");
   });
@@ -228,9 +229,9 @@ describe("summarizePost", () => {
 
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0].role).toBe("user");
-    expect(result.messages[0].content.text).toContain(
-      JSON.stringify(mockError, null, 2),
-    );
+    expect(
+      (result.messages[0].content as TextContent).text,
+    ).toContain(JSON.stringify(mockError, null, 2));
   });
 
   it("should handle network errors", async () => {
@@ -245,7 +246,7 @@ describe("summarizePost", () => {
 
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0].role).toBe("user");
-    expect(result.messages[0].content.text).toContain(
+    expect((result.messages[0].content as TextContent).text).toContain(
       "Network connection failed",
     );
   });
@@ -260,7 +261,9 @@ describe("summarizePost", () => {
 
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0].role).toBe("user");
-    expect(result.messages[0].content.text).toContain("Unexpected error");
+    expect((result.messages[0].content as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should handle invalid post number", async () => {
@@ -271,7 +274,7 @@ describe("summarizePost", () => {
 
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0].role).toBe("user");
-    expect(result.messages[0].content.text).toContain(
+    expect((result.messages[0].content as TextContent).text).toContain(
       "Post number must be a positive integer",
     );
   });

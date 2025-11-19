@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createExpectedTransformed,
@@ -128,7 +129,7 @@ describe("getPost", () => {
       },
     );
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.wip).toBe("WIP");
     expect(parsedResult.kind).toBe("flow");
   });
@@ -230,7 +231,7 @@ describe("getPost", () => {
       postNumber: 789,
     });
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.body_md).toBe(undefined);
   });
 
@@ -432,7 +433,7 @@ describe("createPost", () => {
       },
     );
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.wip).toBe("WIP");
   });
 
@@ -546,7 +547,7 @@ describe("createPost", () => {
       },
     );
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.body_md).toBe(undefined);
   });
 });
@@ -796,7 +797,7 @@ describe("updatePost", () => {
       },
     );
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.wip).toBe("WIP");
   });
 
@@ -911,7 +912,7 @@ describe("updatePost", () => {
       },
     );
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult.body_md).toBe(undefined);
   });
 });

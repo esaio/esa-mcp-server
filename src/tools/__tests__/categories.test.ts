@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { createEsaClient } from "../../api_client/index.js";
 import {
@@ -63,7 +64,7 @@ describe("getCategories", () => {
       },
     );
 
-    expect(result.content[0].text).toContain("dev/docs");
+    expect((result.content[0] as TextContent).text).toContain("dev/docs");
   });
 
   it("should handle API errors", async () => {
@@ -80,7 +81,7 @@ describe("getCategories", () => {
       select: "nonexistent",
     });
 
-    expect(result.content[0].text).toContain("not_found");
+    expect((result.content[0] as TextContent).text).toContain("not_found");
   });
 
   it("should handle network errors", async () => {
@@ -93,7 +94,7 @@ describe("getCategories", () => {
       select: "dev/docs",
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -104,7 +105,7 @@ describe("getCategories", () => {
       select: "dev/docs",
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -169,8 +170,8 @@ describe("getTopCategories", () => {
       },
     );
 
-    expect(result.content[0].text).toContain("dev");
-    expect(result.content[0].text).toContain("design");
+    expect((result.content[0] as TextContent).text).toContain("dev");
+    expect((result.content[0] as TextContent).text).toContain("design");
   });
 
   it("should handle API errors", async () => {
@@ -186,7 +187,7 @@ describe("getTopCategories", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("forbidden");
+    expect((result.content[0] as TextContent).text).toContain("forbidden");
   });
 
   it("should handle network errors", async () => {
@@ -198,7 +199,7 @@ describe("getTopCategories", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -208,7 +209,7 @@ describe("getTopCategories", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -273,8 +274,8 @@ describe("getAllCategoryPaths", () => {
       },
     );
 
-    expect(result.content[0].text).toContain("dev");
-    expect(result.content[0].text).toContain("design");
+    expect((result.content[0] as TextContent).text).toContain("dev");
+    expect((result.content[0] as TextContent).text).toContain("design");
   });
 
   it("should support prefix filter", async () => {
@@ -309,7 +310,7 @@ describe("getAllCategoryPaths", () => {
       },
     );
 
-    expect(result.content[0].text).toContain("dev");
+    expect((result.content[0] as TextContent).text).toContain("dev");
   });
 
   it("should support multiple filters", async () => {
@@ -342,7 +343,7 @@ describe("getAllCategoryPaths", () => {
       },
     );
 
-    expect(result.content[0].text).toContain("dev/docs");
+    expect((result.content[0] as TextContent).text).toContain("dev/docs");
   });
 
   it("should handle API errors", async () => {
@@ -358,7 +359,7 @@ describe("getAllCategoryPaths", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("forbidden");
+    expect((result.content[0] as TextContent).text).toContain("forbidden");
   });
 
   it("should handle network errors", async () => {
@@ -370,7 +371,7 @@ describe("getAllCategoryPaths", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -380,7 +381,7 @@ describe("getAllCategoryPaths", () => {
       teamName: "test-team",
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {

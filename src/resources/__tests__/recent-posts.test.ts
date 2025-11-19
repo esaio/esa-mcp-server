@@ -1,3 +1,4 @@
+import type { TextResourceContents } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createExpectedTransformed,
@@ -123,7 +124,9 @@ describe("getRecentPosts", () => {
       uri: testUri,
     });
 
-    const parsedResult = JSON.parse(result.contents[0].text as string);
+    const parsedResult = JSON.parse(
+      (result.contents[0] as TextResourceContents).text,
+    );
     expect(parsedResult.posts[0].body_md).toBe(`${"a".repeat(500)}...`);
   });
 
@@ -148,7 +151,9 @@ describe("getRecentPosts", () => {
       uri: testUri,
     });
 
-    const parsedResult = JSON.parse(result.contents[0].text as string);
+    const parsedResult = JSON.parse(
+      (result.contents[0] as TextResourceContents).text,
+    );
     expect(parsedResult.posts).toEqual([]);
     expect(parsedResult.total_count).toBe(0);
   });
@@ -264,7 +269,9 @@ describe("getRecentPosts", () => {
       uri: testUri,
     });
 
-    const parsedResult = JSON.parse(result.contents[0].text as string);
+    const parsedResult = JSON.parse(
+      (result.contents[0] as TextResourceContents).text,
+    );
     expect(parsedResult.posts[0].body_md).toBe(undefined);
   });
 });

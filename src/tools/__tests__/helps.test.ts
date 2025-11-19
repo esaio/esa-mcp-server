@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it, vi } from "vitest";
 import type { createEsaClient } from "../../api_client/index.js";
 import {
@@ -38,7 +39,7 @@ describe("getSearchOptionsHelp", () => {
       postNumber: HELP_DOCS.SEARCH_OPTIONS_POST_ID,
     });
 
-    expect(result.content[0].text).toBe("mocked response");
+    expect((result.content[0] as TextContent).text).toBe("mocked response");
   });
 
   it("should handle API errors", async () => {
@@ -49,7 +50,7 @@ describe("getSearchOptionsHelp", () => {
 
     const result = await getSearchOptionsHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Error:");
+    expect((result.content[0] as TextContent).text).toContain("Error:");
   });
 
   it("should handle network errors", async () => {
@@ -60,7 +61,7 @@ describe("getSearchOptionsHelp", () => {
 
     const result = await getSearchOptionsHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -71,7 +72,7 @@ describe("getSearchOptionsHelp", () => {
 
     const result = await getSearchOptionsHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 });
 
@@ -91,7 +92,7 @@ describe("getMarkdownSyntaxHelp", () => {
       postNumber: HELP_DOCS.MARKDOWN_SYNTAX_POST_ID,
     });
 
-    expect(result.content[0].text).toBe("markdown syntax help");
+    expect((result.content[0] as TextContent).text).toBe("markdown syntax help");
   });
 
   it("should handle API errors", async () => {
@@ -102,7 +103,7 @@ describe("getMarkdownSyntaxHelp", () => {
 
     const result = await getMarkdownSyntaxHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Error:");
+    expect((result.content[0] as TextContent).text).toContain("Error:");
   });
 
   it("should handle network errors", async () => {
@@ -113,7 +114,7 @@ describe("getMarkdownSyntaxHelp", () => {
 
     const result = await getMarkdownSyntaxHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -124,7 +125,7 @@ describe("getMarkdownSyntaxHelp", () => {
 
     const result = await getMarkdownSyntaxHelp(mockClient, {});
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 });
 
@@ -170,7 +171,7 @@ describe("searchHelp", () => {
       perPage: undefined,
     });
 
-    expect(result.content[0].text).toBe("emoji help results");
+    expect((result.content[0] as TextContent).text).toBe("emoji help results");
   });
 
   it("should handle API errors", async () => {
@@ -183,7 +184,7 @@ describe("searchHelp", () => {
       query: "test query",
     });
 
-    expect(result.content[0].text).toContain("Error:");
+    expect((result.content[0] as TextContent).text).toContain("Error:");
   });
 
   it("should handle network errors", async () => {
@@ -196,7 +197,7 @@ describe("searchHelp", () => {
       query: "test query",
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -209,7 +210,7 @@ describe("searchHelp", () => {
       query: "test query",
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
   });
 });
 
