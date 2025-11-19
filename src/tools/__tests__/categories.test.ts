@@ -94,7 +94,9 @@ describe("getCategories", () => {
       select: "dev/docs",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -105,7 +107,9 @@ describe("getCategories", () => {
       select: "dev/docs",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -199,7 +203,9 @@ describe("getTopCategories", () => {
       teamName: "test-team",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -209,7 +215,9 @@ describe("getTopCategories", () => {
       teamName: "test-team",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -371,7 +379,9 @@ describe("getAllCategoryPaths", () => {
       teamName: "test-team",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -381,7 +391,9 @@ describe("getAllCategoryPaths", () => {
       teamName: "test-team",
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {

@@ -229,9 +229,9 @@ describe("summarizePost", () => {
 
     expect(result.messages).toHaveLength(1);
     expect(result.messages[0].role).toBe("user");
-    expect(
-      (result.messages[0].content as TextContent).text,
-    ).toContain(JSON.stringify(mockError, null, 2));
+    expect((result.messages[0].content as TextContent).text).toContain(
+      JSON.stringify(mockError, null, 2),
+    );
   });
 
   it("should handle network errors", async () => {

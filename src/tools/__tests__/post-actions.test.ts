@@ -109,8 +109,12 @@ describe("archivePost", () => {
     });
 
     expect(mockUpdatePost).not.toHaveBeenCalled();
-    expect((result.content[0] as TextContent).text).toContain("Post is already archived");
-    expect((result.content[0] as TextContent).text).toContain("Archived/dev/docs");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Post is already archived",
+    );
+    expect((result.content[0] as TextContent).text).toContain(
+      "Archived/dev/docs",
+    );
   });
 
   it("should handle GET error", async () => {
@@ -144,7 +148,9 @@ describe("archivePost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
     expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
@@ -156,7 +162,9 @@ describe("archivePost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
     expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
@@ -227,7 +235,9 @@ describe("shipPost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -238,7 +248,9 @@ describe("shipPost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -412,7 +424,9 @@ describe("duplicatePost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -423,7 +437,9 @@ describe("duplicatePost", () => {
       postNumber: 123,
     });
 
-    expect((result.content[0] as TextContent).text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
