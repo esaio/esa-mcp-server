@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockPost } from "../../__tests__/fixtures/mock-post.js";
 import type { createEsaClient } from "../../api_client/index.js";
@@ -108,8 +109,12 @@ describe("archivePost", () => {
     });
 
     expect(mockUpdatePost).not.toHaveBeenCalled();
-    expect(result.content[0].text).toContain("Post is already archived");
-    expect(result.content[0].text).toContain("Archived/dev/docs");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Post is already archived",
+    );
+    expect((result.content[0] as TextContent).text).toContain(
+      "Archived/dev/docs",
+    );
   });
 
   it("should handle GET error", async () => {
@@ -129,7 +134,7 @@ describe("archivePost", () => {
       postNumber: 999,
     });
 
-    expect(result.content[0].text).toContain("not_found");
+    expect((result.content[0] as TextContent).text).toContain("not_found");
     expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
@@ -143,7 +148,9 @@ describe("archivePost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
     expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
@@ -155,7 +162,9 @@ describe("archivePost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
     expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
@@ -214,7 +223,7 @@ describe("shipPost", () => {
       postNumber: 999,
     });
 
-    expect(result.content[0].text).toContain("Error:");
+    expect((result.content[0] as TextContent).text).toContain("Error:");
   });
 
   it("should handle network errors", async () => {
@@ -226,7 +235,9 @@ describe("shipPost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -237,7 +248,9 @@ describe("shipPost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -380,7 +393,7 @@ describe("duplicatePost", () => {
       postNumber: 999,
     });
 
-    expect(result.content[0].text).toContain("not_found");
+    expect((result.content[0] as TextContent).text).toContain("not_found");
   });
 
   it("should handle response not ok", async () => {
@@ -398,7 +411,7 @@ describe("duplicatePost", () => {
       postNumber: 789,
     });
 
-    expect(result.content[0].text).toContain("500");
+    expect((result.content[0] as TextContent).text).toContain("500");
   });
 
   it("should handle network errors", async () => {
@@ -411,7 +424,9 @@ describe("duplicatePost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Network connection failed");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
   });
 
   it("should handle non-Error exceptions", async () => {
@@ -422,7 +437,9 @@ describe("duplicatePost", () => {
       postNumber: 123,
     });
 
-    expect(result.content[0].text).toContain("Unexpected error");
+    expect((result.content[0] as TextContent).text).toContain(
+      "Unexpected error",
+    );
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {

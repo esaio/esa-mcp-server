@@ -1,3 +1,7 @@
+import type {
+  TextContent,
+  TextResourceContents,
+} from "@modelcontextprotocol/sdk/types.js";
 import { describe, expect, it } from "vitest";
 import {
   formatPromptError,
@@ -15,7 +19,9 @@ describe("response formatters", () => {
       const result = formatToolResponse(data);
 
       expect(result.content[0].type).toBe("text");
-      expect(result.content[0].text).toBe(JSON.stringify(data, null, 2));
+      expect((result.content[0] as TextContent).text).toBe(
+        JSON.stringify(data, null, 2),
+      );
     });
   });
 
@@ -53,37 +59,44 @@ describe("error formatters", () => {
   it("should format Error instances consistently", () => {
     const error = new Error("test error");
 
-    expect(formatToolError(error).content[0].text).toBe("Error: test error");
-    expect(formatResourceError(error, "uri").contents[0].text).toBe(
+    expect((formatToolError(error).content[0] as TextContent).text).toBe(
       "Error: test error",
     );
-    expect(formatPromptError(error).messages[0].content.text).toBe(
-      "Error: test error",
-    );
+    expect(
+      (formatResourceError(error, "uri").contents[0] as TextResourceContents)
+        .text,
+    ).toBe("Error: test error");
+    expect(
+      (formatPromptError(error).messages[0].content as TextContent).text,
+    ).toBe("Error: test error");
   });
 
   it("should format status codes as API responses", () => {
     const status = 404;
 
-    expect(formatToolError(status).content[0].text).toBe(
+    expect((formatToolError(status).content[0] as TextContent).text).toBe(
       "Error: API Response(status: 404)",
     );
-    expect(formatResourceError(status, "uri").contents[0].text).toBe(
-      "Error: API Response(status: 404)",
-    );
+    expect(
+      (formatResourceError(status, "uri").contents[0] as TextResourceContents)
+        .text,
+    ).toBe("Error: API Response(status: 404)");
   });
 
   it("should format object errors as JSON strings", () => {
     const error = { code: "NOT_FOUND", message: "Resource not found" };
     const expectedText = `Error: ${JSON.stringify(error, null, 2)}`;
 
-    expect(formatToolError(error).content[0].text).toBe(expectedText);
-    expect(formatResourceError(error, "uri").contents[0].text).toBe(
+    expect((formatToolError(error).content[0] as TextContent).text).toBe(
       expectedText,
     );
-    expect(formatPromptError(error).messages[0].content.text).toBe(
-      expectedText,
-    );
+    expect(
+      (formatResourceError(error, "uri").contents[0] as TextResourceContents)
+        .text,
+    ).toBe(expectedText);
+    expect(
+      (formatPromptError(error).messages[0].content as TextContent).text,
+    ).toBe(expectedText);
   });
 
   it("should maintain correct structure for each error formatter", () => {

@@ -1,3 +1,4 @@
+import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createExpectedTransformed,
@@ -193,7 +194,7 @@ describe("searchPosts", () => {
       teamName: "test-team",
     });
 
-    const parsedResult = JSON.parse(result.content[0].text as string);
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
     expect(parsedResult).toHaveLength(3);
     expect(parsedResult[0].wip).toBe("Shipped");
     expect(parsedResult[1].wip).toBe("WIP");
