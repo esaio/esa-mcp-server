@@ -32,7 +32,13 @@ describe("setupTools", () => {
     expect(registerToolSpy).toHaveBeenCalledTimes(24);
 
     for (let i = 0; i < 24; i++) {
-      const [toolName, schema, handler] = registerToolSpy.mock.calls[i];
+      const call = registerToolSpy.mock.calls[i] as unknown as [
+        string,
+        object,
+        // biome-ignore lint/complexity/noBannedTypes: Function type needed for mock verification
+        Function,
+      ];
+      const [toolName, schema, handler] = call;
       expect(typeof toolName).toBe("string");
       expect(toolName).toMatch(/^esa_/); // All tools should start with 'esa_'
       expect(schema).toBeTypeOf("object"); // Schema verification handled by individual tool tests
