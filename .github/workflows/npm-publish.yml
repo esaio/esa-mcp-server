@@ -22,7 +22,7 @@ jobs:
         with:
           # workflow_run の場合、すべてのタグを取得
           fetch-depth: 0
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # https://github.com/actions/setup-node/tree/v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # https://github.com/actions/setup-node/tree/v5
         with:
           cache: "npm"
           node-version: "20.x"
