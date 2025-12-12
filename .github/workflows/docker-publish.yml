@@ -124,7 +124,7 @@ jobs:
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
       - name: Download digests
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # https://github.com/actions/download-artifact/tree/v5
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # https://github.com/actions/download-artifact/tree/v5
         with:
           path: /tmp/digests
           pattern: digests-*
