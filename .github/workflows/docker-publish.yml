@@ -64,7 +64,7 @@ jobs:
           echo "labels=${LABELS}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # https://github.com/docker/setup-buildx-action/tree/v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # https://github.com/docker/setup-buildx-action/tree/v3
 
       - name: Build and push by digest
         id: build
@@ -138,7 +138,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # https://github.com/docker/setup-buildx-action/tree/v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # https://github.com/docker/setup-buildx-action/tree/v3
 
       - name: Create manifest list and push
         working-directory: /tmp/digests
