@@ -68,6 +68,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Get user's accessible esa teams",
       description: "Retrieves a list of esa teams that the user has access to.",
       inputSchema: getTeamsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTeamsSchema>) =>
       withContext(context, getTeams, params),
@@ -80,6 +81,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves team statistics including member count, posts count (total/WIP/shipped), comments, stars, watches, and daily/weekly/monthly active users",
       inputSchema: getTeamStatsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTeamStatsSchema>) =>
       withContext(context, getTeamStats, params),
@@ -92,6 +94,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all tags used in posts within a team, along with the count of posts for each tag",
       inputSchema: getTeamTagsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTeamTagsSchema>) =>
       withContext(context, getTeamTags, params),
@@ -104,6 +107,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all members of a team with their roles and profile information",
       inputSchema: getTeamMembersSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTeamMembersSchema>) =>
       withContext(context, getTeamMembers, params),
@@ -116,6 +120,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a specific post from an esa team by post number, with optional comments included.",
       inputSchema: getPostSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getPostSchema>) =>
       withContext(context, getPost, params),
@@ -127,6 +132,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Search Posts",
       description: "Search for posts in esa.io",
       inputSchema: searchPostsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof searchPostsSchema>) =>
       withContext(context, searchPosts, params),
@@ -139,6 +145,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Creates a new post in an esa team with optional tags, category, and WIP status.",
       inputSchema: createPostSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof createPostSchema>) =>
       withContext(context, createPost, params),
@@ -151,6 +158,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously.",
       inputSchema: updatePostSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof updatePostSchema>) =>
       withContext(context, updatePost, params),
@@ -163,6 +171,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a specific comment by comment ID, with optional stargazers included.",
       inputSchema: getCommentSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getCommentSchema>) =>
       withContext(context, getComment, params),
@@ -174,6 +183,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Create a new comment on a post",
       description: "Creates a new comment on an existing post in an esa team.",
       inputSchema: createCommentSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof createCommentSchema>) =>
       withContext(context, createComment, params),
@@ -185,6 +195,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Update an existing comment",
       description: "Updates an existing comment in an esa team by comment ID.",
       inputSchema: updateCommentSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof updateCommentSchema>) =>
       withContext(context, updateComment, params),
@@ -196,6 +207,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Delete a comment",
       description: "Deletes a comment from an esa team by comment ID.",
       inputSchema: deleteCommentSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof deleteCommentSchema>) =>
       withContext(context, deleteComment, params),
@@ -208,6 +220,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a list of comments for a specific post with pagination support.",
       inputSchema: getPostCommentsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getPostCommentsSchema>) =>
       withContext(context, getPostComments, params),
@@ -220,6 +233,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a list of comments in a team with pagination support.",
       inputSchema: getTeamCommentsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTeamCommentsSchema>) =>
       withContext(context, getTeamComments, params),
@@ -232,6 +246,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves category information and subcategories for a specific category path, with optional posts and parent categories included",
       inputSchema: getCategoriesSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getCategoriesSchema>) =>
       withContext(context, getCategories, params),
@@ -243,6 +258,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Get top-level categories",
       description: "Retrieves all top-level categories for a team",
       inputSchema: getTopCategoriesSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getTopCategoriesSchema>) =>
       withContext(context, getTopCategories, params),
@@ -255,6 +271,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all category paths in a team at once to understand the overall category structure. Perfect for category organization, cleanup, migration planning, or finding similar categories. Returns a simple list of paths with post counts, sorted in lexicographic order. Supports filtering (prefix/suffix/match/exact_match) to find categories by pattern. No pagination - gets all categories in one call.",
       inputSchema: getAllCategoryPathsSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getAllCategoryPathsSchema>) =>
       withContext(context, getAllCategoryPaths, params),
@@ -267,6 +284,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Archives a post by moving it to the Archived/ category. If the post is in 'dev/docs', it becomes 'Archived/dev/docs'. Posts without category go to 'Archived'.",
       inputSchema: archivePostSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof archivePostSchema>) =>
       withContext(context, archivePost, params),
@@ -279,6 +297,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Ships a post by setting wip to false. This marks the post as complete and ready to be published. Use this only when you need to ship without making other changes - if you're also updating title, content, or other fields, use esa_update_post with wip: false instead.",
       inputSchema: shipPostSchema.shape,
+      destructiveHint: true,
     },
     async (params: z.infer<typeof shipPostSchema>) =>
       withContext(context, shipPost, params),
@@ -291,6 +310,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Prepares a post for duplication by retrieving its name and body_md content. Returns the name and body_md that can be used with esa_create_post to create a duplicate of the original post.",
       inputSchema: duplicatePostSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof duplicatePostSchema>) =>
       withContext(context, duplicatePost, params),
@@ -305,6 +325,7 @@ search queries. Use this BEFORE esa_search_posts if you're unsure how to
 translate user's search requirements into proper esa query syntax (e.g., date
 ranges, tag filters, category searches, advanced operators).`,
       inputSchema: {},
+      readOnlyHint: true,
     },
     async (params: Record<string, never>) =>
       withContext(context, getSearchOptionsHelp, params),
@@ -319,6 +340,7 @@ Use this BEFORE using any tools with *_md parameters (like esa_create_post,
 esa_update_post, esa_create_comment, esa_update_comment) if you need
 clarification on Markdown syntax, esa-specific extensions, or formatting options.`,
       inputSchema: {},
+      readOnlyHint: true,
     },
     async (params: Record<string, never>) =>
       withContext(context, getMarkdownSyntaxHelp, params),
@@ -332,6 +354,7 @@ clarification on Markdown syntax, esa-specific extensions, or formatting options
 Use this when users mention esa-specific terms, ask about esa functionality,
 or request help with esa workflows that you're not familiar with.`,
       inputSchema: searchHelpSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof searchHelpSchema>) =>
       withContext(context, searchHelp, params),
@@ -344,6 +367,7 @@ or request help with esa workflows that you're not familiar with.`,
       description:
         "Retrieves an attachment file from esa with signed URLs. For supported images (JPEG, PNG, GIF, WebP) under 30MB, returns base64-encoded data. For other file types, larger images, or when forceSignedUrl is true, returns signed URLs.",
       inputSchema: getAttachmentSchema.shape,
+      readOnlyHint: true,
     },
     async (params: z.infer<typeof getAttachmentSchema>) =>
       withContext(context, getAttachment, params),
