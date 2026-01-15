@@ -217,6 +217,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Delete a comment",
       description: "Deletes a comment from an esa team by comment ID.",
       inputSchema: deleteCommentSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof deleteCommentSchema>) =>
       withContext(context, deleteComment, params),
