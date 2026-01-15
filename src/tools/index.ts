@@ -68,6 +68,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Get user's accessible esa teams",
       description: "Retrieves a list of esa teams that the user has access to.",
       inputSchema: getTeamsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTeamsSchema>) =>
       withContext(context, getTeams, params),
@@ -80,6 +83,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves team statistics including member count, posts count (total/WIP/shipped), comments, stars, watches, and daily/weekly/monthly active users",
       inputSchema: getTeamStatsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTeamStatsSchema>) =>
       withContext(context, getTeamStats, params),
@@ -92,6 +98,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all tags used in posts within a team, along with the count of posts for each tag",
       inputSchema: getTeamTagsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTeamTagsSchema>) =>
       withContext(context, getTeamTags, params),
@@ -104,6 +113,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all members of a team with their roles and profile information",
       inputSchema: getTeamMembersSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTeamMembersSchema>) =>
       withContext(context, getTeamMembers, params),
@@ -116,6 +128,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a specific post from an esa team by post number, with optional comments included.",
       inputSchema: getPostSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getPostSchema>) =>
       withContext(context, getPost, params),
@@ -127,6 +142,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Search Posts",
       description: "Search for posts in esa.io",
       inputSchema: searchPostsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof searchPostsSchema>) =>
       withContext(context, searchPosts, params),
@@ -163,6 +181,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a specific comment by comment ID, with optional stargazers included.",
       inputSchema: getCommentSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getCommentSchema>) =>
       withContext(context, getComment, params),
@@ -208,6 +229,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a list of comments for a specific post with pagination support.",
       inputSchema: getPostCommentsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getPostCommentsSchema>) =>
       withContext(context, getPostComments, params),
@@ -220,6 +244,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves a list of comments in a team with pagination support.",
       inputSchema: getTeamCommentsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTeamCommentsSchema>) =>
       withContext(context, getTeamComments, params),
@@ -232,6 +259,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves category information and subcategories for a specific category path, with optional posts and parent categories included",
       inputSchema: getCategoriesSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getCategoriesSchema>) =>
       withContext(context, getCategories, params),
@@ -243,6 +273,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Get top-level categories",
       description: "Retrieves all top-level categories for a team",
       inputSchema: getTopCategoriesSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getTopCategoriesSchema>) =>
       withContext(context, getTopCategories, params),
@@ -255,6 +288,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Retrieves all category paths in a team at once to understand the overall category structure. Perfect for category organization, cleanup, migration planning, or finding similar categories. Returns a simple list of paths with post counts, sorted in lexicographic order. Supports filtering (prefix/suffix/match/exact_match) to find categories by pattern. No pagination - gets all categories in one call.",
       inputSchema: getAllCategoryPathsSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getAllCategoryPathsSchema>) =>
       withContext(context, getAllCategoryPaths, params),
@@ -305,6 +341,9 @@ search queries. Use this BEFORE esa_search_posts if you're unsure how to
 translate user's search requirements into proper esa query syntax (e.g., date
 ranges, tag filters, category searches, advanced operators).`,
       inputSchema: {},
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: Record<string, never>) =>
       withContext(context, getSearchOptionsHelp, params),
@@ -319,6 +358,9 @@ Use this BEFORE using any tools with *_md parameters (like esa_create_post,
 esa_update_post, esa_create_comment, esa_update_comment) if you need
 clarification on Markdown syntax, esa-specific extensions, or formatting options.`,
       inputSchema: {},
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: Record<string, never>) =>
       withContext(context, getMarkdownSyntaxHelp, params),
@@ -332,6 +374,9 @@ clarification on Markdown syntax, esa-specific extensions, or formatting options
 Use this when users mention esa-specific terms, ask about esa functionality,
 or request help with esa workflows that you're not familiar with.`,
       inputSchema: searchHelpSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof searchHelpSchema>) =>
       withContext(context, searchHelp, params),
@@ -344,6 +389,9 @@ or request help with esa workflows that you're not familiar with.`,
       description:
         "Retrieves an attachment file from esa with signed URLs. For supported images (JPEG, PNG, GIF, WebP) under 30MB, returns base64-encoded data. For other file types, larger images, or when forceSignedUrl is true, returns signed URLs.",
       inputSchema: getAttachmentSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
     },
     async (params: z.infer<typeof getAttachmentSchema>) =>
       withContext(context, getAttachment, params),
