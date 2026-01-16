@@ -157,6 +157,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Creates a new post in an esa team with optional tags, category, and WIP status.",
       inputSchema: createPostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof createPostSchema>) =>
       withContext(context, createPost, params),
@@ -169,6 +172,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously.",
       inputSchema: updatePostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof updatePostSchema>) =>
       withContext(context, updatePost, params),
@@ -195,6 +201,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Create a new comment on a post",
       description: "Creates a new comment on an existing post in an esa team.",
       inputSchema: createCommentSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof createCommentSchema>) =>
       withContext(context, createComment, params),
@@ -206,6 +215,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       title: "Update an existing comment",
       description: "Updates an existing comment in an esa team by comment ID.",
       inputSchema: updateCommentSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof updateCommentSchema>) =>
       withContext(context, updateComment, params),
@@ -306,6 +318,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Archives a post by moving it to the Archived/ category. If the post is in 'dev/docs', it becomes 'Archived/dev/docs'. Posts without category go to 'Archived'.",
       inputSchema: archivePostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof archivePostSchema>) =>
       withContext(context, archivePost, params),
@@ -318,6 +333,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Ships a post by setting wip to false. This marks the post as complete and ready to be published. Use this only when you need to ship without making other changes - if you're also updating title, content, or other fields, use esa_update_post with wip: false instead.",
       inputSchema: shipPostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof shipPostSchema>) =>
       withContext(context, shipPost, params),
@@ -330,6 +348,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description:
         "Prepares a post for duplication by retrieving its name and body_md content. Returns the name and body_md that can be used with esa_create_post to create a duplicate of the original post.",
       inputSchema: duplicatePostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
     },
     async (params: z.infer<typeof duplicatePostSchema>) =>
       withContext(context, duplicatePost, params),
