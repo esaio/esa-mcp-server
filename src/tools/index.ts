@@ -6,10 +6,6 @@ import { getAttachment, getAttachmentSchema } from "./attachments.js";
 import {
   getAllCategoryPaths,
   getAllCategoryPathsSchema,
-  getCategories,
-  getCategoriesSchema,
-  getTopCategories,
-  getTopCategoriesSchema,
 } from "./categories.js";
 import {
   createComment,
@@ -265,35 +261,6 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     },
     async (params: z.infer<typeof getTeamCommentsSchema>) =>
       withContext(context, getTeamComments, params),
-  );
-
-  server.registerTool(
-    "esa_get_categories",
-    {
-      title: "Get categories for a specific path",
-      description:
-        "Retrieves category information and subcategories for a specific category path, with optional posts and parent categories included",
-      inputSchema: getCategoriesSchema.shape,
-      annotations: {
-        readOnlyHint: true,
-      },
-    },
-    async (params: z.infer<typeof getCategoriesSchema>) =>
-      withContext(context, getCategories, params),
-  );
-
-  server.registerTool(
-    "esa_get_top_categories",
-    {
-      title: "Get top-level categories",
-      description: "Retrieves all top-level categories for a team",
-      inputSchema: getTopCategoriesSchema.shape,
-      annotations: {
-        readOnlyHint: true,
-      },
-    },
-    async (params: z.infer<typeof getTopCategoriesSchema>) =>
-      withContext(context, getTopCategories, params),
   );
 
   server.registerTool(

@@ -24,14 +24,14 @@ describe("setupTools", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("should register all 24 tools with correct handlers", () => {
+  it("should register all 22 tools with correct handlers", () => {
     const registerToolSpy = vi.spyOn(server, "registerTool");
 
     setupTools(server, context);
 
-    expect(registerToolSpy).toHaveBeenCalledTimes(24);
+    expect(registerToolSpy).toHaveBeenCalledTimes(22);
 
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 22; i++) {
       const call = registerToolSpy.mock.calls[i] as unknown as [
         string,
         object,

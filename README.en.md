@@ -43,8 +43,6 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 
 ### Category Management
 
-- `esa_get_categories` - Get categories and subcategories for a specific path
-- `esa_get_top_categories` - Get all top-level categories for a team
 - `esa_get_all_category_paths` - Get all category paths in a team (with post counts, supports filtering)
   - Perfect for understanding category structure, organization planning, and cleanup
   - Filter examples: `prefix: "dev"` for development-related, `match: "api"` for API-related categories

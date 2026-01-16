@@ -43,8 +43,6 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 
 ### カテゴリー管理
 
-- `esa_get_categories` - 指定パス配下のカテゴリー一覧
-- `esa_get_top_categories` - トップレベルのカテゴリー一覧
 - `esa_get_all_category_paths` - チーム内の全カテゴリーパス一覧（記事数付き、フィルタリング対応）
   - カテゴリ構造の把握、整理、統合の計画に最適
   - フィルター例: `prefix: "dev"` で開発関連、`match: "api"` で API 関連を検索
