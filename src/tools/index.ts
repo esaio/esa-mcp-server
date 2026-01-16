@@ -3,10 +3,7 @@ import type { z } from "zod";
 import { withContext } from "../api_client/with-context.js";
 import type { MCPContext } from "../context/mcp-context.js";
 import { getAttachment, getAttachmentSchema } from "./attachments.js";
-import {
-  getAllCategoryPaths,
-  getAllCategoryPathsSchema,
-} from "./categories.js";
+import { getCategories, getCategoriesSchema } from "./categories.js";
 import {
   createComment,
   createCommentSchema,
@@ -264,18 +261,18 @@ export function setupTools(server: McpServer, context: MCPContext): void {
   );
 
   server.registerTool(
-    "esa_get_all_category_paths",
+    "esa_get_categories",
     {
       title: "Get all category paths for organization and structure review",
       description:
         "Retrieves all category paths in a team at once to understand the overall category structure. Perfect for category organization, cleanup, migration planning, or finding similar categories. Returns a simple list of paths with post counts, sorted in lexicographic order. Supports filtering (prefix/suffix/match/exact_match) to find categories by pattern. No pagination - gets all categories in one call.",
-      inputSchema: getAllCategoryPathsSchema.shape,
+      inputSchema: getCategoriesSchema.shape,
       annotations: {
         readOnlyHint: true,
       },
     },
-    async (params: z.infer<typeof getAllCategoryPathsSchema>) =>
-      withContext(context, getAllCategoryPaths, params),
+    async (params: z.infer<typeof getCategoriesSchema>) =>
+      withContext(context, getCategories, params),
   );
 
   server.registerTool(

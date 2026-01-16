@@ -7,7 +7,7 @@ import {
 } from "../formatters/mcp-response.js";
 import { createSchemaWithTeamName } from "../schemas/team-name-schema.js";
 
-export const getAllCategoryPathsSchema = createSchemaWithTeamName({
+export const getCategoriesSchema = createSchemaWithTeamName({
   prefix: z
     .string()
     .optional()
@@ -34,9 +34,9 @@ export const getAllCategoryPathsSchema = createSchemaWithTeamName({
     ),
 });
 
-export async function getAllCategoryPaths(
+export async function getCategories(
   client: ReturnType<typeof createEsaClient>,
-  args: z.infer<typeof getAllCategoryPathsSchema>,
+  args: z.infer<typeof getCategoriesSchema>,
 ) {
   try {
     if (!args.teamName) {

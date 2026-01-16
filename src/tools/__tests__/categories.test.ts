@@ -1,9 +1,9 @@
 import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { createEsaClient } from "../../api_client/index.js";
-import { getAllCategoryPaths } from "../categories.js";
+import { getCategories } from "../categories.js";
 
-describe("getAllCategoryPaths", () => {
+describe("getCategories", () => {
   const mockClient = {
     GET: vi.fn(),
   } as unknown as ReturnType<typeof createEsaClient> & {
@@ -28,7 +28,7 @@ describe("getAllCategoryPaths", () => {
       response: { ok: true, status: 200 } as Response,
     });
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
     });
 
@@ -63,7 +63,7 @@ describe("getAllCategoryPaths", () => {
       response: { ok: true, status: 200 } as Response,
     });
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
       prefix: "dev",
     });
@@ -95,7 +95,7 @@ describe("getAllCategoryPaths", () => {
       response: { ok: true, status: 200 } as Response,
     });
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
       prefix: "dev",
       suffix: "docs",
@@ -128,7 +128,7 @@ describe("getAllCategoryPaths", () => {
       response: { ok: false, status: 403 } as Response,
     });
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
     });
 
@@ -140,7 +140,7 @@ describe("getAllCategoryPaths", () => {
 
     mockClient.GET.mockRejectedValue(networkError);
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
     });
 
@@ -152,7 +152,7 @@ describe("getAllCategoryPaths", () => {
   it("should handle non-Error exceptions", async () => {
     mockClient.GET.mockRejectedValue("Unexpected error");
 
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "test-team",
     });
 
@@ -162,7 +162,7 @@ describe("getAllCategoryPaths", () => {
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
-    const result = await getAllCategoryPaths(mockClient, {
+    const result = await getCategories(mockClient, {
       teamName: "",
     });
 
