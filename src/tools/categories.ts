@@ -93,6 +93,8 @@ export async function getTopCategories(
 }
 
 export const getAllCategoryPathsSchema = createSchemaWithTeamName({
+  page: z.number().optional().describe("Page number (starts from 1)"),
+  perPage: z.number().optional().describe("Number of items per page"),
   prefix: z
     .string()
     .optional()
@@ -133,6 +135,9 @@ export async function getAllCategoryPaths(
         params: {
           path: { team_name: args.teamName },
           query: {
+            v: 2,
+            page: args.page,
+            per_page: args.perPage,
             prefix: args.prefix,
             suffix: args.suffix,
             match: args.match,

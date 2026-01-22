@@ -1532,11 +1532,20 @@ export interface paths {
     };
     /**
      * カテゴリパス一覧取得
-     * @description チームのカテゴリパスの一覧を取得します。フィルタリングオプションにより、特定の条件に合致するカテゴリのみを取得できます
+     * @description チームのカテゴリパスの一覧を取得します。フィルタリングオプションにより、特定の条件に合致するカテゴリのみを取得できます。
+     *
+     *     v=2を指定すると、ページネーション情報を含むレスポンスが返されます。
+     *     v=2を指定しない場合は、すべてのカテゴリが一度に返されます。
      */
     get: {
       parameters: {
         query?: {
+          /** @description APIバージョン。v=2を指定するとページネーションが有効になります */
+          v?: 2;
+          /** @description ページ番号（1から開始） */
+          page?: components["parameters"]["page"];
+          /** @description 1ページあたりの要素数 */
+          per_page?: components["parameters"]["per_page"];
           /** @description 指定した文字列で始まるカテゴリパスのみを取得 */
           prefix?: string;
           /** @description 指定した文字列で終わるカテゴリパスのみを取得 */
@@ -1555,24 +1564,24 @@ export interface paths {
       };
       requestBody?: never;
       responses: {
-        /** @description 成功 */
+        /**
+         * @description 成功。vパラメータの値によってレスポンス形式が異なります。
+         *
+         *     - v=2なし: `{ categories: [...] }`
+         *     - v=2あり: `{ categories: [...], prev_page, next_page, total_count, page, per_page, max_per_page }`
+         */
         200: {
           headers: {
             [name: string]: unknown;
           };
           content: {
-            "application/json": {
-              /**
-               * @description カテゴリのパス（先頭と末尾のスラッシュは除去される）
-               * @example dev/docs
-               */
-              path: string | null;
-              /**
-               * @description カテゴリ内の記事数
-               * @example 42
-               */
-              posts: number;
-            }[];
+            "application/json":
+              | {
+                  categories: components["schemas"]["CategoryPath"][];
+                }
+              | (components["schemas"]["Pagination"] & {
+                  categories: components["schemas"]["CategoryPath"][];
+                });
           };
         };
         400: components["responses"]["BadRequestError"];
@@ -2753,6 +2762,19 @@ export interface components {
       descendant_posts?: boolean;
       /** @description カテゴリ内の記事一覧（include=postsの場合） */
       posts?: components["schemas"]["Post"][];
+    };
+    /** @description カテゴリパス情報 */
+    CategoryPath: {
+      /**
+       * @description カテゴリのパス（先頭と末尾のスラッシュは除去される）
+       * @example dev/docs
+       */
+      path: string | null;
+      /**
+       * @description カテゴリ内の記事数
+       * @example 42
+       */
+      posts: number;
     };
     CurrentUser: {
       /** @description ユーザーID */
