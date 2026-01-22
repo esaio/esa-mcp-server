@@ -299,9 +299,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
   server.registerTool(
     "esa_get_all_category_paths",
     {
-      title: "Get all category paths for organization and structure review",
+      title: "Get category paths with pagination",
       description:
-        "Retrieves all category paths in a team at once to understand the overall category structure. Perfect for category organization, cleanup, migration planning, or finding similar categories. Returns a simple list of paths with post counts, sorted in lexicographic order. Supports filtering (prefix/suffix/match/exact_match) to find categories by pattern. No pagination - gets all categories in one call.",
+        "Retrieves category paths in a team to understand the overall category structure. Perfect for category organization, cleanup, migration planning, or finding similar categories. Returns a paginated list of paths with post counts, sorted in lexicographic order. Supports filtering (prefix/suffix/match/exact_match) to find categories by pattern.",
       inputSchema: getAllCategoryPathsSchema.shape,
       annotations: {
         readOnlyHint: true,

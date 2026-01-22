@@ -249,13 +249,21 @@ describe("getAllCategoryPaths", () => {
     vi.clearAllMocks();
   });
 
-  it("should fetch all category paths", async () => {
-    const mockResponse = [
-      { path: null, posts: 5 },
-      { path: "dev", posts: 10 },
-      { path: "dev/docs", posts: 3 },
-      { path: "design", posts: 7 },
-    ];
+  it("should fetch all category paths with v=2 pagination", async () => {
+    const mockResponse = {
+      categories: [
+        { path: null, posts: 5 },
+        { path: "dev", posts: 10 },
+        { path: "dev/docs", posts: 3 },
+        { path: "design", posts: 7 },
+      ],
+      total_count: 4,
+      per_page: 20,
+      page: 1,
+      prev_page: null,
+      next_page: null,
+      max_per_page: 100,
+    };
 
     mockClient.GET.mockResolvedValue({
       data: mockResponse,
@@ -273,6 +281,9 @@ describe("getAllCategoryPaths", () => {
         params: {
           path: { team_name: "test-team" },
           query: {
+            v: 2,
+            page: undefined,
+            per_page: undefined,
             prefix: undefined,
             suffix: undefined,
             match: undefined,
@@ -287,10 +298,18 @@ describe("getAllCategoryPaths", () => {
   });
 
   it("should support prefix filter", async () => {
-    const mockResponse = [
-      { path: "dev", posts: 10 },
-      { path: "dev/docs", posts: 3 },
-    ];
+    const mockResponse = {
+      categories: [
+        { path: "dev", posts: 10 },
+        { path: "dev/docs", posts: 3 },
+      ],
+      total_count: 2,
+      per_page: 20,
+      page: 1,
+      prev_page: null,
+      next_page: null,
+      max_per_page: 100,
+    };
 
     mockClient.GET.mockResolvedValue({
       data: mockResponse,
@@ -309,6 +328,9 @@ describe("getAllCategoryPaths", () => {
         params: {
           path: { team_name: "test-team" },
           query: {
+            v: 2,
+            page: undefined,
+            per_page: undefined,
             prefix: "dev",
             suffix: undefined,
             match: undefined,
@@ -322,7 +344,15 @@ describe("getAllCategoryPaths", () => {
   });
 
   it("should support multiple filters", async () => {
-    const mockResponse = [{ path: "dev/docs", posts: 3 }];
+    const mockResponse = {
+      categories: [{ path: "dev/docs", posts: 3 }],
+      total_count: 1,
+      per_page: 20,
+      page: 1,
+      prev_page: null,
+      next_page: null,
+      max_per_page: 100,
+    };
 
     mockClient.GET.mockResolvedValue({
       data: mockResponse,
@@ -342,6 +372,9 @@ describe("getAllCategoryPaths", () => {
         params: {
           path: { team_name: "test-team" },
           query: {
+            v: 2,
+            page: undefined,
+            per_page: undefined,
             prefix: "dev",
             suffix: "docs",
             match: undefined,
@@ -352,6 +385,55 @@ describe("getAllCategoryPaths", () => {
     );
 
     expect((result.content[0] as TextContent).text).toContain("dev/docs");
+  });
+
+  it("should support pagination parameters", async () => {
+    const mockResponse = {
+      categories: [
+        { path: "dev", posts: 10 },
+        { path: "design", posts: 5 },
+      ],
+      total_count: 50,
+      per_page: 2,
+      page: 2,
+      prev_page: 1,
+      next_page: 3,
+      max_per_page: 100,
+    };
+
+    mockClient.GET.mockResolvedValue({
+      data: mockResponse,
+      error: undefined,
+      response: { ok: true, status: 200 } as Response,
+    });
+
+    const result = await getAllCategoryPaths(mockClient, {
+      teamName: "test-team",
+      page: 2,
+      perPage: 2,
+    });
+
+    expect(mockClient.GET).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/categories/paths",
+      {
+        params: {
+          path: { team_name: "test-team" },
+          query: {
+            v: 2,
+            page: 2,
+            per_page: 2,
+            prefix: undefined,
+            suffix: undefined,
+            match: undefined,
+            exact_match: undefined,
+          },
+        },
+      },
+    );
+
+    expect((result.content[0] as TextContent).text).toContain("dev");
+    expect((result.content[0] as TextContent).text).toContain("design");
+    expect((result.content[0] as TextContent).text).toContain("total_count");
   });
 
   it("should handle API errors", async () => {
