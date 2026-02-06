@@ -91,8 +91,42 @@ export async function searchPosts(
       transformPost(post, { truncateBody: 500 }),
     );
 
+    if (posts.length === 0 && isAndQuery(args.query)) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: generateOrSearchSuggestion(args.query),
+          },
+        ],
+      };
+    }
+
     return formatToolResponse(transformed);
   } catch (error) {
     return formatToolError(error);
   }
+}
+
+function isAndQuery(query: string): boolean {
+  if (!query || query.trim() === "") {
+    return false;
+  }
+
+  if (/\bOR\b/.test(query) || query.includes("|")) {
+    return false;
+  }
+
+  const tokens = query.split(/\s+/).filter(Boolean);
+  return tokens.length >= 2;
+}
+
+function generateOrSearchSuggestion(query: string): string {
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const orQuery = tokens.join(" OR ");
+  return `---
+No results found. Your query uses AND conditions (space-separated terms).
+Suggestions:
+- Try OR search: "${orQuery}"
+- Omit some keywords from your query`;
 }

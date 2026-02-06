@@ -337,4 +337,161 @@ describe("searchPosts", () => {
       ],
     });
   });
+
+  describe("OR search suggestions", () => {
+    it("should suggest OR search when AND query returns zero results", async () => {
+      mockClient.GET.mockResolvedValue({
+        data: {
+          posts: [],
+          prev_page: null,
+          next_page: null,
+          total_count: 0,
+          page: 1,
+          per_page: 20,
+          max_per_page: 100,
+        },
+        error: undefined,
+        response: {
+          ok: true,
+          status: 200,
+        } as Response,
+      });
+
+      const result = await searchPosts(mockClient, {
+        query: "foo bar",
+        teamName: "test-team",
+      });
+
+      const text = (result.content[0] as TextContent).text;
+      expect(text).toContain("foo OR bar");
+      expect(text).toContain("No results found");
+    });
+
+    it("should not suggest OR search for single keyword with zero results", async () => {
+      mockClient.GET.mockResolvedValue({
+        data: {
+          posts: [],
+          prev_page: null,
+          next_page: null,
+          total_count: 0,
+          page: 1,
+          per_page: 20,
+          max_per_page: 100,
+        },
+        error: undefined,
+        response: {
+          ok: true,
+          status: 200,
+        } as Response,
+      });
+
+      const result = await searchPosts(mockClient, {
+        query: "nonexistent",
+        teamName: "test-team",
+      });
+
+      expect(result).toEqual({
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify([], null, 2),
+          },
+        ],
+      });
+    });
+
+    it("should not suggest OR search when query already uses OR", async () => {
+      mockClient.GET.mockResolvedValue({
+        data: {
+          posts: [],
+          prev_page: null,
+          next_page: null,
+          total_count: 0,
+          page: 1,
+          per_page: 20,
+          max_per_page: 100,
+        },
+        error: undefined,
+        response: {
+          ok: true,
+          status: 200,
+        } as Response,
+      });
+
+      const result = await searchPosts(mockClient, {
+        query: "foo OR bar",
+        teamName: "test-team",
+      });
+
+      expect(result).toEqual({
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify([], null, 2),
+          },
+        ],
+      });
+    });
+
+    it("should not suggest OR search when query uses pipe operator", async () => {
+      mockClient.GET.mockResolvedValue({
+        data: {
+          posts: [],
+          prev_page: null,
+          next_page: null,
+          total_count: 0,
+          page: 1,
+          per_page: 20,
+          max_per_page: 100,
+        },
+        error: undefined,
+        response: {
+          ok: true,
+          status: 200,
+        } as Response,
+      });
+
+      const result = await searchPosts(mockClient, {
+        query: "foo | bar",
+        teamName: "test-team",
+      });
+
+      expect(result).toEqual({
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify([], null, 2),
+          },
+        ],
+      });
+    });
+
+    it("should suggest OR search for operators-only query with zero results", async () => {
+      mockClient.GET.mockResolvedValue({
+        data: {
+          posts: [],
+          prev_page: null,
+          next_page: null,
+          total_count: 0,
+          page: 1,
+          per_page: 20,
+          max_per_page: 100,
+        },
+        error: undefined,
+        response: {
+          ok: true,
+          status: 200,
+        } as Response,
+      });
+
+      const result = await searchPosts(mockClient, {
+        query: "tag:foo category:bar",
+        teamName: "test-team",
+      });
+
+      const text = (result.content[0] as TextContent).text;
+      expect(text).toContain("tag:foo OR category:bar");
+      expect(text).toContain("No results found");
+    });
+  });
 });
