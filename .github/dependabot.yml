@@ -16,6 +16,10 @@ updates:
       patterns:
         - "vitest"
         - "@vitest/*"
+    openapi:
+      patterns:
+        - "openapi-fetch"
+        - "openapi-typescript"
   ignore:
     - dependency-name: "zod"
       update-types: ["version-update:semver-major"]
