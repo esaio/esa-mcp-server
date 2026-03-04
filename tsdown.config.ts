@@ -13,7 +13,7 @@ export default defineConfig({
   platform: "node",
   target: "node20",
   clean: true,
-  dts: false,
+  dts: true,
   tsconfig: "tsconfig.build.json",
   minify: true,
   fixedExtension: false,
