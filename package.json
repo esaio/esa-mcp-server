@@ -4,6 +4,13 @@
   "description": "Official MCP server for esa.io - STDIO transport version",
   "main": "bin/index.js",
   "type": "module",
+  "exports": {
+    ".": "./bin/index.js",
+    "./tools": "./bin/tools/index.js",
+    "./resources": "./bin/resources/index.js",
+    "./prompts": "./bin/prompts/index.js",
+    "./context": "./bin/context/mcp-context.js"
+  },
   "bin": {
     "esa-mcp-server": "bin/index.js"
   },
