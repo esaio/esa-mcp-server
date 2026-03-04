@@ -12,7 +12,8 @@ export function createAuthMiddleware(apiAccessToken: string): Middleware {
       if (rateLimit && remaining) {
         console.error(`Rate limit: ${remaining}/${rateLimit}`);
       }
-      return response;
+      // return undefined to avoid openapi-fetch instanceof Response check issue
+      // https://github.com/openapi-ts/openapi-typescript/issues/1847
     },
     async onError({ error }) {
       console.error("Network Error:", error);
