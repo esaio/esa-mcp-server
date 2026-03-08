@@ -1,0 +1,46 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.esaio/esa",
+  "title": "esa",
+  "description": "Official MCP server for esa.io - a documentation sharing service for teams",
+  "repository": {
+    "url": "https://github.com/esaio/esa-mcp-server",
+    "source": "github"
+  },
+  "version": "__VERSION__",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@esaio/esa-mcp-server",
+      "version": "__VERSION__",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ESA_ACCESS_TOKEN",
+          "description": "Access token for esa.io API authentication",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/esaio/esa-mcp-server:__VERSION__",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ESA_ACCESS_TOKEN",
+          "description": "Access token for esa.io API authentication",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

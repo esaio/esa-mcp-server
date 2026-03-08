@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: Publish
 
 on:
   push:
@@ -13,8 +13,72 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
-    # workflow_run の場合、元のワークフローが成功した場合のみ実行
+  # ============================================================
+  # npm publish
+  # ============================================================
+  npm-publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      id-token: write # for trusted publishing (OIDC)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          cache: "npm"
+          node-version: "24.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests and checks
+        run: npm run test:release
+      - name: Build package
+        run: npm run build
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+  verify-npm:
+    needs: npm-publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "24.x"
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Get published version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Check npx runs
+        shell: bash {0}
+        run: |
+          cd /tmp
+          for i in 1 2 3; do
+            RESULT=$(ESA_ACCESS_TOKEN=dummy timeout 5 npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }} 2>&1)
+            echo "Attempt ${i}: npx run result: ${RESULT}"
+            if [[ "${RESULT}" == *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
+              echo "Success on attempt ${i}"
+              exit 0
+            fi
+            echo "Retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Error: All attempts failed"
+          echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
+          exit 1
+
+  # ============================================================
+  # Docker build and push
+  # ============================================================
+  docker-build:
     if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     strategy:
       fail-fast: true
@@ -28,32 +92,26 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
-
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          # workflow_run の場合、すべてのタグを取得
           fetch-depth: 0
-
       - name: Extract version from package.json
         id: version
         run: |
           VERSION=$(jq -r '.version' package.json)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
       - name: Log in to Container Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Prepare Docker labels
         id: meta
         run: |
@@ -62,10 +120,8 @@ jobs:
           LABELS="${LABELS},org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           LABELS="${LABELS},org.opencontainers.image.revision=${{ github.sha }}"
           echo "labels=${LABELS}" >> $GITHUB_OUTPUT
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
@@ -76,13 +132,11 @@ jobs:
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
-
       - name: Upload digest
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
@@ -91,21 +145,17 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  merge:
+  docker-merge:
     runs-on: ubuntu-latest
-    needs:
-      - build
+    needs: docker-build
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          # workflow_run の場合、すべてのタグを取得
           fetch-depth: 0
-
       - name: Extract version from package.json
         id: version
         run: |
@@ -122,24 +172,20 @@ jobs:
           TAGS="${TAGS},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
 
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
-
       - name: Download digests
         uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
           path: /tmp/digests
           pattern: digests-*
           merge-multiple: true
-
       - name: Log in to Container Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
@@ -149,7 +195,63 @@ jobs:
 
           docker buildx imagetools create $TAG_ARGS \
             $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }}
+
+  verify-docker:
+    needs: docker-merge
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Get published version
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}"
+      - name: Check Docker Image Runs
+        shell: bash {0}
+        run: |
+          for i in 1 2 3; do
+            RESULT=$(timeout 10 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
+            echo "Attempt ${i}: Docker run result: ${RESULT}"
+            if [[ "${RESULT}" == *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
+              echo "Success on attempt ${i}"
+              exit 0
+            fi
+            echo "Retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Error: All attempts failed"
+          echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
+          exit 1
+
+  # ============================================================
+  # MCP Registry publish (after both npm and docker succeed)
+  # ============================================================
+  mcp-registry-publish:
+    needs: [verify-npm, verify-docker]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Required for OIDC authentication
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Update server.json version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          sed -i "s/__VERSION__/${VERSION}/g" server.json
+          cat server.json
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish

@@ -1,6 +1,7 @@
 {
   "name": "@esaio/esa-mcp-server",
   "version": "0.5.0",
+  "mcpName": "io.github.esaio/esa",
   "description": "Official MCP server for esa.io - STDIO transport version",
   "main": "bin/index.js",
   "type": "module",

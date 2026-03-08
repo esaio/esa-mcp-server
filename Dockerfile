@@ -31,4 +31,6 @@ USER node
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/bin ./bin
 
+LABEL io.modelcontextprotocol.server.name="io.github.esaio/esa"
+
 ENTRYPOINT ["node", "bin/index.js"]
