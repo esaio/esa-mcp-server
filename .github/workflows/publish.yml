@@ -61,13 +61,19 @@ jobs:
         shell: bash {0}
         run: |
           cd /tmp
-          RESULT=$(ESA_ACCESS_TOKEN=dummy timeout 5 npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }} 2>&1)
-          echo "npx run result: ${RESULT}"
-          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
-            echo "Error: Unexpected npx run result"
-            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
-            exit 1
-          fi
+          for i in 1 2 3; do
+            RESULT=$(ESA_ACCESS_TOKEN=dummy timeout 5 npx -y @esaio/esa-mcp-server@${{ steps.version.outputs.version }} 2>&1)
+            echo "Attempt ${i}: npx run result: ${RESULT}"
+            if [[ "${RESULT}" == *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
+              echo "Success on attempt ${i}"
+              exit 0
+            fi
+            echo "Retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Error: All attempts failed"
+          echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
+          exit 1
 
   # ============================================================
   # Docker build and push
@@ -211,13 +217,19 @@ jobs:
       - name: Check Docker Image Runs
         shell: bash {0}
         run: |
-          RESULT=$(timeout 10 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
-          echo "Docker run result: ${RESULT}"
-          if [[ "${RESULT}" != *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
-            echo "Error: Unexpected docker run result"
-            echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
-            exit 1
-          fi
+          for i in 1 2 3; do
+            RESULT=$(timeout 10 docker run --init --rm -e ESA_ACCESS_TOKEN=dummy ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.version }} 2>&1 || true)
+            echo "Attempt ${i}: Docker run result: ${RESULT}"
+            if [[ "${RESULT}" == *"esa-mcp-server v${{ steps.version.outputs.version }} started"* ]]; then
+              echo "Success on attempt ${i}"
+              exit 0
+            fi
+            echo "Retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Error: All attempts failed"
+          echo "Expected: esa-mcp-server v${{ steps.version.outputs.version }} started"
+          exit 1
 
   # ============================================================
   # MCP Registry publish (after both npm and docker succeed)
