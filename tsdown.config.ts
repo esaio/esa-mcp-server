@@ -11,7 +11,7 @@ export default defineConfig({
   outDir: "bin",
   format: "esm",
   platform: "node",
-  target: "node20",
+  target: "node24",
   clean: true,
   dts: true,
   tsconfig: "tsconfig.build.json",

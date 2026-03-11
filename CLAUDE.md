@@ -41,7 +41,7 @@ This is an MCP (Model Context Protocol) server implementation for esa.io, using 
 - **Module System**: ES modules (type: "module" in package.json)
 - **TypeScript**: Strict mode enabled with comprehensive type checking
 - **Code Style**: Enforced by Biome (2 spaces, double quotes, semicolons, trailing commas)
-- **Node Version**: Requires Node.js >= 20.19.4
+- **Node Version**: Requires Node.js >= 24.14.0
 
 ### MCP Server Pattern
 
