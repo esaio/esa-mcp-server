@@ -417,6 +417,185 @@ describe("getAttachment", () => {
     });
   });
 
+  it("should fetch directly from img.esa.io without calling signed_urls API", async () => {
+    const imageData = "fake-image-data";
+    const imageBuffer = Buffer.from(imageData);
+
+    // Mock fetch response for image
+    mockFetch.mockResolvedValue({
+      ok: true,
+      headers: {
+        get: (name: string) => {
+          if (name === "content-type") return "image/png";
+          if (name === "content-length") return String(imageBuffer.length);
+          return null;
+        },
+      },
+      arrayBuffer: async () => {
+        const buffer = Buffer.from(imageData);
+        return buffer.buffer.slice(
+          buffer.byteOffset,
+          buffer.byteOffset + buffer.byteLength,
+        );
+      },
+    });
+
+    const result = await getAttachment(mockClient, {
+      teamName: "test-team",
+      url: "https://img.esa.io/uploads/example/image.png",
+    });
+
+    // Should NOT call signed_urls API
+    expect(mockClient.GET).not.toHaveBeenCalled();
+
+    // Should fetch the original URL directly
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://img.esa.io/uploads/example/image.png",
+    );
+
+    expect(result).toEqual({
+      content: [
+        {
+          type: "image",
+          data: imageBuffer.toString("base64"),
+          mimeType: "image/png",
+        },
+      ],
+    });
+  });
+
+  it("should return original URL for non-image files from img.esa.io", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      headers: {
+        get: (name: string) => {
+          if (name === "content-type") return "application/pdf";
+          if (name === "content-length") return "1024";
+          return null;
+        },
+      },
+    });
+
+    const result = await getAttachment(mockClient, {
+      teamName: "test-team",
+      url: "https://img.esa.io/uploads/example/doc.pdf",
+    });
+
+    expect(mockClient.GET).not.toHaveBeenCalled();
+
+    expect(result).toEqual({
+      content: [
+        {
+          type: "text",
+          text: "https://img.esa.io/uploads/example/doc.pdf",
+        },
+      ],
+    });
+  });
+
+  it("should use signed_urls API for files.esa.io URLs", async () => {
+    const signedUrl = "https://s3.amazonaws.com/bucket/doc.pdf?signature=123";
+
+    mockClient.GET.mockResolvedValue({
+      data: {
+        signed_urls: [["/uploads/example/doc.pdf", signedUrl]],
+      },
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    mockFetch.mockResolvedValue({
+      ok: true,
+      headers: {
+        get: (name: string) => {
+          if (name === "content-type") return "application/pdf";
+          if (name === "content-length") return "1024";
+          return null;
+        },
+      },
+    });
+
+    const result = await getAttachment(mockClient, {
+      teamName: "test-team",
+      url: "https://files.esa.io/uploads/example/doc.pdf",
+    });
+
+    // Should call signed_urls API for files.esa.io
+    expect(mockClient.GET).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/signed_urls",
+      expect.objectContaining({
+        params: expect.objectContaining({
+          path: { team_name: "test-team" },
+        }),
+      }),
+    );
+
+    expect(result).toEqual({
+      content: [
+        {
+          type: "text",
+          text: signedUrl,
+        },
+      ],
+    });
+  });
+
+  it("should use signed_urls API for dl.esa.io URLs", async () => {
+    const signedUrl = "https://s3.amazonaws.com/bucket/image.png?signature=123";
+    const imageData = "fake-image-data";
+    const imageBuffer = Buffer.from(imageData);
+
+    mockClient.GET.mockResolvedValue({
+      data: {
+        signed_urls: [["/uploads/example/image.png", signedUrl]],
+      },
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    mockFetch.mockResolvedValue({
+      ok: true,
+      headers: {
+        get: (name: string) => {
+          if (name === "content-type") return "image/png";
+          if (name === "content-length") return String(imageBuffer.length);
+          return null;
+        },
+      },
+      arrayBuffer: async () => {
+        const buffer = Buffer.from(imageData);
+        return buffer.buffer.slice(
+          buffer.byteOffset,
+          buffer.byteOffset + buffer.byteLength,
+        );
+      },
+    });
+
+    const result = await getAttachment(mockClient, {
+      teamName: "test-team",
+      url: "https://dl.esa.io/uploads/example/image.png",
+    });
+
+    // Should call signed_urls API for dl.esa.io
+    expect(mockClient.GET).toHaveBeenCalled();
+
+    expect(result).toEqual({
+      content: [
+        {
+          type: "image",
+          data: imageBuffer.toString("base64"),
+          mimeType: "image/png",
+        },
+      ],
+    });
+  });
+
   it("should return signed URL for unsupported image formats", async () => {
     const signedUrl = "https://s3.amazonaws.com/bucket/image.svg?signature=123";
     const imageBuffer = Buffer.from("svg-data");

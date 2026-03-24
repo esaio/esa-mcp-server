@@ -30,6 +30,29 @@ export const getAttachmentSchema = createSchemaWithTeamName({
     ),
 });
 
+// Hosts that require signed URLs via the esa API
+const SIGNED_URL_HOSTS = ["files.esa.io", "dl.esa.io"];
+
+/**
+ * Checks if the URL needs a signed URL or can be fetched directly.
+ * URLs from img.esa.io are publicly accessible and don't need signing.
+ * Paths (e.g. /uploads/...) and URLs from files.esa.io/dl.esa.io need signing.
+ */
+function needsSignedUrl(url: string): boolean {
+  // Paths always need signed URLs
+  if (url.startsWith("/")) {
+    return true;
+  }
+
+  try {
+    const urlObj = new URL(url);
+    return SIGNED_URL_HOSTS.includes(urlObj.hostname);
+  } catch {
+    // If URL parsing fails, assume it needs signing
+    return true;
+  }
+}
+
 /**
  * Extracts the path from a full URL or returns the input if it's already a path
  */
@@ -117,46 +140,60 @@ export async function getAttachment(
       throw new MissingTeamNameError();
     }
 
-    // Normalize URL to path
-    const normalizedUrl = normalizeUrl(args.url);
-
-    // Get signed URL from esa API
-    const { data, error, response } = await client.GET(
-      "/v1/teams/{team_name}/signed_urls",
-      {
-        params: {
-          path: { team_name: args.teamName },
-          query: {
-            urls: normalizedUrl,
-            v: 2,
-            expires_in: 300, // 5 minutes
-          },
-        },
-      },
-    );
-
-    if (error || !response.ok) {
-      return formatToolError(error || response.status);
-    }
-
-    if (!data.signed_urls || data.signed_urls.length === 0) {
-      throw new Error("No signed URLs returned from API");
-    }
-
-    const [originalUrl, signedUrl] = data.signed_urls[0];
-
-    if (signedUrl === null) {
-      throw new Error(`File not found: ${originalUrl}`);
-    }
-
     const forceSignedUrl = args.forceSignedUrl ?? false;
 
+    if (needsSignedUrl(args.url)) {
+      // Normalize URL to path for signed URL API
+      const normalizedUrl = normalizeUrl(args.url);
+
+      // Get signed URL from esa API
+      const { data, error, response } = await client.GET(
+        "/v1/teams/{team_name}/signed_urls",
+        {
+          params: {
+            path: { team_name: args.teamName },
+            query: {
+              urls: normalizedUrl,
+              v: 2,
+              expires_in: 300, // 5 minutes
+            },
+          },
+        },
+      );
+
+      if (error || !response.ok) {
+        return formatToolError(error || response.status);
+      }
+
+      if (!data.signed_urls || data.signed_urls.length === 0) {
+        throw new Error("No signed URLs returned from API");
+      }
+
+      const [originalUrl, signedUrl] = data.signed_urls[0];
+
+      if (signedUrl === null) {
+        throw new Error(`File not found: ${originalUrl}`);
+      }
+
+      try {
+        const result = await fetchAttachment(signedUrl, forceSignedUrl);
+        return { content: [result] };
+      } catch (err) {
+        throw new Error(
+          `Failed to fetch attachment for ${originalUrl}: ${
+            err instanceof Error ? err.message : String(err)
+          }`,
+        );
+      }
+    }
+
+    // URL doesn't need signing (e.g. img.esa.io) - fetch directly
     try {
-      const result = await fetchAttachment(signedUrl, forceSignedUrl);
+      const result = await fetchAttachment(args.url, forceSignedUrl);
       return { content: [result] };
     } catch (err) {
       throw new Error(
-        `Failed to fetch attachment for ${originalUrl}: ${
+        `Failed to fetch attachment for ${args.url}: ${
           err instanceof Error ? err.message : String(err)
         }`,
       );
