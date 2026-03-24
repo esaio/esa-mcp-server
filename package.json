@@ -68,11 +68,14 @@
     "openapi-typescript": "^7.9.1",
     "tsdown": "^0.21.0",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2",
+    "typescript": "^6.0.2",
     "vitest": "^4.0.5"
   },
   "engines": {
     "node": ">=24.14.0",
     "npm": ">=11.7.0"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }
