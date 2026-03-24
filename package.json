@@ -74,5 +74,8 @@
   "engines": {
     "node": ">=24.14.0",
     "npm": ">=11.7.0"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }
