@@ -1,22 +1,16 @@
 import type { components } from "../generated/api-types.js";
+import {
+  type BodyTransformOptions,
+  processBodyMd,
+} from "./body-transformer.js";
 
-export interface CommentTransformOptions {
-  truncateBody?: number;
-  omitBody?: boolean;
-}
+export type CommentTransformOptions = BodyTransformOptions;
 
 export function transformComment(
   comment: components["schemas"]["Comment"],
   options: CommentTransformOptions = {},
 ) {
-  const { truncateBody, omitBody } = options;
-
-  let bodyMd: string | undefined = comment.body_md;
-  if (omitBody) {
-    bodyMd = undefined;
-  } else if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
-    bodyMd = `${bodyMd.slice(0, truncateBody)}...`;
-  }
+  const bodyMd = processBodyMd(comment.body_md, options);
 
   return {
     id: comment.id,

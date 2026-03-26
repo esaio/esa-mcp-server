@@ -42,7 +42,7 @@ export async function getPost(
       return formatToolError(error || response.status);
     }
     const post: components["schemas"]["Post"] = data;
-    const transformed = transformPost(post);
+    const transformed = transformPost(post, { truncateBody: 10000 });
 
     return formatToolResponse(transformed);
   } catch (error) {

@@ -42,7 +42,7 @@ export async function getComment(
     }
 
     const comment: components["schemas"]["Comment"] = data;
-    const transformed = transformComment(comment);
+    const transformed = transformComment(comment, { truncateBody: 10000 });
 
     return formatToolResponse(transformed);
   } catch (error) {

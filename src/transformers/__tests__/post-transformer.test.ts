@@ -50,7 +50,7 @@ describe("transformPost", () => {
 
     const result = transformPost(longPost, { truncateBody: 500 });
 
-    expect(result.body_md).toBe(`${"a".repeat(500)}...`);
+    expect(result.body_md).toBe(`${"a".repeat(500)}\n\n... (truncated)`);
   });
 
   it("should not truncate short body_md even when truncateBody option is provided", () => {
