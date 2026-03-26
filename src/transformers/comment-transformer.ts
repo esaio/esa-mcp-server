@@ -2,16 +2,19 @@ import type { components } from "../generated/api-types.js";
 
 export interface CommentTransformOptions {
   truncateBody?: number;
+  omitBody?: boolean;
 }
 
 export function transformComment(
   comment: components["schemas"]["Comment"],
   options: CommentTransformOptions = {},
 ) {
-  const { truncateBody } = options;
+  const { truncateBody, omitBody } = options;
 
-  let bodyMd = comment.body_md;
-  if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
+  let bodyMd: string | undefined = comment.body_md;
+  if (omitBody) {
+    bodyMd = undefined;
+  } else if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
     bodyMd = `${bodyMd.slice(0, truncateBody)}...`;
   }
 
@@ -19,7 +22,7 @@ export function transformComment(
     id: comment.id,
     post_number: comment.post_number,
     url: comment.url,
-    body_md: bodyMd,
+    ...(bodyMd !== undefined && { body_md: bodyMd }),
     created_at: comment.created_at,
     updated_at: comment.updated_at,
     created_by: comment.created_by,

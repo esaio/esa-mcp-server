@@ -87,7 +87,7 @@ export async function createComment(
     }
 
     const comment: components["schemas"]["Comment"] = data;
-    const transformed = transformComment(comment, { truncateBody: 300 });
+    const transformed = transformComment(comment, { omitBody: true });
 
     return formatToolResponse(transformed);
   } catch (error) {
@@ -132,7 +132,7 @@ export async function updateComment(
     }
 
     const comment: components["schemas"]["Comment"] = data;
-    const transformed = transformComment(comment);
+    const transformed = transformComment(comment, { omitBody: true });
 
     return formatToolResponse(transformed);
   } catch (error) {

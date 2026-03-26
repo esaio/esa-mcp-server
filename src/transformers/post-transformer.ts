@@ -2,16 +2,19 @@ import type { components } from "../generated/api-types.js";
 
 export interface PostTransformOptions {
   truncateBody?: number;
+  omitBody?: boolean;
 }
 
 export function transformPost(
   post: components["schemas"]["Post"],
   options: PostTransformOptions = {},
 ) {
-  const { truncateBody } = options;
+  const { truncateBody, omitBody } = options;
 
-  let bodyMd = post.body_md;
-  if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
+  let bodyMd: string | undefined = post.body_md;
+  if (omitBody) {
+    bodyMd = undefined;
+  } else if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
     bodyMd = `${bodyMd.slice(0, truncateBody)}...`;
   }
 
@@ -20,7 +23,7 @@ export function transformPost(
     wip: post.wip ? "WIP" : ("Shipped" as const),
     kind: post.kind,
     category_and_title_and_tags: post.full_name,
-    body_md: bodyMd,
+    ...(bodyMd !== undefined && { body_md: bodyMd }),
     created_at: post.created_at,
     updated_at: post.updated_at,
     created_by: post.created_by,

@@ -306,7 +306,9 @@ describe("createPost", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformed(mockPost);
+    const expectedResponse = createExpectedTransformed(mockPost, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
@@ -606,7 +608,9 @@ describe("updatePost", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformed(mockPost);
+    const expectedResponse = createExpectedTransformed(mockPost, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
@@ -746,7 +750,9 @@ describe("updatePost", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformed(mockPost);
+    const expectedResponse = createExpectedTransformed(mockPost, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
