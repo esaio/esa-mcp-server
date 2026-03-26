@@ -98,7 +98,7 @@ export async function createPost(
     }
 
     const post: components["schemas"]["Post"] = data;
-    const transformed = transformPost(post);
+    const transformed = transformPost(post, { omitBody: true });
 
     return formatToolResponse(transformed);
   } catch (error) {
@@ -170,7 +170,7 @@ export async function updatePost(
     }
 
     const post: components["schemas"]["Post"] = data;
-    const transformed = transformPost(post);
+    const transformed = transformPost(post, { omitBody: true });
 
     return formatToolResponse(transformed);
   } catch (error) {

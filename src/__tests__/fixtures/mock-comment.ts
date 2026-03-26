@@ -1,5 +1,8 @@
 import type { components } from "../../generated/api-types.js";
-import { transformComment } from "../../transformers/comment-transformer.js";
+import {
+  type CommentTransformOptions,
+  transformComment,
+} from "../../transformers/comment-transformer.js";
 
 export function createMockComment(
   overrides?: Partial<components["schemas"]["Comment"]>,
@@ -67,8 +70,9 @@ export function createNullBodyComment(
 
 export function createExpectedTransformedComment(
   comment: components["schemas"]["Comment"],
+  options: CommentTransformOptions = {},
 ) {
-  return transformComment(comment);
+  return transformComment(comment, options);
 }
 
 export function createMockCommentList(

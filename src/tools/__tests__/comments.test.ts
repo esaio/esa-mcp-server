@@ -251,7 +251,9 @@ describe("createComment", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformedComment(mockComment);
+    const expectedResponse = createExpectedTransformedComment(mockComment, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
@@ -310,7 +312,9 @@ describe("createComment", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformedComment(mockComment);
+    const expectedResponse = createExpectedTransformedComment(mockComment, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
@@ -460,7 +464,9 @@ describe("updateComment", () => {
       },
     );
 
-    const expectedResponse = createExpectedTransformedComment(mockComment);
+    const expectedResponse = createExpectedTransformedComment(mockComment, {
+      omitBody: true,
+    });
 
     expect(result).toEqual({
       content: [
