@@ -1,22 +1,16 @@
 import type { components } from "../generated/api-types.js";
+import {
+  type BodyTransformOptions,
+  processBodyMd,
+} from "./body-transformer.js";
 
-export interface PostTransformOptions {
-  truncateBody?: number;
-  omitBody?: boolean;
-}
+export type PostTransformOptions = BodyTransformOptions;
 
 export function transformPost(
   post: components["schemas"]["Post"],
   options: PostTransformOptions = {},
 ) {
-  const { truncateBody, omitBody } = options;
-
-  let bodyMd: string | undefined = post.body_md;
-  if (omitBody) {
-    bodyMd = undefined;
-  } else if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
-    bodyMd = `${bodyMd.slice(0, truncateBody)}\n\n... (truncated)`;
-  }
+  const bodyMd = processBodyMd(post.body_md, options);
 
   return {
     url: post.url,
