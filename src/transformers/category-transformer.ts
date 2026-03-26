@@ -1,4 +1,5 @@
 import type { components } from "../generated/api-types.js";
+import { transformPost } from "./post-transformer.js";
 
 export function transformCategory(category: components["schemas"]["Category"]) {
   return {
@@ -20,12 +21,16 @@ export function transformCategoryList(
         categories: parentCategory.categories?.map(transformCategory) || [],
       }),
     ),
-    readme: categoryList.readme,
+    readme: categoryList.readme
+      ? transformPost(categoryList.readme, { truncateBody: 500 })
+      : undefined,
     no_category: categoryList.no_category
       ? transformCategory(categoryList.no_category)
       : undefined,
     descendant_posts: categoryList.descendant_posts,
-    posts: categoryList.posts,
+    posts: categoryList.posts?.map((post) =>
+      transformPost(post, { truncateBody: 500 }),
+    ),
     total_count: categoryList.total_count,
     per_page: categoryList.per_page,
     page: categoryList.page,
