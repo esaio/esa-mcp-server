@@ -79,7 +79,7 @@ describe("transformComment", () => {
 
     const result = transformComment(longComment, { truncateBody: 300 });
 
-    expect(result.body_md).toBe(`${"a".repeat(300)}...`);
+    expect(result.body_md).toBe(`${"a".repeat(300)}\n\n... (truncated)`);
   });
 
   it("should not truncate short body_md even when truncateBody option is provided", () => {

@@ -127,7 +127,9 @@ describe("getRecentPosts", () => {
     const parsedResult = JSON.parse(
       (result.contents[0] as TextResourceContents).text,
     );
-    expect(parsedResult.posts[0].body_md).toBe(`${"a".repeat(500)}...`);
+    expect(parsedResult.posts[0].body_md).toBe(
+      `${"a".repeat(500)}\n\n... (truncated)`,
+    );
   });
 
   it("should handle empty posts array", async () => {

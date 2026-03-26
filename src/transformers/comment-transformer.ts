@@ -15,7 +15,7 @@ export function transformComment(
   if (omitBody) {
     bodyMd = undefined;
   } else if (truncateBody && bodyMd && bodyMd.length > truncateBody) {
-    bodyMd = `${bodyMd.slice(0, truncateBody)}...`;
+    bodyMd = `${bodyMd.slice(0, truncateBody)}\n\n... (truncated)`;
   }
 
   return {
