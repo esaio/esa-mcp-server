@@ -14,7 +14,6 @@ export async function initI18n() {
   await i18next.init({
     lng,
     fallbackLng: "en",
-    showSupportNotice: false,
     resources: {
       ja: {
         translation: jaTranslations,
