@@ -10,13 +10,15 @@
     "./tools": "./bin/tools/index.js",
     "./resources": "./bin/resources/index.js",
     "./prompts": "./bin/prompts/index.js",
-    "./context": "./bin/context/mcp-context.js"
+    "./context": "./bin/context/mcp-context.js",
+    "./registry.json": "./registry.json"
   },
   "bin": {
     "esa-mcp-server": "bin/index.js"
   },
   "files": [
     "bin",
+    "registry.json",
     "README.md",
     "README.en.md",
     "LICENSE"
@@ -35,6 +37,7 @@
   "homepage": "https://github.com/esaio/esa-mcp-server#readme",
   "scripts": {
     "build": "tsdown && npm run bin-check",
+    "build:registry": "tsx scripts/build-registry.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

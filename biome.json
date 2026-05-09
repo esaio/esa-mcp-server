@@ -51,7 +51,8 @@
       "!**/coverage",
       "!**/*.config.js",
       "!**/*.config.ts",
-      "!.claude"
+      "!.claude",
+      "!registry.json"
     ]
   }
 }
