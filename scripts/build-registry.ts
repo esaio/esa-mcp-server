@@ -24,38 +24,30 @@ const tools: string[] = [];
 const resources: RegistryResource[] = [];
 const prompts: string[] = [];
 
+// register{Tool,Resource,Prompt} はオーバーロード + ジェネリックで Parameters<typeof X>
+// が安定しないため、name (と resource の場合は uriOrTemplate) だけを受け取るスタブに
+// 差し替える。McpServer は名前収集のための足場としてしか使わないので、登録の副作用は
+// 不要で戻り値も捨ててよい。
 const server = new McpServer({ name: "introspect", version: "0.0.0" });
 
-type RegisterTool = typeof server.registerTool;
-type RegisterResource = typeof server.registerResource;
-type RegisterPrompt = typeof server.registerPrompt;
+server.registerTool = ((name: string) => {
+  tools.push(name);
+}) as unknown as typeof server.registerTool;
 
-const originalRegisterTool = server.registerTool.bind(server) as RegisterTool;
-server.registerTool = ((...args: Parameters<RegisterTool>) => {
-  tools.push(args[0]);
-  return originalRegisterTool(...args);
-}) as RegisterTool;
-
-const originalRegisterResource = server.registerResource.bind(
-  server,
-) as RegisterResource;
-server.registerResource = ((...args: Parameters<RegisterResource>) => {
-  const [name, uriOrTemplate] = args;
+server.registerResource = ((
+  name: string,
+  uriOrTemplate: string | ResourceTemplate,
+) => {
   const uriTemplate =
     uriOrTemplate instanceof ResourceTemplate
       ? uriOrTemplate.uriTemplate.toString()
       : uriOrTemplate;
   resources.push({ name, uriTemplate });
-  return originalRegisterResource(...args);
-}) as RegisterResource;
+}) as unknown as typeof server.registerResource;
 
-const originalRegisterPrompt = server.registerPrompt.bind(
-  server,
-) as RegisterPrompt;
-server.registerPrompt = ((...args: Parameters<RegisterPrompt>) => {
-  prompts.push(args[0]);
-  return originalRegisterPrompt(...args);
-}) as RegisterPrompt;
+server.registerPrompt = ((name: string) => {
+  prompts.push(name);
+}) as unknown as typeof server.registerPrompt;
 
 await initI18n();
 
