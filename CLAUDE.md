@@ -11,6 +11,9 @@ npm install
 # Build the project
 npm run build
 
+# Regenerate registry.json (run when adding/renaming/removing tools, resources, or prompts)
+npm run build:registry
+
 # Run tests
 npm test              # Watch mode
 npm run test:run      # Single run
@@ -53,6 +56,16 @@ The server follows the standard MCP pattern:
 5. Connect server to transport
 
 When extending functionality, new tools and resources should be registered with the server instance before connecting to transport.
+
+### Registry (`registry.json`)
+
+`registry.json` (リポジトリルート) は登録されている tool / resource / prompt の一覧を機械可読な形で公開するファイル。
+
+- 生成: `npm run build:registry` (`scripts/build-registry.ts` がランタイム検査で収集)
+- tools / resources / prompts を追加・改名・削除したら `npm run build:registry` を実行して
+  `registry.json` をコミットすること
+- CI (`.github/workflows/main.yml`) で `git diff --exit-code registry.json` による
+  sync チェックを行うため、忘れると PR の CI が落ちる
 
 ## Testing Guidelines
 

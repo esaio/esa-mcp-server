@@ -45,3 +45,7 @@ jobs:
           path: coverage/
       - name: Build
         run: npm run build
+      - name: Check registry.json is up-to-date
+        run: |
+          npm run build:registry
+          git diff --exit-code registry.json

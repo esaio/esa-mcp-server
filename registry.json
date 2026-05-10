@@ -1,0 +1,38 @@
+{
+  "version": "0.7.1",
+  "tools": [
+    "esa_get_teams",
+    "esa_get_team_stats",
+    "esa_get_team_tags",
+    "esa_get_team_members",
+    "esa_get_post",
+    "esa_search_posts",
+    "esa_create_post",
+    "esa_update_post",
+    "esa_get_comment",
+    "esa_create_comment",
+    "esa_update_comment",
+    "esa_delete_comment",
+    "esa_get_post_comments",
+    "esa_get_team_comments",
+    "esa_get_categories",
+    "esa_get_top_categories",
+    "esa_get_all_category_paths",
+    "esa_archive_post",
+    "esa_ship_post",
+    "esa_duplicate_post",
+    "esa_get_search_options_help",
+    "esa_get_markdown_syntax_help",
+    "esa_search_help",
+    "esa_get_attachment"
+  ],
+  "resources": [
+    {
+      "name": "esa_recent_posts",
+      "uriTemplate": "esa://teams/{teamName}/posts/recent"
+    }
+  ],
+  "prompts": [
+    "esa_summarize_post"
+  ]
+}

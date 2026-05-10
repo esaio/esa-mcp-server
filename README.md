@@ -133,6 +133,29 @@ MCP クライアントの設定ファイルに以下を追加します：
 
 > **注意**: `/path/to/your/node` は `which node` で調べたパスに置き換えてください。
 
+## レジストリ
+
+このパッケージはルート直下に `registry.json` を同梱しており、登録されているツール / リソース / プロンプトの名前とパッケージバージョンを公開しています。サーバーを起動せずにプログラムから読み取れます:
+
+```js
+import registry from "@esaio/esa-mcp-server/registry.json" with { type: "json" };
+```
+
+スキーマ:
+
+```json
+{
+  "version": "<package version>",
+  "tools": ["esa_get_teams", "..."],
+  "resources": [
+    { "name": "esa_recent_posts", "uriTemplate": "esa://teams/{teamName}/posts/recent" }
+  ],
+  "prompts": ["esa_summarize_post"]
+}
+```
+
+`registry.json` は `npm run build:registry` で生成され、登録内容と差分が出ると CI で fail します。
+
 ## リンク
 
 - [esa.io](https://esa.io) - 情報共有サービス esa
