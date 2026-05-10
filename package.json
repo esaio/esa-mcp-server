@@ -38,6 +38,7 @@
   "scripts": {
     "build": "tsdown && npm run bin-check",
     "build:registry": "tsx scripts/build-registry.ts",
+    "version": "npm run build:registry && git add registry.json",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
