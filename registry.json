@@ -1,30 +1,78 @@
 {
   "version": "0.7.3",
   "tools": [
-    "esa_get_teams",
-    "esa_get_team_stats",
-    "esa_get_team_tags",
-    "esa_get_team_members",
-    "esa_get_post",
-    "esa_search_posts",
-    "esa_create_post",
-    "esa_update_post",
-    "esa_get_comment",
-    "esa_create_comment",
-    "esa_update_comment",
-    "esa_delete_comment",
-    "esa_get_post_comments",
-    "esa_get_team_comments",
-    "esa_get_categories",
-    "esa_get_top_categories",
-    "esa_get_all_category_paths",
-    "esa_archive_post",
-    "esa_ship_post",
-    "esa_duplicate_post",
-    "esa_get_search_options_help",
-    "esa_get_markdown_syntax_help",
-    "esa_search_help",
-    "esa_get_attachment"
+    {
+      "name": "esa_get_teams"
+    },
+    {
+      "name": "esa_get_team_stats"
+    },
+    {
+      "name": "esa_get_team_tags"
+    },
+    {
+      "name": "esa_get_team_members"
+    },
+    {
+      "name": "esa_get_post"
+    },
+    {
+      "name": "esa_search_posts"
+    },
+    {
+      "name": "esa_create_post"
+    },
+    {
+      "name": "esa_update_post"
+    },
+    {
+      "name": "esa_get_comment"
+    },
+    {
+      "name": "esa_create_comment"
+    },
+    {
+      "name": "esa_update_comment"
+    },
+    {
+      "name": "esa_delete_comment"
+    },
+    {
+      "name": "esa_get_post_comments"
+    },
+    {
+      "name": "esa_get_team_comments"
+    },
+    {
+      "name": "esa_get_categories"
+    },
+    {
+      "name": "esa_get_top_categories"
+    },
+    {
+      "name": "esa_get_all_category_paths"
+    },
+    {
+      "name": "esa_archive_post"
+    },
+    {
+      "name": "esa_ship_post"
+    },
+    {
+      "name": "esa_duplicate_post"
+    },
+    {
+      "name": "esa_get_search_options_help"
+    },
+    {
+      "name": "esa_get_markdown_syntax_help"
+    },
+    {
+      "name": "esa_search_help"
+    },
+    {
+      "name": "esa_get_attachment"
+    }
   ],
   "resources": [
     {
@@ -33,6 +81,8 @@
     }
   ],
   "prompts": [
-    "esa_summarize_post"
+    {
+      "name": "esa_summarize_post"
+    }
   ]
 }
