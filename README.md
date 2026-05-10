@@ -135,7 +135,7 @@ MCP クライアントの設定ファイルに以下を追加します：
 
 ## レジストリ
 
-このパッケージはルート直下に `registry.json` を同梱しており、登録されているツール / リソース / プロンプトの名前とパッケージバージョンを公開しています。サーバーを起動せずにプログラムから読み取れます:
+このパッケージはルート直下に `registry.json` を同梱しており、登録されているツール / リソース / プロンプトの一覧とパッケージバージョンを公開しています。サーバーを起動せずにプログラムから読み取れます:
 
 ```js
 import registry from "@esaio/esa-mcp-server/registry.json" with { type: "json" };
@@ -146,11 +146,11 @@ import registry from "@esaio/esa-mcp-server/registry.json" with { type: "json" }
 ```json
 {
   "version": "<package version>",
-  "tools": ["esa_get_teams", "..."],
+  "tools": [{ "name": "esa_get_teams" }, "..."],
   "resources": [
     { "name": "esa_recent_posts", "uriTemplate": "esa://teams/{teamName}/posts/recent" }
   ],
-  "prompts": ["esa_summarize_post"]
+  "prompts": [{ "name": "esa_summarize_post" }]
 }
 ```
 

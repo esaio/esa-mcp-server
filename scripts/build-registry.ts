@@ -12,17 +12,18 @@ import { setupPrompts } from "../src/prompts/index.js";
 import { setupResources } from "../src/resources/index.js";
 import { setupTools } from "../src/tools/index.js";
 
+type NamedRegistryEntry = { name: string };
 type RegistryResource = { name: string; uriTemplate: string };
 type Registry = {
   version: string;
-  tools: string[];
+  tools: NamedRegistryEntry[];
   resources: RegistryResource[];
-  prompts: string[];
+  prompts: NamedRegistryEntry[];
 };
 
-const tools: string[] = [];
+const tools: NamedRegistryEntry[] = [];
 const resources: RegistryResource[] = [];
-const prompts: string[] = [];
+const prompts: NamedRegistryEntry[] = [];
 
 // register{Tool,Resource,Prompt} はオーバーロード + ジェネリックで Parameters<typeof X>
 // が安定しないため、name (と resource の場合は uriOrTemplate) だけを受け取るスタブに
@@ -31,7 +32,7 @@ const prompts: string[] = [];
 const server = new McpServer({ name: "introspect", version: "0.0.0" });
 
 server.registerTool = ((name: string) => {
-  tools.push(name);
+  tools.push({ name });
 }) as unknown as typeof server.registerTool;
 
 server.registerResource = ((
@@ -46,7 +47,7 @@ server.registerResource = ((
 }) as unknown as typeof server.registerResource;
 
 server.registerPrompt = ((name: string) => {
-  prompts.push(name);
+  prompts.push({ name });
 }) as unknown as typeof server.registerPrompt;
 
 await initI18n();
