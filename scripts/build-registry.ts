@@ -5,7 +5,6 @@ import {
   McpServer,
   ResourceTemplate,
 } from "@modelcontextprotocol/sdk/server/mcp.js";
-import packageJson from "../package.json" with { type: "json" };
 import type { MCPContext } from "../src/context/mcp-context.js";
 import { initI18n } from "../src/i18n/index.js";
 import { setupPrompts } from "../src/prompts/index.js";
@@ -15,7 +14,6 @@ import { setupTools } from "../src/tools/index.js";
 type NamedRegistryEntry = { name: string };
 type RegistryResource = { name: string; uriTemplate: string };
 type Registry = {
-  version: string;
   tools: NamedRegistryEntry[];
   resources: RegistryResource[];
   prompts: NamedRegistryEntry[];
@@ -58,7 +56,6 @@ setupResources(server, stubContext);
 setupPrompts(server, stubContext);
 
 const registry: Registry = {
-  version: packageJson.version,
   tools,
   resources,
   prompts,
