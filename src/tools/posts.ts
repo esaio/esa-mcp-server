@@ -12,10 +12,6 @@ import { transformPost } from "../transformers/post-transformer.js";
 
 export const getPostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to retrieve"),
-  include: z
-    .enum(["comments"])
-    .optional()
-    .describe("Specify 'comments' to include comments in the response"),
 });
 
 export async function getPost(
@@ -31,9 +27,6 @@ export async function getPost(
       {
         params: {
           path: { team_name: args.teamName, post_number: args.postNumber },
-          query: {
-            include: args.include,
-          },
         },
       },
     );

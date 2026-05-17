@@ -59,7 +59,6 @@ describe("searchPosts", () => {
           order: undefined,
           page: undefined,
           per_page: undefined,
-          include: undefined,
         },
       },
     });
@@ -106,7 +105,6 @@ describe("searchPosts", () => {
       order: "desc",
       page: 2,
       perPage: 10,
-      include: "comments",
     });
 
     expect(mockClient.GET).toHaveBeenCalledWith("/v1/teams/{team_name}/posts", {
@@ -118,7 +116,6 @@ describe("searchPosts", () => {
           order: "desc",
           page: 2,
           per_page: 10,
-          include: "comments",
         },
       },
     });
@@ -322,7 +319,6 @@ describe("searchPosts", () => {
           order: undefined,
           page: undefined,
           per_page: undefined,
-          include: undefined,
         },
       },
     });

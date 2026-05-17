@@ -10,11 +10,10 @@ export const HELP_DOCS = {
   MARKDOWN_SYNTAX_POST_ID: 49,
 } as const;
 
-// Schema for searchHelp - omit teamName, order, include, and sort from searchPostsSchema
+// Schema for searchHelp - omit teamName, order, and sort from searchPostsSchema
 export const searchHelpSchema = searchPostsSchema.omit({
   teamName: true,
   order: true,
-  include: true,
   sort: true,
 });
 
