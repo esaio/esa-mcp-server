@@ -51,10 +51,6 @@ For broader results, use OR between related terms rather than listing them with 
     .max(100)
     .optional()
     .describe("Items per page"),
-  include: z
-    .enum(["comments"])
-    .optional()
-    .describe("Specify 'comments' to include comments in the response"),
 });
 
 export async function searchPosts(
@@ -77,7 +73,6 @@ export async function searchPosts(
             order: args.order,
             page: args.page,
             per_page: args.perPage,
-            include: args.include,
           },
         },
       },

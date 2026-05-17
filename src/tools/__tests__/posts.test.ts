@@ -42,7 +42,6 @@ describe("getPost", () => {
       {
         params: {
           path: { team_name: "test-team", post_number: 123 },
-          query: { include: undefined },
         },
       },
     );
@@ -57,81 +56,6 @@ describe("getPost", () => {
         },
       ],
     });
-  });
-
-  it("should return a post with comments when include parameter is specified", async () => {
-    const mockPost = createWipPost({
-      body_md: "Post content",
-      body_html: "<p>Post content</p>",
-      comments_count: 2,
-      stargazers_count: 3,
-      watchers_count: 5,
-      comments: [
-        {
-          id: 1,
-          post_number: 123,
-          body_md: "First comment",
-          body_html: "<p>First comment</p>",
-          created_at: "2024-01-03T10:00:00+09:00",
-          updated_at: "2024-01-03T10:00:00+09:00",
-          created_by: {
-            name: "commenter1",
-            screen_name: "commenter1",
-            icon: "https://example.com/icon4.png",
-            myself: false,
-          },
-          url: "",
-          stargazers_count: 0,
-          star: false,
-        },
-        {
-          id: 2,
-          post_number: 123,
-          body_md: "Second comment",
-          body_html: "<p>Second comment</p>",
-          created_at: "2024-01-03T11:00:00+09:00",
-          updated_at: "2024-01-03T11:00:00+09:00",
-          created_by: {
-            name: "commenter2",
-            screen_name: "commenter2",
-            icon: "https://example.com/icon5.png",
-            myself: false,
-          },
-          url: "",
-          stargazers_count: 0,
-          star: false,
-        },
-      ],
-    });
-
-    mockClient.GET.mockResolvedValue({
-      data: mockPost,
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    const result = await getPost(mockClient, {
-      teamName: "test-team",
-      postNumber: 456,
-      include: "comments",
-    });
-
-    expect(mockClient.GET).toHaveBeenCalledWith(
-      "/v1/teams/{team_name}/posts/{post_number}",
-      {
-        params: {
-          path: { team_name: "test-team", post_number: 456 },
-          query: { include: "comments" },
-        },
-      },
-    );
-
-    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
-    expect(parsedResult.wip).toBe("WIP");
-    expect(parsedResult.kind).toBe("flow");
   });
 
   it("should handle API errors", async () => {

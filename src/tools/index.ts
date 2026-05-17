@@ -126,7 +126,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     {
       title: "Get a specific esa post",
       description:
-        "Retrieves a specific post from an esa team by post number, with optional comments included.",
+        "Retrieves a specific post from an esa team by post number. To fetch comments, use esa_get_post_comments.",
       inputSchema: getPostSchema.shape,
       annotations: {
         readOnlyHint: true,
