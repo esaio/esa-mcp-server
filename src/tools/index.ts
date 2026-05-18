@@ -344,9 +344,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
   server.registerTool(
     "esa_duplicate_post",
     {
-      title: "Prepare a post for duplication",
+      title: "Duplicate a post",
       description:
-        "Prepares a post for duplication by retrieving its name and body_md content. Returns the name and body_md that can be used with esa_create_post to create a duplicate of the original post.",
+        "Duplicates a post by creating a new WIP post with the same name and body_md as the source post. By default the duplicate is created in the source team; specify targetTeamName to duplicate into a different team.",
       inputSchema: duplicatePostSchema.shape,
       annotations: {
         destructiveHint: true,

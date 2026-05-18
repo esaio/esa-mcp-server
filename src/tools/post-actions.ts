@@ -84,13 +84,13 @@ export async function shipPost(
 }
 
 export const duplicatePostSchema = createSchemaWithTeamName({
-  postNumber: z
-    .number()
-    .describe("The source post number to prepare for duplication"),
+  postNumber: z.number().describe("The source post number to duplicate"),
   targetTeamName: z
     .string()
     .optional()
-    .describe("The name of the esa team")
+    .describe(
+      "The destination team name for the duplicated post. Defaults to the source team when omitted.",
+    )
     .transform((val) => (val ? normalizeTeamName(val) : undefined)),
 });
 

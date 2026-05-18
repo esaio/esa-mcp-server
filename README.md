@@ -30,7 +30,7 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 
 - `esa_archive_post` - 記事をアーカイブ（Archived/ カテゴリーへ移動）
 - `esa_ship_post` - 記事を Ship It!（WIP を外して公開）
-- `esa_duplicate_post` - 記事を複製するための準備（タイトルと本文を取得）
+- `esa_duplicate_post` - 記事を複製（同じタイトル・本文の WIP 記事を作成。別チームへの複製も可能）
 
 ### コメント管理
 
