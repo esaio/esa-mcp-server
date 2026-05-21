@@ -37,6 +37,9 @@
       "name": "esa_delete_comment"
     },
     {
+      "name": "esa_get_post_backlinks"
+    },
+    {
       "name": "esa_get_post_comments"
     },
     {

@@ -67,4 +67,45 @@ describe("transformPost", () => {
 
     expect(result.body_md).toBe(undefined);
   });
+
+  it("should include backlinks and backlinks_count when present", () => {
+    const post = createMockPost({
+      backlinks: [
+        {
+          number: 42,
+          name: "linked-post.md",
+          full_name: "dev/linked-post.md",
+          wip: false,
+          tags: [],
+          category: "dev",
+          url: "https://test-team.esa.example.com/posts/42",
+          created_at: "2024-02-01T00:00:00+09:00",
+          updated_at: "2024-02-02T00:00:00+09:00",
+        },
+      ],
+      backlinks_count: 1,
+    });
+
+    const result = transformPost(post);
+
+    expect(result.backlinks_count).toBe(1);
+    expect(result.backlinks).toEqual([
+      {
+        number: 42,
+        url: "https://test-team.esa.example.com/posts/42",
+        category_and_title_and_tags: "dev/linked-post.md",
+        wip: "Shipped",
+        created_at: "2024-02-01T00:00:00+09:00",
+        updated_at: "2024-02-02T00:00:00+09:00",
+      },
+    ]);
+  });
+
+  it("should omit backlinks fields when not included in response", () => {
+    const post = createMockPost();
+    const result = transformPost(post);
+
+    expect(result).not.toHaveProperty("backlinks");
+    expect(result).not.toHaveProperty("backlinks_count");
+  });
 });

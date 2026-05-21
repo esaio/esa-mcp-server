@@ -12,6 +12,12 @@ import { transformPost } from "../transformers/post-transformer.js";
 
 export const getPostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to retrieve"),
+  includeBacklinks: z
+    .boolean()
+    .optional()
+    .describe(
+      "Include up to 15 backlinks (posts that reference this post) and backlinks_count in the response. For full pagination use esa_get_post_backlinks.",
+    ),
 });
 
 export async function getPost(
@@ -27,6 +33,9 @@ export async function getPost(
       {
         params: {
           path: { team_name: args.teamName, post_number: args.postNumber },
+          query: {
+            include: args.includeBacklinks ? ["backlinks"] : undefined,
+          },
         },
       },
     );
