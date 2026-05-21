@@ -12,6 +12,7 @@ export async function createRecentPostsResourceList(context: MCPContext) {
       data.teams?.map((team: { name: string; description: string }) => ({
         uri: `esa://teams/${team.name}/posts/recent`,
         name: `Recent posts from ${team.name}`,
+        title: `Recent posts from ${team.name}`,
         description: `Recent posts from ${team.name}${team.description ? ` (${team.description})` : ""}`,
         mimeType: "application/json",
       })) || []
