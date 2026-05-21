@@ -22,7 +22,8 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 ### 記事管理
 
 - `esa_search_posts` - 記事を検索
-- `esa_get_post` - 記事 ID から記事を取得
+- `esa_get_post` - 記事 ID から記事を取得（バックリンク総数 `backlinks_count` を含む）
+- `esa_get_post_backlinks` - 指定記事を参照している記事の一覧（ページング対応）
 - `esa_create_post` - 新しい記事を作成（タグ、カテゴリー、WIP ステータス付き）
 - `esa_update_post` - 記事を更新（タイトル、本文、タグ、カテゴリー、WIP ステータス）
 
