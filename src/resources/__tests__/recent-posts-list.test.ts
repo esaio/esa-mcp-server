@@ -41,12 +41,14 @@ describe("createRecentPostsResourceList", () => {
       {
         uri: "esa://teams/team1/posts/recent",
         name: "Recent posts from team1",
+        title: "Recent posts from team1",
         description: "Recent posts from team1 (Team One)",
         mimeType: "application/json",
       },
       {
         uri: "esa://teams/team2/posts/recent",
         name: "Recent posts from team2",
+        title: "Recent posts from team2",
         description: "Recent posts from team2",
         mimeType: "application/json",
       },
