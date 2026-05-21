@@ -2565,13 +2565,13 @@ export interface components {
       stargazers?: (components["schemas"]["Star"] &
         components["schemas"]["Member"])[];
       /**
-       * @description バックリンク（この記事を参照している記事）一覧(include=backlinks)。最大15件。
+       * @description バックリンク（この記事を参照している記事）一覧。記事詳細 API (GET /v1/teams/{team_name}/posts/{post_number}) で `include=backlinks` を指定したときのみ返却される。最大15件。
        *     それ以上を取得したい場合は GET /v1/teams/{team_name}/posts/{post_number}/backlinks を使う。
        *     archived 配下の記事と WIP 状態の記事は除外される。
        */
       backlinks?: components["schemas"]["PostSummary"][];
       /**
-       * @description バックリンク（この記事を参照している記事）の総数(include=backlinks)。
+       * @description バックリンク（この記事を参照している記事）の総数。記事詳細 API (GET /v1/teams/{team_name}/posts/{post_number}) でのみ返却される。 `include` 指定の有無に関わらず常に出力される。
        *     backlinks 配列は最大15件に丸められるため、上限を超えるかどうかの判定に使う。
        *     archived 配下の記事と WIP 状態の記事はカウントに含まれない。
        *     注意: チーム全体での総数を返すため、API アクセスポリシー (PAT v2 / OAuth App v2 の default_deny_and_allow_list) で許可されていないカテゴリのバックリンクもカウントに含まれる。

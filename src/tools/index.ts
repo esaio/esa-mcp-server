@@ -127,7 +127,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     {
       title: "Get a specific esa post",
       description:
-        "Retrieves a specific post from an esa team by post number. To fetch comments, use esa_get_post_comments. Set includeBacklinks=true to also return up to 15 backlinks and backlinks_count; use esa_get_post_backlinks for full pagination.",
+        "Retrieves a specific post from an esa team by post number. The response always includes backlinks_count (the number of posts referencing this one). To list the referencing posts themselves, use esa_get_post_backlinks. To fetch comments, use esa_get_post_comments.",
       inputSchema: getPostSchema.shape,
       annotations: {
         readOnlyHint: true,

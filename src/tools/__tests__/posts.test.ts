@@ -42,7 +42,6 @@ describe("getPost", () => {
       {
         params: {
           path: { team_name: "test-team", post_number: 123 },
-          query: { include: undefined },
         },
       },
     );
@@ -59,23 +58,8 @@ describe("getPost", () => {
     });
   });
 
-  it("should pass include=backlinks when includeBacklinks is true", async () => {
-    const mockPost = createMockPost({
-      backlinks: [
-        {
-          number: 42,
-          name: "linked-post.md",
-          full_name: "dev/linked-post.md",
-          wip: false,
-          tags: [],
-          category: "dev",
-          url: "https://test-team.esa.example.com/posts/42",
-          created_at: "2024-02-01T00:00:00+09:00",
-          updated_at: "2024-02-02T00:00:00+09:00",
-        },
-      ],
-      backlinks_count: 1,
-    });
+  it("should surface backlinks_count returned by the API", async () => {
+    const mockPost = createMockPost({ backlinks_count: 7 });
 
     mockClient.GET.mockResolvedValue({
       data: mockPost,
@@ -89,31 +73,11 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 123,
-      includeBacklinks: true,
     });
 
-    expect(mockClient.GET).toHaveBeenCalledWith(
-      "/v1/teams/{team_name}/posts/{post_number}",
-      {
-        params: {
-          path: { team_name: "test-team", post_number: 123 },
-          query: { include: ["backlinks"] },
-        },
-      },
-    );
-
     const parsedResult = JSON.parse((result.content[0] as TextContent).text);
-    expect(parsedResult.backlinks_count).toBe(1);
-    expect(parsedResult.backlinks).toEqual([
-      {
-        number: 42,
-        url: "https://test-team.esa.example.com/posts/42",
-        category_and_title_and_tags: "dev/linked-post.md",
-        wip: "Shipped",
-        created_at: "2024-02-01T00:00:00+09:00",
-        updated_at: "2024-02-02T00:00:00+09:00",
-      },
-    ]);
+    expect(parsedResult.backlinks_count).toBe(7);
+    expect(parsedResult.backlinks).toBeUndefined();
   });
 
   it("should handle API errors", async () => {
