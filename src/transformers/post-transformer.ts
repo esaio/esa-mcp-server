@@ -3,7 +3,6 @@ import {
   type BodyTransformOptions,
   processBodyMd,
 } from "./body-transformer.js";
-import { transformPostSummary } from "./post-summary-transformer.js";
 
 export type PostTransformOptions = BodyTransformOptions;
 
@@ -30,9 +29,6 @@ export function transformPost(
       stargazers_count: post.stargazers_count,
       watchers_count: post.watchers_count,
     },
-    ...(post.backlinks !== undefined && {
-      backlinks: post.backlinks.map(transformPostSummary),
-    }),
     ...(post.backlinks_count !== undefined && {
       backlinks_count: post.backlinks_count,
     }),
