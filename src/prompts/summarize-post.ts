@@ -15,17 +15,13 @@ export const createSummarizePostSchema = () =>
     postNumber: z
       .string()
       .describe(t("prompts.summarize_post.args.post_number")),
-    format: z
-      .enum(["bullet", "paragraph", "keywords"])
-      .optional()
-      .describe(t("prompts.summarize_post.args.format")),
   });
 
 export async function summarizePost(
   client: ReturnType<typeof createEsaClient>,
   args: z.infer<ReturnType<typeof createSummarizePostSchema>>,
 ) {
-  const { teamName, postNumber: postNumberStr, format = "bullet" } = args;
+  const { teamName, postNumber: postNumberStr } = args;
 
   if (!teamName) {
     throw new MissingTeamNameError();
@@ -70,21 +66,7 @@ export async function summarizePost(
     prompt += "\n---\n\n";
 
     if (post.body_md) {
-      prompt += `Content:\n${post.body_md}\n\n---\n\n`;
-    }
-
-    switch (format) {
-      case "bullet":
-        prompt +=
-          "Please provide a summary in bullet points (3-5 main points).";
-        break;
-      case "paragraph":
-        prompt += "Please provide a summary in 2-3 paragraphs.";
-        break;
-      case "keywords":
-        prompt +=
-          "Please extract and list 10-15 important keywords from this post.";
-        break;
+      prompt += `Content:\n${post.body_md}\n`;
     }
 
     return formatPromptResponse(prompt);

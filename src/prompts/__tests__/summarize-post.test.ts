@@ -10,21 +10,9 @@ describe("createSummarizePostSchema", () => {
 
     expect(shape.teamName).toBeDefined();
     expect(shape.postNumber).toBeDefined();
-    expect(shape.format).toBeDefined();
   });
 
   it("should validate correct input", () => {
-    const schema = createSummarizePostSchema();
-    const result = schema.safeParse({
-      teamName: "test-team",
-      postNumber: "123",
-      format: "bullet",
-    });
-
-    expect(result.success).toBe(true);
-  });
-
-  it("should allow optional format", () => {
     const schema = createSummarizePostSchema();
     const result = schema.safeParse({
       teamName: "test-team",
@@ -80,7 +68,7 @@ describe("summarizePost", () => {
     watch: false,
   };
 
-  it("should generate a bullet format summary prompt", async () => {
+  it("should generate a summary prompt", async () => {
     mockClient.GET.mockResolvedValue({
       data: mockPost,
       error: undefined,
@@ -118,49 +106,6 @@ describe("summarizePost", () => {
     expect(promptText).toContain("Category: dev");
     expect(promptText).toContain("Tags: tag1, tag2");
     expect(promptText).toContain("# Test Post");
-    expect(promptText).toContain("Please provide a summary in bullet points");
-  });
-
-  it("should generate a paragraph format summary prompt", async () => {
-    mockClient.GET.mockResolvedValue({
-      data: mockPost,
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    const result = await summarizePost(mockClient, {
-      teamName: "test-team",
-      postNumber: "123",
-      format: "paragraph",
-    });
-
-    const promptText = (result.messages[0].content as TextContent).text;
-    expect(promptText).toContain("Please provide a summary in 2-3 paragraphs");
-  });
-
-  it("should generate a keywords format summary prompt", async () => {
-    mockClient.GET.mockResolvedValue({
-      data: mockPost,
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    const result = await summarizePost(mockClient, {
-      teamName: "test-team",
-      postNumber: "123",
-      format: "keywords",
-    });
-
-    const promptText = (result.messages[0].content as TextContent).text;
-    expect(promptText).toContain(
-      "Please extract and list 10-15 important keywords",
-    );
   });
 
   it("should handle post without category and tags", async () => {
@@ -207,7 +152,7 @@ describe("summarizePost", () => {
 
     const promptText = (result.messages[0].content as TextContent).text;
     expect(promptText).not.toContain("Content:");
-    expect(promptText).toContain("Please provide a summary in bullet points");
+    expect(promptText).toContain("Please summarize the following post:");
   });
 
   it("should handle API errors", async () => {
