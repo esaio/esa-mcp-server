@@ -491,8 +491,8 @@ export interface paths {
     get: {
       parameters: {
         query?: {
-          /** @description 追加で含める情報（カンマ区切り） */
-          include?: components["parameters"]["include"];
+          /** @description 追加で含める情報（カンマ区切り）。記事詳細 API でのみ `backlinks` が利用可能。 */
+          include?: components["parameters"]["post_show_include"];
           /**
            * @description 本文中のsecure attachment URL（https://files.esa.io/ または https://dl.esa.io/）を署名付きURLに変換するかどうか。
            *     - `false`: 変換しない（デフォルト）
@@ -616,6 +616,66 @@ export interface paths {
         500: components["responses"]["InternalServerError"];
       };
     };
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/backlinks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * バックリンク一覧取得
+     * @description 指定された記事を参照している記事（バックリンク）の一覧を取得します。
+     *     archived 配下の記事と WIP 状態の記事は除外されます。
+     *     並び順はバックリンク登録順の降順（新しい参照が先）です。
+     */
+    get: {
+      parameters: {
+        query?: {
+          /** @description ページ番号（1から開始） */
+          page?: components["parameters"]["page"];
+          /** @description 1ページあたりの要素数 */
+          per_page?: components["parameters"]["per_page"];
+        };
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["BacklinkList"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/v1/teams/{team_name}/posts/{post_number}/comments": {
@@ -2504,6 +2564,53 @@ export interface components {
       /** @description スターしたメンバー一覧(include=stargazers) */
       stargazers?: (components["schemas"]["Star"] &
         components["schemas"]["Member"])[];
+      /**
+       * @description バックリンク（この記事を参照している記事）一覧。記事詳細 API (GET /v1/teams/{team_name}/posts/{post_number}) で `include=backlinks` を指定したときのみ返却される。最大15件。
+       *     それ以上を取得したい場合は GET /v1/teams/{team_name}/posts/{post_number}/backlinks を使う。
+       *     archived 配下の記事と WIP 状態の記事は除外される。
+       */
+      backlinks?: components["schemas"]["PostSummary"][];
+      /**
+       * @description バックリンク（この記事を参照している記事）の総数。記事詳細 API (GET /v1/teams/{team_name}/posts/{post_number}) でのみ返却される。 `include` 指定の有無に関わらず常に出力される。
+       *     backlinks 配列は最大15件に丸められるため、上限を超えるかどうかの判定に使う。
+       *     archived 配下の記事と WIP 状態の記事はカウントに含まれない。
+       *     注意: チーム全体での総数を返すため、API アクセスポリシー (PAT v2 / OAuth App v2 の default_deny_and_allow_list) で許可されていないカテゴリのバックリンクもカウントに含まれる。
+       *     アクセスポリシー適用後の正確な件数が必要な場合は、専用エンドポイント GET /v1/teams/{team_name}/posts/{post_number}/backlinks の `total_count` を使う。
+       */
+      backlinks_count?: number;
+    };
+    /** @description 記事の軽量サマリ。バックリンク API(backlinks)などで返却される。 */
+    PostSummary: {
+      /** @description 記事番号 */
+      number: number;
+      /** @description 記事名 */
+      name: string;
+      /** @description カテゴリとタグを含む記事名 */
+      full_name: string;
+      /** @description WIP状態かどうか（バックリンクとして返るのは常に false） */
+      wip: boolean;
+      /** @description タグ */
+      tags: string[];
+      /** @description カテゴリ */
+      category: string | null;
+      /**
+       * Format: uri
+       * @description 記事のURL
+       */
+      url: string;
+      /**
+       * Format: date-time
+       * @description 作成日時
+       */
+      created_at: string;
+      /**
+       * Format: date-time
+       * @description 更新日時
+       */
+      updated_at: string;
+    };
+    BacklinkList: components["schemas"]["Pagination"] & {
+      posts: components["schemas"]["PostSummary"][];
     };
     PostList: components["schemas"]["Pagination"] & {
       posts: components["schemas"]["Post"][];
@@ -2973,7 +3080,14 @@ export interface components {
     /** @description コメントID */
     comment_id: number;
     /** @description 追加で含める情報（カンマ区切り） */
-    include: "comments" | "stargazers" | "comments.stargazers";
+    include: ("comments" | "stargazers" | "comments.stargazers")[];
+    /** @description 追加で含める情報（カンマ区切り）。記事詳細 API でのみ `backlinks` が利用可能。 */
+    post_show_include: (
+      | "comments"
+      | "stargazers"
+      | "comments.stargazers"
+      | "backlinks"
+    )[];
     /**
      * @description 本文中のsecure attachment URL（https://files.esa.io/ または https://dl.esa.io/）を署名付きURLに変換するかどうか。
      *     - `false`: 変換しない（デフォルト）

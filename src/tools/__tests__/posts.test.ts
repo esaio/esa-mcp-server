@@ -58,6 +58,28 @@ describe("getPost", () => {
     });
   });
 
+  it("should surface backlinks_count returned by the API", async () => {
+    const mockPost = createMockPost({ backlinks_count: 7 });
+
+    mockClient.GET.mockResolvedValue({
+      data: mockPost,
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    const result = await getPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+    });
+
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
+    expect(parsedResult.backlinks_count).toBe(7);
+    expect(parsedResult.backlinks).toBeUndefined();
+  });
+
   it("should handle API errors", async () => {
     const mockError = { error: "not_found", message: "Post not found" };
 

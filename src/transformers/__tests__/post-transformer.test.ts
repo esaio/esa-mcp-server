@@ -67,4 +67,18 @@ describe("transformPost", () => {
 
     expect(result.body_md).toBe(undefined);
   });
+
+  it("should include backlinks_count when present", () => {
+    const post = createMockPost({ backlinks_count: 3 });
+    const result = transformPost(post);
+
+    expect(result.backlinks_count).toBe(3);
+  });
+
+  it("should omit backlinks_count when not returned by the API", () => {
+    const post = createMockPost();
+    const result = transformPost(post);
+
+    expect(result).not.toHaveProperty("backlinks_count");
+  });
 });

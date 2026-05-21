@@ -3,6 +3,7 @@ import type { z } from "zod";
 import { withContext } from "../api_client/with-context.js";
 import type { MCPContext } from "../context/mcp-context.js";
 import { getAttachment, getAttachmentSchema } from "./attachments.js";
+import { getPostBacklinks, getPostBacklinksSchema } from "./backlinks.js";
 import {
   getAllCategoryPaths,
   getAllCategoryPathsSchema,
@@ -126,7 +127,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     {
       title: "Get a specific esa post",
       description:
-        "Retrieves a specific post from an esa team by post number. To fetch comments, use esa_get_post_comments.",
+        "Retrieves a specific post from an esa team by post number. The response always includes backlinks_count (the number of posts referencing this one). To list the referencing posts themselves, use esa_get_post_backlinks. To fetch comments, use esa_get_post_comments.",
       inputSchema: getPostSchema.shape,
       annotations: {
         readOnlyHint: true,
@@ -235,6 +236,21 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     },
     async (params: z.infer<typeof deleteCommentSchema>) =>
       withContext(context, deleteComment, params),
+  );
+
+  server.registerTool(
+    "esa_get_post_backlinks",
+    {
+      title: "Get backlinks for a specific post",
+      description:
+        "Retrieves a paginated list of posts that reference (link back to) the specified post. Archived posts and WIP posts are excluded. Results are ordered by backlink registration date (newest references first).",
+      inputSchema: getPostBacklinksSchema.shape,
+      annotations: {
+        readOnlyHint: true,
+      },
+    },
+    async (params: z.infer<typeof getPostBacklinksSchema>) =>
+      withContext(context, getPostBacklinks, params),
   );
 
   server.registerTool(

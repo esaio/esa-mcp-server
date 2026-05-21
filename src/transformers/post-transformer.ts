@@ -29,6 +29,9 @@ export function transformPost(
       stargazers_count: post.stargazers_count,
       watchers_count: post.watchers_count,
     },
+    ...(post.backlinks_count !== undefined && {
+      backlinks_count: post.backlinks_count,
+    }),
   };
 }
 
