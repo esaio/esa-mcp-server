@@ -1,1 +1,6 @@
-export type MCPContext = Record<string, unknown>;
+import type { Logger } from "../logger/index.js";
+
+export interface MCPContext {
+  logger: Logger;
+  [key: string]: unknown;
+}

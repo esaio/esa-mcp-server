@@ -1,6 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Logger } from "../../logger/index.js";
 import { createEsaClient } from "../index.js";
 import { withContext } from "../with-context.js";
+
+const noopLogger: Logger = {
+  log: () => {},
+  debug: () => {},
+  info: () => {},
+  warn: () => {},
+  error: () => {},
+};
 
 // Mock createEsaClient to test context handling without real API client creation
 vi.mock("../index.js", () => ({
@@ -23,6 +32,7 @@ describe("withContext", () => {
   }) => ({
     apiAccessToken: overrides?.apiAccessToken ?? "test-token",
     apiBaseUrl: overrides?.apiBaseUrl ?? "https://api.esa.example.com",
+    logger: noopLogger,
   });
 
   beforeEach(() => {
@@ -42,6 +52,7 @@ describe("withContext", () => {
     expect(mockCreateEsaClient).toHaveBeenCalledWith(
       context.apiAccessToken,
       context.apiBaseUrl,
+      noopLogger,
     );
     expect(mockHandler).toHaveBeenCalledWith(mockClient, "arg1", "arg2");
     expect(result).toBe(expectedResult);
@@ -57,6 +68,7 @@ describe("withContext", () => {
     expect(mockCreateEsaClient).toHaveBeenCalledWith(
       context.apiAccessToken,
       context.apiBaseUrl,
+      noopLogger,
     );
   });
 

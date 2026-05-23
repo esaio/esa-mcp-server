@@ -1,10 +1,13 @@
-import type { MockInstance } from "vitest";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Logger } from "../../logger/index.js";
 import { createAuthMiddleware } from "../middleware.js";
 
+type SpyLogger = { [K in keyof Logger]: ReturnType<typeof vi.fn> };
+
 describe("createAuthMiddleware", () => {
-  // Mock console.error to verify rate limit and error logging without console output
-  let consoleErrorSpy: MockInstance<typeof console.error>;
+  // Spy on each Logger method to assert injected-logger behavior
+  let loggerSpy: SpyLogger;
+  let logger: Logger;
 
   // Create test request for authorization header testing
   const createTestRequest = (url = "https://api.esa.example.com/test") =>
@@ -65,15 +68,18 @@ describe("createAuthMiddleware", () => {
     } as unknown as Parameters<NonNullable<typeof middleware.onError>>[0]);
 
   beforeEach(() => {
-    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
+    loggerSpy = {
+      log: vi.fn(),
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
+    logger = loggerSpy as unknown as Logger;
   });
 
   it("should add authorization header", async () => {
-    const middleware = createAuthMiddleware("test-token");
+    const middleware = createAuthMiddleware("test-token", logger);
     const request = createTestRequest();
 
     expect(middleware.onRequest).toBeDefined();
@@ -85,31 +91,31 @@ describe("createAuthMiddleware", () => {
   });
 
   it("should log rate limit info when present", async () => {
-    const middleware = createAuthMiddleware("test-token");
+    const middleware = createAuthMiddleware("test-token", logger);
     const response = createTestResponse({ limit: "75", remaining: "50" });
 
     await callOnResponse(middleware, response);
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Rate limit: 50/75");
+    expect(loggerSpy.log).toHaveBeenCalledWith("Rate limit: 50/75");
   });
 
   it("should handle response without rate limit headers", async () => {
-    const middleware = createAuthMiddleware("test-token");
+    const middleware = createAuthMiddleware("test-token", logger);
     const response = createTestResponse();
 
     await callOnResponse(middleware, response);
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(loggerSpy.log).not.toHaveBeenCalled();
   });
 
   it("should log network errors", async () => {
-    const middleware = createAuthMiddleware("test-token");
+    const middleware = createAuthMiddleware("test-token", logger);
     const error = new Error("Network failed");
 
     await callOnError(middleware, error);
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Network Error:", error);
+    expect(loggerSpy.error).toHaveBeenCalledWith("Network Error:", error);
   });
 
   it("should return the modified request", async () => {
-    const middleware = createAuthMiddleware("test-token");
+    const middleware = createAuthMiddleware("test-token", logger);
     const request = createTestRequest();
 
     const result = await callOnRequest(middleware, request);

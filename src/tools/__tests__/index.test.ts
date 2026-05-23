@@ -1,27 +1,29 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { MockInstance } from "vitest";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { MCPContext } from "../../context/mcp-context.js";
+import type { Logger } from "../../logger/index.js";
 import { setupTools } from "../index.js";
 
 describe("setupTools", () => {
   let server: McpServer;
   let context: MCPContext;
-  let consoleErrorSpy: MockInstance<typeof console.error>;
+  let loggerSpy: { [K in keyof Logger]: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     server = new McpServer({
       name: "test-server",
       version: "1.0.0",
     });
-    context = {} as unknown as MCPContext;
+    loggerSpy = {
+      log: vi.fn(),
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
+    context = { logger: loggerSpy as unknown as Logger };
 
-    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
   });
 
   it("should register all 25 tools with correct handlers", () => {
@@ -49,6 +51,6 @@ describe("setupTools", () => {
   it("should log setup completion message", () => {
     setupTools(server, context);
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Setting up MCP tools...");
+    expect(loggerSpy.log).toHaveBeenCalledWith("Setting up MCP tools...");
   });
 });

@@ -9,7 +9,7 @@ import { getRecentPosts } from "./recent-posts.js";
 import { createRecentPostsResourceList } from "./recent-posts-list.js";
 
 export function setupResources(server: McpServer, context: MCPContext): void {
-  console.error("Setting up MCP resources...");
+  context.logger.log("Setting up MCP resources...");
 
   server.registerResource(
     "esa_recent_posts",
