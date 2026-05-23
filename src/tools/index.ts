@@ -61,8 +61,6 @@ import {
 } from "./teams.js";
 
 export function setupTools(server: McpServer, context: MCPContext): void {
-  context.logger.log("Setting up MCP tools...");
-
   server.registerTool(
     "esa_get_teams",
     {
