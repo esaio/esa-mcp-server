@@ -18,7 +18,7 @@ export async function createRecentPostsResourceList(context: MCPContext) {
       })) || []
     );
   } catch (error) {
-    console.error("Failed to list teams:", error);
+    context.logger.error("Failed to list teams:", error);
     return [];
   }
 }

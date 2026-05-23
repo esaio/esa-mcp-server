@@ -50,7 +50,10 @@ server.registerPrompt = ((name: string) => {
 
 await initI18n();
 
-const stubContext: MCPContext = {};
+const noop = () => {};
+const stubContext: MCPContext = {
+  logger: { log: noop, debug: noop, info: noop, warn: noop, error: noop },
+};
 setupTools(server, stubContext);
 setupResources(server, stubContext);
 setupPrompts(server, stubContext);

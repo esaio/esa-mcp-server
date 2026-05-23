@@ -1,7 +1,7 @@
-import type { MockInstance } from "vitest";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { withContext } from "../../api_client/with-context.js";
 import type { MCPContext } from "../../context/mcp-context.js";
+import type { Logger } from "../../logger/index.js";
 import { getTeams } from "../../tools/teams.js";
 import { createRecentPostsResourceList } from "../recent-posts-list.js";
 
@@ -10,16 +10,18 @@ vi.mock("../../tools/teams.js");
 
 describe("createRecentPostsResourceList", () => {
   let context: MCPContext;
-  let consoleErrorSpy: MockInstance<typeof console.error>;
+  let loggerSpy: { [K in keyof Logger]: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    context = {} as unknown as MCPContext;
-    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    loggerSpy = {
+      log: vi.fn(),
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
+    context = { logger: loggerSpy as unknown as Logger };
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    consoleErrorSpy.mockRestore();
   });
 
   it("should return team resources when teams are available", async () => {
@@ -72,7 +74,7 @@ describe("createRecentPostsResourceList", () => {
     const result = await createRecentPostsResourceList(context);
 
     expect(result).toEqual([]);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(loggerSpy.error).toHaveBeenCalledWith(
       "Failed to list teams:",
       error,
     );
@@ -86,7 +88,7 @@ describe("createRecentPostsResourceList", () => {
     const result = await createRecentPostsResourceList(context);
 
     expect(result).toEqual([]);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
+    expect(loggerSpy.error).toHaveBeenCalledWith(
       "Failed to list teams:",
       expect.any(SyntaxError),
     );

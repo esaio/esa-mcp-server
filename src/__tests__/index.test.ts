@@ -4,7 +4,9 @@ import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("MCP Server", () => {
-  let consoleErrorSpy: MockInstance<typeof console.error>;
+  // bin の logger は new Console({ stdout: process.stderr, stderr: process.stderr })
+  // で構築されるため、全てのログ出力先は process.stderr.write になる
+  let stderrWriteSpy: MockInstance<typeof process.stderr.write>;
   let processExitSpy: MockInstance<typeof process.exit>;
 
   const createMockConfig = (behavior?: { shouldThrow?: boolean }) => ({
@@ -86,18 +88,24 @@ describe("MCP Server", () => {
     return { MockMcpServer, MockStdioServerTransport };
   };
 
+  // Helper: collect all strings written to process.stderr via the spy
+  const stderrOutput = () =>
+    stderrWriteSpy.mock.calls.map((call) => String(call[0])).join("");
+
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
 
-    consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    stderrWriteSpy = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
     processExitSpy = vi
       .spyOn(process, "exit")
       .mockImplementation(() => undefined as never);
   });
 
   afterEach(() => {
-    consoleErrorSpy.mockRestore();
+    stderrWriteSpy.mockRestore();
     processExitSpy.mockRestore();
     vi.resetModules();
   });
@@ -125,10 +133,7 @@ describe("MCP Server", () => {
       // Expected to throw due to config validation
     }
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Configuration error:",
-      expect.any(Error),
-    );
+    expect(stderrOutput()).toContain("Configuration error:");
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
@@ -160,22 +165,20 @@ describe("MCP Server", () => {
       version: "1.0.0",
     });
 
-    const expectedEsaConfig = {
+    const expectedContext = {
       apiAccessToken: "test-token",
       apiBaseUrl: "https://api.esa.example.com",
+      logger: expect.any(Object),
     };
 
-    expect(mockSetupTools).toHaveBeenCalledWith(mockServer, expectedEsaConfig);
+    expect(mockSetupTools).toHaveBeenCalledWith(mockServer, expectedContext);
     expect(mockSetupResources).toHaveBeenCalledWith(
       mockServer,
-      expectedEsaConfig,
+      expectedContext,
     );
-    expect(mockSetupPrompts).toHaveBeenCalledWith(
-      mockServer,
-      expectedEsaConfig,
-    );
+    expect(mockSetupPrompts).toHaveBeenCalledWith(mockServer, expectedContext);
     expect(mockServer.connect).toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith("test-server v1.0.0 started");
+    expect(stderrOutput()).toContain("test-server v1.0.0 started");
   });
 
   it("should set up transport error handlers", async () => {
@@ -191,11 +194,12 @@ describe("MCP Server", () => {
     expect(mockTransport.onerror).toBeDefined();
 
     mockTransport.onclose?.();
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Transport closed");
+    expect(stderrOutput()).toContain("Transport closed");
 
     const testError = new Error("Test error");
     mockTransport.onerror?.(testError);
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Transport error:", testError);
+    expect(stderrOutput()).toContain("Transport error:");
+    expect(stderrOutput()).toContain("Test error");
   });
 
   it("should handle server startup errors", async () => {
@@ -207,10 +211,7 @@ describe("MCP Server", () => {
 
     await import("../index.js");
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Server startup error:",
-      expect.any(Error),
-    );
+    expect(stderrOutput()).toContain("Server startup error:");
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 });

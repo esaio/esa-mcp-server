@@ -2,7 +2,17 @@ import createClient from "openapi-fetch";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import packageJson from "../../../package.json" with { type: "json" };
 import type { paths } from "../../generated/api-types.js";
+import type { Logger } from "../../logger/index.js";
 import { createEsaClient } from "../index.js";
+
+// Minimal no-op logger for tests that don't assert on logging
+const noopLogger: Logger = {
+  log: () => {},
+  debug: () => {},
+  info: () => {},
+  warn: () => {},
+  error: () => {},
+};
 
 // Mock openapi-fetch to test client configuration without actual HTTP calls
 vi.mock("openapi-fetch", () => ({
@@ -40,7 +50,7 @@ describe("createEsaClient", () => {
   it("should create client with correct baseUrl", () => {
     const { config, mockCreateClient } = setupTest();
 
-    createEsaClient(config.apiAccessToken, config.apiBaseUrl);
+    createEsaClient(config.apiAccessToken, config.apiBaseUrl, noopLogger);
 
     expect(mockCreateClient).toHaveBeenCalledWith({
       baseUrl: config.apiBaseUrl,
@@ -50,7 +60,7 @@ describe("createEsaClient", () => {
   it("should add User-Agent and Auth middleware to client", () => {
     const { config, mockClient } = setupTest();
 
-    createEsaClient(config.apiAccessToken, config.apiBaseUrl);
+    createEsaClient(config.apiAccessToken, config.apiBaseUrl, noopLogger);
 
     expect(mockClient.use).toHaveBeenCalledTimes(2);
     expect(mockClient.use).toHaveBeenNthCalledWith(
@@ -70,7 +80,11 @@ describe("createEsaClient", () => {
   it("should return the configured client", () => {
     const { config, mockClient } = setupTest();
 
-    const result = createEsaClient(config.apiAccessToken, config.apiBaseUrl);
+    const result = createEsaClient(
+      config.apiAccessToken,
+      config.apiBaseUrl,
+      noopLogger,
+    );
 
     expect(result).toBe(mockClient);
   });
@@ -78,7 +92,7 @@ describe("createEsaClient", () => {
   it("should set User-Agent header in middleware", async () => {
     const { config, mockClient } = setupTest();
 
-    createEsaClient(config.apiAccessToken, config.apiBaseUrl);
+    createEsaClient(config.apiAccessToken, config.apiBaseUrl, noopLogger);
 
     // Get the User-Agent middleware function (first one registered)
     const useMock = mockClient.use as ReturnType<typeof vi.fn>;
@@ -102,7 +116,7 @@ describe("createEsaClient", () => {
   it("should set Authorization header in middleware", async () => {
     const { config, mockClient } = setupTest();
 
-    createEsaClient(config.apiAccessToken, config.apiBaseUrl);
+    createEsaClient(config.apiAccessToken, config.apiBaseUrl, noopLogger);
 
     // Get the Auth middleware function (second one registered)
     const useMock = mockClient.use as ReturnType<typeof vi.fn>;
@@ -128,8 +142,8 @@ describe("createEsaClient", () => {
     const token1 = "token-1";
     const token2 = "token-2";
 
-    createEsaClient(token1, config.apiBaseUrl);
-    createEsaClient(token2, config.apiBaseUrl);
+    createEsaClient(token1, config.apiBaseUrl, noopLogger);
+    createEsaClient(token2, config.apiBaseUrl, noopLogger);
 
     expect(mockCreateClient).toHaveBeenCalledTimes(2);
     expect(mockClient.use).toHaveBeenCalledTimes(4); // 2 middlewares × 2 clients
@@ -140,8 +154,8 @@ describe("createEsaClient", () => {
     const url1 = "https://api.esa.example.com";
     const url2 = "https://api.example.com";
 
-    createEsaClient(config.apiAccessToken, url1);
-    createEsaClient(config.apiAccessToken, url2);
+    createEsaClient(config.apiAccessToken, url1, noopLogger);
+    createEsaClient(config.apiAccessToken, url2, noopLogger);
 
     expect(mockCreateClient).toHaveBeenCalledWith({ baseUrl: url1 });
     expect(mockCreateClient).toHaveBeenCalledWith({ baseUrl: url2 });
