@@ -45,7 +45,12 @@ export async function getPost(
 
 export const createPostSchema = createSchemaWithTeamName({
   name: z.string().describe("The post name (title)"),
-  bodyMd: z.string().optional().describe("The post content in Markdown format"),
+  bodyMd: z
+    .string()
+    .optional()
+    .describe(
+      "The post content in Markdown format. Use 4 spaces for indentation.",
+    ),
   tags: z.array(z.string()).optional().describe("Tags for the post"),
   category: z.string().optional().describe("Category path (e.g., 'dev/docs')"),
   wip: z
@@ -102,7 +107,12 @@ export async function createPost(
 export const updatePostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to update"),
   name: z.string().optional().describe("The post name (title)"),
-  bodyMd: z.string().optional().describe("The post content in Markdown format"),
+  bodyMd: z
+    .string()
+    .optional()
+    .describe(
+      "The post content in Markdown format. Use 4 spaces for indentation.",
+    ),
   tags: z.array(z.string()).optional().describe("Tags for the post"),
   category: z.string().optional().describe("Category path (e.g., 'dev/docs')"),
   wip: z

@@ -52,7 +52,11 @@ export async function getComment(
 
 export const createCommentSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to comment on"),
-  bodyMd: z.string().describe("The comment content in Markdown format"),
+  bodyMd: z
+    .string()
+    .describe(
+      "The comment content in Markdown format. Use 4 spaces for indentation.",
+    ),
   user: z
     .string()
     .optional()
@@ -97,7 +101,11 @@ export async function createComment(
 
 export const updateCommentSchema = createSchemaWithTeamName({
   commentId: z.number().describe("The comment ID to update"),
-  bodyMd: z.string().describe("The updated comment content in Markdown format"),
+  bodyMd: z
+    .string()
+    .describe(
+      "The updated comment content in Markdown format. Use 4 spaces for indentation.",
+    ),
   user: z
     .string()
     .optional()
