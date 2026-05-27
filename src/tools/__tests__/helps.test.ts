@@ -37,6 +37,7 @@ describe("getSearchOptionsHelp", () => {
     expect(mockGetPost).toHaveBeenCalledWith(mockClient, {
       teamName: HELP_DOCS.TEAM,
       postNumber: HELP_DOCS.SEARCH_OPTIONS_POST_ID,
+      truncate: true,
     });
 
     expect((result.content[0] as TextContent).text).toBe("mocked response");
@@ -94,6 +95,7 @@ describe("getMarkdownSyntaxHelp", () => {
     expect(mockGetPost).toHaveBeenCalledWith(mockClient, {
       teamName: HELP_DOCS.TEAM,
       postNumber: HELP_DOCS.MARKDOWN_SYNTAX_POST_ID,
+      truncate: true,
     });
 
     expect((result.content[0] as TextContent).text).toBe(

@@ -2,6 +2,7 @@ import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createExpectedTransformed,
+  createLongContentPost,
   createMockPost,
   createNullBodyPost,
   createWipPost,
@@ -35,6 +36,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 123,
+      truncate: true,
     });
 
     expect(mockClient.GET).toHaveBeenCalledWith(
@@ -73,6 +75,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 123,
+      truncate: true,
     });
 
     const parsedResult = JSON.parse((result.content[0] as TextContent).text);
@@ -95,6 +98,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 999,
+      truncate: true,
     });
 
     expect(result).toEqual({
@@ -115,6 +119,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 123,
+      truncate: true,
     });
 
     expect(result).toEqual({
@@ -133,6 +138,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 123,
+      truncate: true,
     });
 
     expect(result).toEqual({
@@ -175,6 +181,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "test-team",
       postNumber: 789,
+      truncate: true,
     });
 
     const parsedResult = JSON.parse((result.content[0] as TextContent).text);
@@ -185,6 +192,7 @@ describe("getPost", () => {
     const result = await getPost(mockClient, {
       teamName: "",
       postNumber: 123,
+      truncate: true,
     });
 
     expect(result).toEqual({
@@ -197,6 +205,53 @@ describe("getPost", () => {
     });
 
     expect(mockClient.GET).not.toHaveBeenCalled();
+  });
+
+  it("should truncate body_md by default", async () => {
+    const longPost = createLongContentPost(15000);
+
+    mockClient.GET.mockResolvedValue({
+      data: longPost,
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    const result = await getPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      truncate: true,
+    });
+
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
+    expect(parsedResult.body_md).toBe(
+      `${"a".repeat(10000)}\n\n... (truncated)`,
+    );
+  });
+
+  it("should return full body_md when truncate is false", async () => {
+    const longPost = createLongContentPost(15000);
+
+    mockClient.GET.mockResolvedValue({
+      data: longPost,
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    const result = await getPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      truncate: false,
+    });
+
+    const parsedResult = JSON.parse((result.content[0] as TextContent).text);
+    expect(parsedResult.body_md).toBe("a".repeat(15000));
+    expect(parsedResult.body_md).not.toContain("(truncated)");
   });
 });
 

@@ -10,8 +10,16 @@ import { createSchemaWithTeamName } from "../schemas/team-name-schema.js";
 import { normalizePostName } from "../transformers/post-name-normalizer.js";
 import { transformPost } from "../transformers/post-transformer.js";
 
+const DEFAULT_GET_POST_TRUNCATE_LENGTH = 10000;
+
 export const getPostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to retrieve"),
+  truncate: z
+    .boolean()
+    .default(true)
+    .describe(
+      "Whether to truncate body_md to avoid overwhelming the agent context (default: true). If the response ends with '... (truncated)' and you need the full body (e.g. before calling esa_update_post to preserve the tail), retry with truncate: false.",
+    ),
 });
 
 export async function getPost(
@@ -35,7 +43,10 @@ export async function getPost(
       return formatToolError(error || response.status);
     }
     const post: components["schemas"]["Post"] = data;
-    const transformed = transformPost(post, { truncateBody: 10000 });
+    const transformed = transformPost(
+      post,
+      args.truncate ? { truncateBody: DEFAULT_GET_POST_TRUNCATE_LENGTH } : {},
+    );
 
     return formatToolResponse(transformed);
   } catch (error) {
