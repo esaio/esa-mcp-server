@@ -24,6 +24,7 @@ export async function getSearchOptionsHelp(
   return getPost(client, {
     teamName: HELP_DOCS.TEAM,
     postNumber: HELP_DOCS.SEARCH_OPTIONS_POST_ID,
+    truncate: true,
   });
 }
 
@@ -34,6 +35,7 @@ export async function getMarkdownSyntaxHelp(
   return getPost(client, {
     teamName: HELP_DOCS.TEAM,
     postNumber: HELP_DOCS.MARKDOWN_SYNTAX_POST_ID,
+    truncate: true,
   });
 }
 
