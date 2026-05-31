@@ -64,6 +64,9 @@
       "name": "esa_duplicate_post"
     },
     {
+      "name": "esa_rollback_post_revision"
+    },
+    {
       "name": "esa_get_search_options_help"
     },
     {

@@ -37,6 +37,8 @@ import {
   archivePostSchema,
   duplicatePost,
   duplicatePostSchema,
+  rollbackPostRevision,
+  rollbackPostRevisionSchema,
   shipPost,
   shipPostSchema,
 } from "./post-actions.js";
@@ -368,6 +370,21 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     },
     async (params: z.infer<typeof duplicatePostSchema>) =>
       withContext(context, duplicatePost, params),
+  );
+
+  server.registerTool(
+    "esa_rollback_post_revision",
+    {
+      title: "Roll back a post to a previous revision",
+      description:
+        "Rolls back a post to the specified revision, saving the restored content as a new revision.",
+      inputSchema: rollbackPostRevisionSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
+    },
+    async (params: z.infer<typeof rollbackPostRevisionSchema>) =>
+      withContext(context, rollbackPostRevision, params),
   );
 
   server.registerTool(

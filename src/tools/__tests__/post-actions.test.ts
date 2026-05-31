@@ -2,7 +2,12 @@ import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockPost } from "../../__tests__/fixtures/mock-post.js";
 import type { createEsaClient } from "../../api_client/index.js";
-import { archivePost, duplicatePost, shipPost } from "../post-actions.js";
+import {
+  archivePost,
+  duplicatePost,
+  rollbackPostRevision,
+  shipPost,
+} from "../post-actions.js";
 import * as postsModule from "../posts.js";
 
 vi.mock("../posts.js", () => ({
@@ -458,5 +463,137 @@ describe("duplicatePost", () => {
     });
 
     expect(mockClient.GET).not.toHaveBeenCalled();
+  });
+});
+
+describe("rollbackPostRevision", () => {
+  const mockClient = {
+    POST: vi.fn(),
+  } as unknown as ReturnType<typeof createEsaClient> & {
+    POST: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should roll back to the specified revision", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await rollbackPostRevision(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      revisionNumber: 5,
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/revisions/{revision_number}/rollback",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+            revision_number: 5,
+          },
+        },
+        body: {
+          post: {
+            wip: undefined,
+            message: undefined,
+          },
+        },
+      },
+    );
+  });
+
+  it("should pass wip and message when provided", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await rollbackPostRevision(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      revisionNumber: 5,
+      wip: false,
+      message: "Restore previous version",
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/revisions/{revision_number}/rollback",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+            revision_number: 5,
+          },
+        },
+        body: {
+          post: {
+            wip: false,
+            message: "Restore previous version",
+          },
+        },
+      },
+    );
+  });
+
+  it("should handle API error", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: undefined,
+      error: { error: "bad_request", message: "Cannot roll back to current" },
+      response: {
+        ok: false,
+        status: 400,
+      } as Response,
+    });
+
+    const result = await rollbackPostRevision(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      revisionNumber: 5,
+    });
+
+    expect((result.content[0] as TextContent).text).toContain("bad_request");
+  });
+
+  it("should handle network errors", async () => {
+    mockClient.POST.mockRejectedValue(new Error("Network connection failed"));
+
+    const result = await rollbackPostRevision(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      revisionNumber: 5,
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
+  });
+
+  it("should throw MissingTeamNameError when teamName is empty", async () => {
+    const result = await rollbackPostRevision(mockClient, {
+      teamName: "",
+      postNumber: 123,
+      revisionNumber: 5,
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Missing required parameter 'teamName'",
+    );
+    expect(mockClient.POST).not.toHaveBeenCalled();
   });
 });

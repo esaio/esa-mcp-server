@@ -678,6 +678,250 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/v1/teams/{team_name}/posts/{post_number}/revisions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * リビジョン一覧取得
+     * @description 指定された記事のリビジョン一覧を取得します。
+     *     並び順はリビジョン番号の降順（新しいものが先）です。
+     */
+    get: {
+      parameters: {
+        query?: {
+          /** @description ページ番号（1から開始） */
+          page?: components["parameters"]["page"];
+          /** @description 1ページあたりの要素数 */
+          per_page?: components["parameters"]["per_page"];
+        };
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["RevisionList"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/revisions/{revision_number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * リビジョン取得
+     * @description 指定されたリビジョンを取得します
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+          /** @description リビジョン番号 */
+          revision_number: components["parameters"]["revision_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              revision: components["schemas"]["Revision"];
+            };
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/revisions/compare/{from_revision_number}...{to_revision_number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * リビジョン間の差分取得
+     * @description 指定された2つのリビジョン間の差分を取得します
+     */
+    get: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+          /** @description 比較元のリビジョン番号 */
+          from_revision_number: components["parameters"]["from_revision_number"];
+          /** @description 比較先のリビジョン番号 */
+          to_revision_number: components["parameters"]["to_revision_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description 成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": {
+              diff: components["schemas"]["RevisionDiff"];
+            };
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/revisions/{revision_number}/rollback": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 指定リビジョンへのロールバック
+     * @description 指定されたリビジョンの内容（タイトル・カテゴリ・タグ・本文）に記事を戻し、新しいリビジョンとして保存します。
+     *     履歴は削除されず、ロールバックした内容が最新リビジョンとして積まれます。
+     *     wip 状態はデフォルトで指定リビジョンの状態を継承します（`wip` を指定した場合はその値で上書き）。
+     *     現在（最新）のリビジョンへのロールバックはできません（400 を返します）。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+          /** @description リビジョン番号 */
+          revision_number: components["parameters"]["revision_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: {
+        content: {
+          "application/json": {
+            post?: {
+              /** @description ロールバック後の wip 状態。省略時は指定リビジョンの wip を継承します */
+              wip?: boolean;
+              /** @description 変更メッセージ。省略時は "Roll back to rev {revision_number}: ..." が設定されます */
+              message?: string;
+            };
+          };
+        };
+      };
+      responses: {
+        /** @description ロールバック成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Post"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/v1/teams/{team_name}/posts/{post_number}/comments": {
     parameters: {
       query?: never;
@@ -2718,6 +2962,57 @@ export interface components {
       /** @description コメント投稿者のscreen_name（owner権限必要） */
       user?: string;
     };
+    Revision: {
+      /** @description リビジョン番号 */
+      number: number;
+      /** @description 記事名（カテゴリ・タグを除く） */
+      name: string;
+      /** @description カテゴリとタグを含む記事名 */
+      full_name: string;
+      /** @description カテゴリ */
+      category: string | null;
+      /** @description タグ */
+      tags: string[];
+      /** @description Markdownの本文 */
+      body_md: string;
+      /** @description HTMLの本文 */
+      body_html: string;
+      /** @description 直前のリビジョンとの差分（HTML） */
+      diff: string | null;
+      /** @description 更新メッセージ */
+      message: string | null;
+      /**
+       * Format: date-time
+       * @description 作成日時
+       */
+      created_at: string;
+      /**
+       * Format: date-time
+       * @description 更新日時
+       */
+      updated_at: string;
+      /** @description WIP状態かどうか */
+      wip: boolean;
+      created_by: components["schemas"]["User"];
+      /**
+       * Format: uri
+       * @description リビジョンのURL
+       */
+      url: string;
+    };
+    RevisionList: components["schemas"]["Pagination"] & {
+      revisions: components["schemas"]["Revision"][];
+    };
+    RevisionDiff: {
+      /** @description 比較元のリビジョン番号 */
+      from_revision_number: number;
+      /** @description 比較先のリビジョン番号 */
+      to_revision_number: number;
+      /** @description 差分（HTML） */
+      diff_html: string;
+      /** @description 差分（テキスト） */
+      diff_text: string;
+    };
     Star: {
       /**
        * Format: date-time
@@ -3079,6 +3374,12 @@ export interface components {
     post_number: number;
     /** @description コメントID */
     comment_id: number;
+    /** @description リビジョン番号 */
+    revision_number: number;
+    /** @description 比較元のリビジョン番号 */
+    from_revision_number: number;
+    /** @description 比較先のリビジョン番号 */
+    to_revision_number: number;
     /** @description 追加で含める情報（カンマ区切り） */
     include: ("comments" | "stargazers" | "comments.stargazers")[];
     /** @description 追加で含める情報（カンマ区切り）。記事詳細 API でのみ `backlinks` が利用可能。 */
