@@ -31,9 +31,9 @@ describe("setupTools", () => {
 
     setupTools(server, context);
 
-    expect(registerToolSpy).toHaveBeenCalledTimes(25);
+    expect(registerToolSpy).toHaveBeenCalledTimes(26);
 
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 26; i++) {
       const call = registerToolSpy.mock.calls[i] as unknown as [
         string,
         object,

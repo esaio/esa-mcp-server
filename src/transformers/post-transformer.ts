@@ -14,6 +14,7 @@ export function transformPost(
 
   return {
     url: post.url,
+    revision_number: post.revision_number,
     wip: post.wip ? "WIP" : ("Shipped" as const),
     kind: post.kind,
     category_and_title_and_tags: post.full_name,

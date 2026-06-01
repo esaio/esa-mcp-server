@@ -13,6 +13,7 @@ describe("transformPost", () => {
 
     expect(result).toEqual({
       url: mockPost.url,
+      revision_number: mockPost.revision_number,
       wip: "Shipped",
       kind: "stock",
       category_and_title_and_tags: mockPost.full_name,

@@ -7,6 +7,7 @@ import {
 } from "../formatters/mcp-response.js";
 import type { components } from "../generated/api-types.js";
 import { createSchemaWithTeamName } from "../schemas/team-name-schema.js";
+import { transformPost } from "../transformers/post-transformer.js";
 import { normalizeTeamName } from "../transformers/team-name-normalizer.js";
 import { createPost, updatePost } from "./posts.js";
 
@@ -126,6 +127,62 @@ export async function duplicatePost(
       bodyMd: postNew.body_md,
       wip: true,
     });
+  } catch (error) {
+    return formatToolError(error);
+  }
+}
+
+export const rollbackPostRevisionSchema = createSchemaWithTeamName({
+  postNumber: z.number().describe("The post number to roll back"),
+  revisionNumber: z
+    .number()
+    .describe(
+      "The revision number to roll back to, e.g. the revision_number from esa_get_post before your edits",
+    ),
+  wip: z
+    .boolean()
+    .optional()
+    .describe(
+      "WIP state after rollback. Defaults to the target revision's WIP state",
+    ),
+  message: z.string().optional().describe("Change message for the rollback"),
+});
+
+export async function rollbackPostRevision(
+  client: ReturnType<typeof createEsaClient>,
+  args: z.infer<typeof rollbackPostRevisionSchema>,
+) {
+  try {
+    if (!args.teamName) {
+      throw new MissingTeamNameError();
+    }
+    const { data, error, response } = await client.POST(
+      "/v1/teams/{team_name}/posts/{post_number}/revisions/{revision_number}/rollback",
+      {
+        params: {
+          path: {
+            team_name: args.teamName,
+            post_number: args.postNumber,
+            revision_number: args.revisionNumber,
+          },
+        },
+        body: {
+          post: {
+            wip: args.wip,
+            message: args.message,
+          },
+        },
+      },
+    );
+
+    if (error || !response.ok) {
+      return formatToolError(error || response.status);
+    }
+
+    const post: components["schemas"]["Post"] = data;
+    const transformed = transformPost(post, { omitBody: true });
+
+    return formatToolResponse(transformed);
   } catch (error) {
     return formatToolError(error);
   }
