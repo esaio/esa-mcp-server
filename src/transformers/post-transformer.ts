@@ -1,6 +1,7 @@
 import type { components } from "../generated/api-types.js";
 import {
   type BodyTransformOptions,
+  computeBodyMdStats,
   processBodyMd,
 } from "./body-transformer.js";
 
@@ -11,6 +12,12 @@ export function transformPost(
   options: PostTransformOptions = {},
 ) {
   const bodyMd = processBodyMd(post.body_md, options);
+  // Omit stats alongside the body so mutation responses (create/update/rollback,
+  // which pass omitBody) don't return stats for a body they don't include.
+  // truncate still keeps stats so they reflect the full, pre-truncation body.
+  const bodyMdStats = options.omitBody
+    ? undefined
+    : computeBodyMdStats(post.body_md);
 
   return {
     url: post.url,
@@ -19,6 +26,7 @@ export function transformPost(
     kind: post.kind,
     category_and_title_and_tags: post.full_name,
     ...(bodyMd !== undefined && { body_md: bodyMd }),
+    ...(bodyMdStats !== undefined && { body_md_stats: bodyMdStats }),
     created_at: post.created_at,
     updated_at: post.updated_at,
     created_by: post.created_by,

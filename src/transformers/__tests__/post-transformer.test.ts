@@ -18,6 +18,10 @@ describe("transformPost", () => {
       kind: "stock",
       category_and_title_and_tags: mockPost.full_name,
       body_md: mockPost.body_md,
+      body_md_stats: {
+        characters: 41,
+        lines: 3,
+      },
       created_at: mockPost.created_at,
       updated_at: mockPost.updated_at,
       created_by: mockPost.created_by,
@@ -67,6 +71,38 @@ describe("transformPost", () => {
     const result = transformPost(postWithUndefinedBody, { truncateBody: 500 });
 
     expect(result.body_md).toBe(undefined);
+  });
+
+  it("should report stats for the full body even when truncated", () => {
+    const longPost = createLongContentPost(600);
+
+    const result = transformPost(longPost, { truncateBody: 500 });
+
+    expect(result.body_md).toBe(`${"a".repeat(500)}\n\n... (truncated)`);
+    expect(result.body_md_stats).toEqual({ characters: 600, lines: 1 });
+  });
+
+  it("should omit body_md_stats when body_md is omitted", () => {
+    const result = transformPost(createMockPost(), { omitBody: true });
+
+    expect(result.body_md).toBe(undefined);
+    expect(result).not.toHaveProperty("body_md_stats");
+  });
+
+  it("should omit body_md_stats when body_md is undefined", () => {
+    const result = transformPost(createNullBodyPost());
+
+    expect(result).not.toHaveProperty("body_md_stats");
+  });
+
+  it("should count characters by grapheme cluster", () => {
+    // The family emoji is a single grapheme built from 7 code points
+    // (11 UTF-16 code units); it must count as one character.
+    const post = createMockPost({ body_md: "a👨‍👩‍👧‍👦b" });
+
+    const result = transformPost(post);
+
+    expect(result.body_md_stats).toEqual({ characters: 3, lines: 1 });
   });
 
   it("should include backlinks_count when present", () => {

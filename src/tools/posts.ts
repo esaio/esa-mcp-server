@@ -18,7 +18,7 @@ export const getPostSchema = createSchemaWithTeamName({
     .boolean()
     .default(true)
     .describe(
-      "Whether to truncate body_md to avoid overwhelming the agent context (default: true). If the response ends with '... (truncated)' and you need the full body (e.g. before calling esa_update_post to preserve the tail), retry with truncate: false.",
+      "Whether to truncate body_md to avoid overwhelming the agent context (default: true). If the response ends with '... (truncated)' and you need the full body (e.g. before calling esa_update_post to preserve the tail), retry with truncate: false. body_md_stats reports the full body's character and line counts even when truncated.",
     ),
 });
 
