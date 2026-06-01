@@ -22,7 +22,7 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 ### Post Management
 
 - `esa_search_posts` - Search for posts in esa.io
-- `esa_get_post` - Get a specific post by post number (includes `backlinks_count`)
+- `esa_get_post` - Get a specific post by post number (includes `backlinks_count` and `body_md_stats` with the body's character and line counts)
 - `esa_get_post_backlinks` - List posts that reference a specific post with pagination
 - `esa_create_post` - Create a new post with tags, category, and WIP status
 - `esa_update_post` - Update existing post (title, content, tags, category, WIP status)
