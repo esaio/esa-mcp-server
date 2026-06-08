@@ -2,6 +2,7 @@
 import { Console } from "node:console";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { handleCliArgs } from "./cli.js";
 import { config, validateConfig } from "./config/index.js";
 import type { StdioContext } from "./context/stdio-context.js";
 import { initI18n } from "./i18n/index.js";
@@ -15,14 +16,24 @@ const logger = new Console({
   stderr: process.stderr,
 });
 
-try {
-  validateConfig();
-} catch (error) {
-  logger.error("Configuration error:", error);
-  process.exit(1);
-}
+const cliAction = handleCliArgs(process.argv.slice(2));
 
 async function main() {
+  if (cliAction.type === "exit") {
+    const stream = cliAction.status === 0 ? process.stdout : process.stderr;
+    stream.write(`${cliAction.output}\n`);
+    process.exit(cliAction.status);
+    return;
+  }
+
+  try {
+    validateConfig();
+  } catch (error) {
+    logger.error("Configuration error:", error);
+    process.exit(1);
+    return;
+  }
+
   await initI18n();
 
   const server = new McpServer({
