@@ -132,6 +132,103 @@ export async function duplicatePost(
   }
 }
 
+const insertContentShape = {
+  postNumber: z.number().describe("The post number to add content to"),
+  content: z
+    .string()
+    .describe(
+      "The Markdown content to insert. Use 4 spaces for indentation. Line endings are normalized to LF.",
+    ),
+  wip: z
+    .boolean()
+    .optional()
+    .describe(
+      "WIP state after the insert. Defaults to the post's current WIP state",
+    ),
+  message: z
+    .string()
+    .optional()
+    .describe('Change message. Defaults to "Updated via API." when omitted'),
+};
+
+export const appendPostSchema = createSchemaWithTeamName(insertContentShape);
+
+export async function appendPost(
+  client: ReturnType<typeof createEsaClient>,
+  args: z.infer<typeof appendPostSchema>,
+) {
+  try {
+    if (!args.teamName) {
+      throw new MissingTeamNameError();
+    }
+    const { data, error, response } = await client.POST(
+      "/v1/teams/{team_name}/posts/{post_number}/append",
+      {
+        params: {
+          path: { team_name: args.teamName, post_number: args.postNumber },
+        },
+        body: {
+          post: {
+            content: args.content,
+            wip: args.wip,
+            message: args.message,
+          },
+        },
+      },
+    );
+
+    if (error || !response.ok) {
+      return formatToolError(error || response.status);
+    }
+
+    const post: components["schemas"]["Post"] = data;
+    const transformed = transformPost(post, { omitBody: true });
+
+    return formatToolResponse(transformed);
+  } catch (error) {
+    return formatToolError(error);
+  }
+}
+
+export const prependPostSchema = createSchemaWithTeamName(insertContentShape);
+
+export async function prependPost(
+  client: ReturnType<typeof createEsaClient>,
+  args: z.infer<typeof prependPostSchema>,
+) {
+  try {
+    if (!args.teamName) {
+      throw new MissingTeamNameError();
+    }
+    const { data, error, response } = await client.POST(
+      "/v1/teams/{team_name}/posts/{post_number}/prepend",
+      {
+        params: {
+          path: { team_name: args.teamName, post_number: args.postNumber },
+        },
+        body: {
+          post: {
+            content: args.content,
+            wip: args.wip,
+            message: args.message,
+          },
+        },
+      },
+    );
+
+    if (error || !response.ok) {
+      return formatToolError(error || response.status);
+    }
+
+    const post: components["schemas"]["Post"] = data;
+    const transformed = transformPost(post, { omitBody: true });
+
+    return formatToolResponse(transformed);
+  } catch (error) {
+    return formatToolError(error);
+  }
+}
+
 export const rollbackPostRevisionSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to roll back"),
   revisionNumber: z

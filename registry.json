@@ -25,6 +25,12 @@
       "name": "esa_update_post"
     },
     {
+      "name": "esa_append_post"
+    },
+    {
+      "name": "esa_prepend_post"
+    },
+    {
       "name": "esa_get_comment"
     },
     {

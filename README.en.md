@@ -26,6 +26,8 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 - `esa_get_post_backlinks` - List posts that reference a specific post with pagination
 - `esa_create_post` - Create a new post with tags, category, and WIP status
 - `esa_update_post` - Update existing post (title, content, tags, category, WIP status)
+- `esa_append_post` - Append content to the end of a post's body (no need to fetch the current body; saved as a new revision)
+- `esa_prepend_post` - Prepend content to the beginning of a post's body (no need to fetch the current body; saved as a new revision)
 
 ### Post Actions
 
