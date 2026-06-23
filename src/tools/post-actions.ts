@@ -137,7 +137,7 @@ const insertContentShape = {
   content: z
     .string()
     .describe(
-      "The Markdown content to insert. Use 4 spaces for indentation. Line endings are normalized to LF.",
+      "The Markdown content to insert. Use 4 spaces for indentation. Line endings are normalized to LF. Include a blank line at the boundary to insert it as a separate block.",
     ),
   wip: z
     .boolean()
