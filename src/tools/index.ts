@@ -175,7 +175,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     {
       title: "Update an existing esa post",
       description:
-        "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously. When you only want to add content to the start or end of the body, prefer esa_prepend_post or esa_append_post - they insert without fetching or resending the whole body.",
+        "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously. To only add content to the start or end of the body, use esa_append_post or esa_prepend_post instead.",
       inputSchema: updatePostSchema.shape,
       annotations: {
         destructiveHint: true,
