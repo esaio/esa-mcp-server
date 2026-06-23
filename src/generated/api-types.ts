@@ -618,6 +618,128 @@ export interface paths {
     };
     trace?: never;
   };
+  "/v1/teams/{team_name}/posts/{post_number}/append": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 記事末尾への追記
+     * @description 指定された記事の本文末尾に `content` を追記し、新しいリビジョンとして保存します。
+     *     記事全体を送り直す更新（PATCH）と異なり、既存の本文を取得せずに末尾追記だけを行えます。
+     *     同時編集中（リアルタイム共同編集）の記事の場合は、編集セッションにも追記が反映されます。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            post: components["schemas"]["PostInsertInput"];
+          };
+        };
+      };
+      responses: {
+        /** @description 追記成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Post"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/prepend": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 記事先頭への追記
+     * @description 指定された記事の本文先頭に `content` を追記し、新しいリビジョンとして保存します。
+     *     挿入位置が本文先頭である点を除き、記事末尾へ追記する append と同じ挙動です。
+     *     同時編集中（リアルタイム共同編集）の記事の場合は、編集セッションにも追記が反映されます。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            post: components["schemas"]["PostInsertInput"];
+          };
+        };
+      };
+      responses: {
+        /** @description 追記成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Post"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/v1/teams/{team_name}/posts/{post_number}/backlinks": {
     parameters: {
       query?: never;
@@ -2919,6 +3041,15 @@ export interface components {
         /** @description 変更前の最終更新者のscreen_name */
         user?: string;
       };
+    };
+    /** @description 記事本文へ追記する内容。append は本文末尾、prepend は本文先頭に挿入されます。 */
+    PostInsertInput: {
+      /** @description 追記する本文（Markdown）。改行コードは LF に正規化されます */
+      content: string;
+      /** @description 追記後の WIP 状態。省略時は記事の現在の WIP 状態を維持します */
+      wip?: boolean;
+      /** @description 変更メッセージ。省略時は "Updated via API." が設定されます */
+      message?: string;
     };
     Comment: {
       /** @description コメントID */

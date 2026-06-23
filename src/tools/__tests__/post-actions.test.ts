@@ -3,8 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockPost } from "../../__tests__/fixtures/mock-post.js";
 import type { createEsaClient } from "../../api_client/index.js";
 import {
+  appendPost,
   archivePost,
   duplicatePost,
+  prependPost,
   rollbackPostRevision,
   shipPost,
 } from "../post-actions.js";
@@ -589,6 +591,270 @@ describe("rollbackPostRevision", () => {
       teamName: "",
       postNumber: 123,
       revisionNumber: 5,
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Missing required parameter 'teamName'",
+    );
+    expect(mockClient.POST).not.toHaveBeenCalled();
+  });
+});
+
+describe("appendPost", () => {
+  const mockClient = {
+    POST: vi.fn(),
+  } as unknown as ReturnType<typeof createEsaClient> & {
+    POST: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should append content to the post body", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await appendPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "## Appended section",
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/append",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+          },
+        },
+        body: {
+          post: {
+            content: "## Appended section",
+            wip: undefined,
+            message: undefined,
+          },
+        },
+      },
+    );
+  });
+
+  it("should pass wip and message when provided", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await appendPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "log entry",
+      wip: false,
+      message: "Add log entry",
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/append",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+          },
+        },
+        body: {
+          post: {
+            content: "log entry",
+            wip: false,
+            message: "Add log entry",
+          },
+        },
+      },
+    );
+  });
+
+  it("should handle API error", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: undefined,
+      error: { error: "bad_request", message: "content is required" },
+      response: {
+        ok: false,
+        status: 400,
+      } as Response,
+    });
+
+    const result = await appendPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "",
+    });
+
+    expect((result.content[0] as TextContent).text).toContain("bad_request");
+  });
+
+  it("should handle network errors", async () => {
+    mockClient.POST.mockRejectedValue(new Error("Network connection failed"));
+
+    const result = await appendPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "log entry",
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
+  });
+
+  it("should throw MissingTeamNameError when teamName is empty", async () => {
+    const result = await appendPost(mockClient, {
+      teamName: "",
+      postNumber: 123,
+      content: "log entry",
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Missing required parameter 'teamName'",
+    );
+    expect(mockClient.POST).not.toHaveBeenCalled();
+  });
+});
+
+describe("prependPost", () => {
+  const mockClient = {
+    POST: vi.fn(),
+  } as unknown as ReturnType<typeof createEsaClient> & {
+    POST: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should prepend content to the post body", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await prependPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "## Prepended section",
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/prepend",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+          },
+        },
+        body: {
+          post: {
+            content: "## Prepended section",
+            wip: undefined,
+            message: undefined,
+          },
+        },
+      },
+    );
+  });
+
+  it("should pass wip and message when provided", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await prependPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "header note",
+      wip: true,
+      message: "Add header note",
+    });
+
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/prepend",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+          },
+        },
+        body: {
+          post: {
+            content: "header note",
+            wip: true,
+            message: "Add header note",
+          },
+        },
+      },
+    );
+  });
+
+  it("should handle API error", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: undefined,
+      error: { error: "bad_request", message: "content is required" },
+      response: {
+        ok: false,
+        status: 400,
+      } as Response,
+    });
+
+    const result = await prependPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "",
+    });
+
+    expect((result.content[0] as TextContent).text).toContain("bad_request");
+  });
+
+  it("should handle network errors", async () => {
+    mockClient.POST.mockRejectedValue(new Error("Network connection failed"));
+
+    const result = await prependPost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      content: "header note",
+    });
+
+    expect((result.content[0] as TextContent).text).toContain(
+      "Network connection failed",
+    );
+  });
+
+  it("should throw MissingTeamNameError when teamName is empty", async () => {
+    const result = await prependPost(mockClient, {
+      teamName: "",
+      postNumber: 123,
+      content: "header note",
     });
 
     expect((result.content[0] as TextContent).text).toContain(

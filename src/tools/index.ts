@@ -33,10 +33,14 @@ import {
   searchHelpSchema,
 } from "./helps.js";
 import {
+  appendPost,
+  appendPostSchema,
   archivePost,
   archivePostSchema,
   duplicatePost,
   duplicatePostSchema,
+  prependPost,
+  prependPostSchema,
   rollbackPostRevision,
   rollbackPostRevisionSchema,
   shipPost,
@@ -171,7 +175,7 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     {
       title: "Update an existing esa post",
       description:
-        "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously.",
+        "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously. To only add content to the start or end of the body, use esa_append_post or esa_prepend_post instead.",
       inputSchema: updatePostSchema.shape,
       annotations: {
         destructiveHint: true,
@@ -179,6 +183,36 @@ export function setupTools(server: McpServer, context: MCPContext): void {
     },
     async (params: z.infer<typeof updatePostSchema>) =>
       withContext(context, updatePost, params),
+  );
+
+  server.registerTool(
+    "esa_append_post",
+    {
+      title: "Append content to an existing esa post",
+      description:
+        "Appends Markdown content to the end of an existing post's body, saving it as a new revision. Unlike esa_update_post, this does not require fetching the current body first, making it ideal for adding to a post (e.g. log entries, meeting notes). Optionally set wip to change the WIP state.",
+      inputSchema: appendPostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
+    },
+    async (params: z.infer<typeof appendPostSchema>) =>
+      withContext(context, appendPost, params),
+  );
+
+  server.registerTool(
+    "esa_prepend_post",
+    {
+      title: "Prepend content to an existing esa post",
+      description:
+        "Prepends Markdown content to the beginning of an existing post's body, saving it as a new revision. Unlike esa_update_post, this does not require fetching the current body first. Behaves the same as esa_append_post except content is inserted at the start of the body. Optionally set wip to change the WIP state.",
+      inputSchema: prependPostSchema.shape,
+      annotations: {
+        destructiveHint: true,
+      },
+    },
+    async (params: z.infer<typeof prependPostSchema>) =>
+      withContext(context, prependPost, params),
   );
 
   server.registerTool(
