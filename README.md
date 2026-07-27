@@ -1,5 +1,7 @@
 # esa MCP Server
 
+[![MCP Toplist](https://mcptoplist.com/badge/io.github.esaio%2Fesa.svg)](https://mcptoplist.com/server/io.github.esaio%2Fesa)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **日本語** | [English](https://github.com/esaio/esa-mcp-server/blob/main/README.en.md)
