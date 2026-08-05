@@ -40,7 +40,10 @@ export async function archivePost(
     const post: components["schemas"]["Post"] = data;
     const currentCategory = post.category || "";
 
-    if (currentCategory.startsWith("Archived/")) {
+    if (
+      currentCategory === "Archived" ||
+      currentCategory.startsWith("Archived/")
+    ) {
       return formatToolResponse({
         message: "Post is already archived",
         category: currentCategory,

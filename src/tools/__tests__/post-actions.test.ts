@@ -124,6 +124,33 @@ describe("archivePost", () => {
     );
   });
 
+  it("should not archive a post in the root Archived category again", async () => {
+    const currentPost = createMockPost({
+      number: 123,
+      category: "Archived",
+    });
+
+    mockClient.GET.mockResolvedValue({
+      data: currentPost,
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    const result = await archivePost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+    });
+
+    expect(mockUpdatePost).not.toHaveBeenCalled();
+    expect((result.content[0] as TextContent).text).toContain(
+      "Post is already archived",
+    );
+    expect((result.content[0] as TextContent).text).toContain('"Archived"');
+  });
+
   it("should handle GET error", async () => {
     const mockError = { error: "not_found", message: "Post not found" };
 
