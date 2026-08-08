@@ -5,6 +5,9 @@ updates:
   schedule:
     interval: daily
 - package-ecosystem: npm
+  # サプライチェーン攻撃対策: 公開から 7 日未満のバージョンを bump しない
+  cooldown:
+    default-days: 7
   directory: "/"
   schedule:
     interval: daily
