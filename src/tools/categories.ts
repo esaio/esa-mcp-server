@@ -47,7 +47,7 @@ export async function getCategories(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -79,7 +79,7 @@ export async function getTopCategories(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 

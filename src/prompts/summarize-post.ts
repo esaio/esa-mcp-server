@@ -42,7 +42,7 @@ export async function summarizePost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatPromptError(error || response.status);
     }
 

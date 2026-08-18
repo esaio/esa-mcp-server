@@ -27,7 +27,7 @@ export async function getRecentPosts(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatResourceError(error || response.status, uri);
     }
 

@@ -45,7 +45,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -96,7 +95,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -147,7 +145,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -207,7 +204,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -260,7 +256,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -298,7 +293,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -366,7 +360,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -408,7 +401,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -464,7 +456,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -527,7 +518,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -565,7 +555,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -610,8 +599,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
-        409: components["responses"]["ConflictError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -668,7 +655,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -729,7 +715,60 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/posts/{post_number}/archive": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 記事のアーカイブ
+     * @description 指定された記事を `Archived/` 配下へ移動し、新しいリビジョンとして保存します。
+     *     元のカテゴリは維持され、`Foo/Bar` の記事は `Archived/Foo/Bar` になります。
+     *     既に `Archived/` 配下にある記事に対しては何も変更せず、現在の記事を返します（`Archived/Archived/...` にはなりません）。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+          /** @description 記事番号 */
+          post_number: components["parameters"]["post_number"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        /** @description アーカイブ成功 */
+        200: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["Post"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -787,7 +826,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -846,7 +884,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -903,7 +940,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -962,7 +998,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1033,7 +1068,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1089,7 +1123,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1133,7 +1166,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1187,7 +1219,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1250,7 +1281,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1288,7 +1318,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1333,7 +1362,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1385,7 +1413,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1442,7 +1469,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1478,7 +1504,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1533,7 +1558,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1590,7 +1614,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1626,7 +1649,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1681,7 +1703,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1734,7 +1755,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1770,7 +1790,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1829,7 +1848,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1880,7 +1898,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -1936,7 +1953,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2016,7 +2032,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2072,7 +2087,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2126,13 +2140,92 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
     };
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/attachments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * ファイルアップロード
+     * @description ファイルをアップロードします。`multipart/form-data` でファイル本体を送信すると、
+     *     esa 側で S3 への転送まで行い、記事やコメントに埋め込める URL を返します。
+     *
+     *     レスポンスの `attachment.url` をそのまま Markdown（例: `![alt](url)` や `<img src="url">`）に
+     *     記載することで、アップロードしたファイルを参照できます。
+     *
+     *     アップロード可能な最大ファイルサイズはチームの設定により異なります（既定 10MB、
+     *     セキュアバケット/カスタム S3 利用時は 50MB）。上限を超えると 413 を返します。
+     *
+     *     このエンドポイントには通常の API レート制限に加えて、アップロード専用の
+     *     より厳しいレート制限（ユーザーあたり10秒間に3リクエスト）が適用されます。
+     *
+     *     アップロードは20秒以内に完了する必要があります。超過した場合は 408 を返すため、
+     *     回線状況を確認し、ファイルサイズを小さくして再試行してください。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "multipart/form-data": {
+            /**
+             * Format: binary
+             * @description アップロードするファイル本体
+             */
+            file: string;
+            /**
+             * @description ファイル名（任意）。省略した場合は `file` のファイル名を使用します。
+             *     URL の拡張子に反映されます。
+             */
+            name?: string;
+          };
+        };
+      };
+      responses: {
+        /** @description アップロード成功 */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content: {
+            "application/json": components["schemas"]["AttachmentUploadResult"];
+          };
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        408: components["responses"]["RequestTimeoutError"];
+        413: components["responses"]["RequestEntityTooLargeError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
     delete?: never;
     options?: never;
     head?: never;
@@ -2177,7 +2270,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2230,7 +2322,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2284,7 +2375,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2324,7 +2414,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2376,7 +2465,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2427,7 +2515,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2478,7 +2565,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2530,7 +2616,6 @@ export interface paths {
         403: components["responses"]["ForbiddenError"];
         404: components["responses"]["NotFoundError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2613,7 +2698,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2694,7 +2778,111 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/feedbacks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * フィードバック送信
+     * @description esa.io 運営へのフィードバックを送信します。
+     *     チームに紐づかないフィードバックを送りたい場合に利用します。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path?: never;
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            feedback: components["schemas"]["FeedbackInput"];
+          };
+        };
+      };
+      responses: {
+        /** @description 送信成功（レスポンスボディはありません） */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        405: components["responses"]["MethodNotAllowedError"];
+        429: components["responses"]["TooManyRequestsError"];
+        500: components["responses"]["InternalServerError"];
+      };
+    };
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/v1/teams/{team_name}/feedbacks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * フィードバック送信（チーム指定）
+     * @description 指定したチームに紐づけて、esa.io 運営へのフィードバックを送信します。
+     */
+    post: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          /** @description チーム名 */
+          team_name: components["parameters"]["team_name"];
+        };
+        cookie?: never;
+      };
+      requestBody: {
+        content: {
+          "application/json": {
+            feedback: components["schemas"]["FeedbackInput"];
+          };
+        };
+      };
+      responses: {
+        /** @description 送信成功（レスポンスボディはありません） */
+        201: {
+          headers: {
+            [name: string]: unknown;
+          };
+          content?: never;
+        };
+        400: components["responses"]["BadRequestError"];
+        401: components["responses"]["UnauthorizedError"];
+        402: components["responses"]["PaymentRequiredError"];
+        403: components["responses"]["ForbiddenError"];
+        404: components["responses"]["NotFoundError"];
+        405: components["responses"]["MethodNotAllowedError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2742,7 +2930,6 @@ export interface paths {
         402: components["responses"]["PaymentRequiredError"];
         403: components["responses"]["ForbiddenError"];
         405: components["responses"]["MethodNotAllowedError"];
-        406: components["responses"]["NotAcceptableError"];
         429: components["responses"]["TooManyRequestsError"];
         500: components["responses"]["InternalServerError"];
       };
@@ -2759,6 +2946,30 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    AttachmentUploadResult: {
+      attachment: {
+        /**
+         * @description 記事やコメントに埋め込める添付ファイルのURL
+         * @example https://img.esa.io/uploads/production/attachments/1/2026/07/22/1/xxxxxxxx.png
+         */
+        url: string;
+        /**
+         * @description ファイル名
+         * @example diagram.png
+         */
+        name: string;
+        /**
+         * @description ファイルサイズ（バイト）
+         * @example 12345
+         */
+        size: number;
+        /**
+         * @description ファイル本体から判定したMIMEタイプ
+         * @example image/png
+         */
+        content_type: string;
+      };
+    };
     Error: {
       /** @description エラーコード */
       error: string;
@@ -3264,6 +3475,29 @@ export interface components {
       /** @description 作成された絵文字のコード */
       code: string;
     };
+    FeedbackInput: {
+      /** @description フィードバックの本文 */
+      message: string;
+      /**
+       * Format: email
+       * @description 返信先のメールアドレス
+       */
+      email?: string;
+      /**
+       * @description クライアント固有の付随情報。任意のキーを持つ JSON オブジェクトをそのまま保存します。
+       *     スキーマは固定されておらず、送信元クライアントが実行環境やコンテキスト情報を
+       *     任意のキーで添付します。example はその一例です。
+       * @example {
+       *       "client_name": "esa-client",
+       *       "client_version": "1.0.0",
+       *       "os": "darwin",
+       *       "arch": "arm64"
+       *     }
+       */
+      meta?: {
+        [key: string]: unknown;
+      };
+    };
     Category: {
       /** @description カテゴリ名 */
       name: string;
@@ -3349,8 +3583,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Bad Request",
-         *       "message": "Invalid request parameters"
+         *       "error": "bad_request",
+         *       "message": "Bad Request: param is missing or the value is empty or invalid: post"
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3364,8 +3598,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Unauthorized",
-         *       "message": "Invalid or expired token"
+         *       "error": "unauthorized",
+         *       "message": "Unauthorized"
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3379,8 +3613,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Payment Required",
-         *       "message": "Payment required to access this resource"
+         *       "error": "payment_required",
+         *       "message": "Payment Required"
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3394,8 +3628,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Forbidden",
-         *       "message": "Insufficient permissions"
+         *       "error": "forbidden",
+         *       "message": "Forbidden"
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3409,53 +3643,45 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Not Found",
-         *       "message": "Resource not found"
+         *       "error": "not_found",
+         *       "message": "Not Found"
          *     }
          */
         "application/json": components["schemas"]["Error"];
       };
     };
-    /** @description このリソースでは指定されたHTTPメソッドがサポートされていません */
+    /** @description このリソースでは指定されたHTTPメソッドがサポートされていません（レスポンス body はありません） */
     MethodNotAllowedError: {
       headers: {
         [name: string]: unknown;
       };
-      content: {
-        /**
-         * @example {
-         *       "error": "Method Not Allowed",
-         *       "message": "HTTP method not allowed for this endpoint"
-         *     }
-         */
-        "application/json": components["schemas"]["Error"];
-      };
+      content?: never;
     };
-    /** @description リクエストで指定された形式でのレスポンス生成ができません */
-    NotAcceptableError: {
+    /** @description アップロードが時間内に完了しませんでした。回線状況を確認し、ファイルサイズを小さくして再試行してください */
+    RequestTimeoutError: {
       headers: {
         [name: string]: unknown;
       };
       content: {
         /**
          * @example {
-         *       "error": "Not Acceptable",
-         *       "message": "Requested format not supported"
+         *       "error": "request_timeout",
+         *       "message": "Request Timeout: the upload did not complete in time"
          *     }
          */
         "application/json": components["schemas"]["Error"];
       };
     };
-    /** @description リクエストが現在のリソースの状態と競合しています */
-    ConflictError: {
+    /** @description アップロードされたファイルが上限サイズを超えています */
+    RequestEntityTooLargeError: {
       headers: {
         [name: string]: unknown;
       };
       content: {
         /**
          * @example {
-         *       "error": "Conflict",
-         *       "message": "Resource conflict detected"
+         *       "error": "request_entity_too_large",
+         *       "message": "File Too Large (max: 10MB)"
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3471,8 +3697,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Too Many Requests",
-         *       "message": "Rate limit exceeded"
+         *       "error": "too_many_requests",
+         *       "message": "Retry after 60 seconds."
          *     }
          */
         "application/json": components["schemas"]["Error"];
@@ -3486,8 +3712,8 @@ export interface components {
       content: {
         /**
          * @example {
-         *       "error": "Internal Server Error",
-         *       "message": "An unexpected error occurred"
+         *       "error": "internal_server_error",
+         *       "message": "Internal Server Error"
          *     }
          */
         "application/json": components["schemas"]["Error"];
