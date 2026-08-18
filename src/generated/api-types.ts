@@ -738,7 +738,8 @@ export interface paths {
      * 記事のアーカイブ
      * @description 指定された記事を `Archived/` 配下へ移動し、新しいリビジョンとして保存します。
      *     元のカテゴリは維持され、`Foo/Bar` の記事は `Archived/Foo/Bar` になります。
-     *     既に `Archived/` 配下にある記事に対しては何も変更せず、現在の記事を返します（`Archived/Archived/...` にはなりません）。
+     *     変更メッセージは `post.message` で任意に指定できます。
+     *     既に `Archived/` 配下にある記事に対しては何も変更せず、現在の記事を返します（`Archived/Archived/...` にはなりません）。このとき `post.message` を指定しても無視されます。
      */
     post: {
       parameters: {
@@ -752,7 +753,16 @@ export interface paths {
         };
         cookie?: never;
       };
-      requestBody?: never;
+      requestBody?: {
+        content: {
+          "application/json": {
+            post?: {
+              /** @description 変更メッセージ。空文字（空白のみの文字列を含む）は未指定と同じ扱いです。省略時は直前の変更メッセージを引き継ぎます（未設定または既定の作成 / 更新メッセージ "Create post." / "Update post." だった場合は "Archived!" になります）。この 2 つの既定文言は明示的に指定した場合も "Archived!" に置き換わります */
+              message?: string;
+            };
+          };
+        };
+      };
       responses: {
         /** @description アーカイブ成功 */
         200: {
