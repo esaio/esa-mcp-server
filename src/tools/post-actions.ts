@@ -13,7 +13,7 @@ import { createPost, updatePost } from "./posts.js";
 
 export const archivePostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The post number to archive"),
-  message: z.string().optional().describe("Archive message for the post"),
+  message: z.string().optional().describe("Change message for the archive"),
 });
 
 export async function archivePost(
@@ -24,11 +24,19 @@ export async function archivePost(
     if (!args.teamName) {
       throw new MissingTeamNameError();
     }
-    const { data, error, response } = await client.GET(
-      "/v1/teams/{team_name}/posts/{post_number}",
+    // Archived/ の付け替えも、すでにアーカイブ済みのときに何も変えないことも
+    // API 側の責務。ツール側はカテゴリを組み立てない。
+    const { data, error, response } = await client.POST(
+      "/v1/teams/{team_name}/posts/{post_number}/archive",
       {
         params: {
           path: { team_name: args.teamName, post_number: args.postNumber },
+        },
+        body: {
+          // message は既定を付けず、指定時のみ送る（未指定なら esa 側の既定に委ねる）
+          post: {
+            message: args.message,
+          },
         },
       },
     );
@@ -38,24 +46,9 @@ export async function archivePost(
     }
 
     const post: components["schemas"]["Post"] = data;
-    const currentCategory = post.category || "";
+    const transformed = transformPost(post, { omitBody: true });
 
-    if (currentCategory.startsWith("Archived/")) {
-      return formatToolResponse({
-        message: "Post is already archived",
-        category: currentCategory,
-      });
-    }
-
-    const archivedCategory =
-      currentCategory === "" ? "Archived" : `Archived/${currentCategory}`;
-
-    return await updatePost(client, {
-      teamName: args.teamName,
-      postNumber: args.postNumber,
-      category: archivedCategory,
-      message: args.message || "Archive post",
-    });
+    return formatToolResponse(transformed);
   } catch (error) {
     return formatToolError(error);
   }

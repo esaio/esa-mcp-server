@@ -20,8 +20,10 @@ vi.mock("../posts.js", () => ({
 describe("archivePost", () => {
   const mockClient = {
     GET: vi.fn(),
+    POST: vi.fn(),
   } as unknown as ReturnType<typeof createEsaClient> & {
     GET: ReturnType<typeof vi.fn>;
+    POST: ReturnType<typeof vi.fn>;
   };
 
   const mockUpdatePost = vi.mocked(postsModule.updatePost);
@@ -30,79 +32,13 @@ describe("archivePost", () => {
     vi.clearAllMocks();
   });
 
-  it("should call updatePost with Archived category for post without category", async () => {
-    const currentPost = createMockPost({
-      number: 123,
-      category: "",
-    });
-
-    mockClient.GET.mockResolvedValue({
-      data: currentPost,
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    mockUpdatePost.mockResolvedValue({
-      content: [{ type: "text", text: "Updated post" }],
-    });
-
-    await archivePost(mockClient, {
-      teamName: "test-team",
-      postNumber: 123,
-    });
-
-    expect(mockUpdatePost).toHaveBeenCalledWith(mockClient, {
-      teamName: "test-team",
-      postNumber: 123,
-      category: "Archived",
-      message: "Archive post",
-    });
-  });
-
-  it("should call updatePost with Archived/ prefix for post with category", async () => {
-    const currentPost = createMockPost({
-      number: 123,
-      category: "dev/docs",
-    });
-
-    mockClient.GET.mockResolvedValue({
-      data: currentPost,
-      error: undefined,
-      response: {
-        ok: true,
-        status: 200,
-      } as Response,
-    });
-
-    mockUpdatePost.mockResolvedValue({
-      content: [{ type: "text", text: "Updated post" }],
-    });
-
-    await archivePost(mockClient, {
-      teamName: "test-team",
-      postNumber: 123,
-      message: "Custom archive message",
-    });
-
-    expect(mockUpdatePost).toHaveBeenCalledWith(mockClient, {
-      teamName: "test-team",
-      postNumber: 123,
-      category: "Archived/dev/docs",
-      message: "Custom archive message",
-    });
-  });
-
-  it("should return already archived message without calling updatePost", async () => {
-    const currentPost = createMockPost({
-      number: 123,
-      category: "Archived/dev/docs",
-    });
-
-    mockClient.GET.mockResolvedValue({
-      data: currentPost,
+  it("should call the archive API", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({
+        number: 123,
+        category: "Archived/dev",
+        full_name: "Archived/dev/test-post.md #tag1 #tag2",
+      }),
       error: undefined,
       response: {
         ok: true,
@@ -115,19 +51,55 @@ describe("archivePost", () => {
       postNumber: 123,
     });
 
+    // Archived/ の付け替えとアーカイブ済みの判定は API 側の責務
+    expect(mockClient.GET).not.toHaveBeenCalled();
     expect(mockUpdatePost).not.toHaveBeenCalled();
-    expect((result.content[0] as TextContent).text).toContain(
-      "Post is already archived",
+    expect(mockClient.POST).toHaveBeenCalledWith(
+      "/v1/teams/{team_name}/posts/{post_number}/archive",
+      {
+        params: {
+          path: {
+            team_name: "test-team",
+            post_number: 123,
+          },
+        },
+        body: {
+          post: {
+            message: undefined,
+          },
+        },
+      },
     );
     expect((result.content[0] as TextContent).text).toContain(
-      "Archived/dev/docs",
+      "Archived/dev/test-post.md",
     );
   });
 
-  it("should handle GET error", async () => {
+  it("should pass message when provided", async () => {
+    mockClient.POST.mockResolvedValue({
+      data: createMockPost({ number: 123 }),
+      error: undefined,
+      response: {
+        ok: true,
+        status: 200,
+      } as Response,
+    });
+
+    await archivePost(mockClient, {
+      teamName: "test-team",
+      postNumber: 123,
+      message: "Retire this post",
+    });
+
+    expect(mockClient.POST.mock.calls[0][1].body.post.message).toBe(
+      "Retire this post",
+    );
+  });
+
+  it("should handle archive API error", async () => {
     const mockError = { error: "not_found", message: "Post not found" };
 
-    mockClient.GET.mockResolvedValue({
+    mockClient.POST.mockResolvedValue({
       data: undefined,
       error: mockError,
       response: {
@@ -142,13 +114,12 @@ describe("archivePost", () => {
     });
 
     expect((result.content[0] as TextContent).text).toContain("not_found");
-    expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
   it("should handle network errors", async () => {
     const networkError = new Error("Network connection failed");
 
-    mockClient.GET.mockRejectedValue(networkError);
+    mockClient.POST.mockRejectedValue(networkError);
 
     const result = await archivePost(mockClient, {
       teamName: "test-team",
@@ -158,11 +129,10 @@ describe("archivePost", () => {
     expect((result.content[0] as TextContent).text).toContain(
       "Network connection failed",
     );
-    expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
   it("should handle non-Error exceptions", async () => {
-    mockClient.GET.mockRejectedValue("Unexpected error");
+    mockClient.POST.mockRejectedValue("Unexpected error");
 
     const result = await archivePost(mockClient, {
       teamName: "test-team",
@@ -172,7 +142,6 @@ describe("archivePost", () => {
     expect((result.content[0] as TextContent).text).toContain(
       "Unexpected error",
     );
-    expect(mockUpdatePost).not.toHaveBeenCalled();
   });
 
   it("should throw MissingTeamNameError when teamName is empty", async () => {
@@ -190,7 +159,7 @@ describe("archivePost", () => {
       ],
     });
 
-    expect(mockClient.GET).not.toHaveBeenCalled();
+    expect(mockClient.POST).not.toHaveBeenCalled();
   });
 });
 
