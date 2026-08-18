@@ -37,7 +37,7 @@ export async function getComment(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -86,7 +86,7 @@ export async function createComment(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -135,7 +135,7 @@ export async function updateComment(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -209,7 +209,7 @@ export async function getPostComments(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -250,7 +250,7 @@ export async function getTeamComments(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 

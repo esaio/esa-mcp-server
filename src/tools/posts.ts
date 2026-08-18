@@ -39,7 +39,7 @@ export async function getPost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
     const post: components["schemas"]["Post"] = data;
@@ -102,7 +102,7 @@ export async function createPost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -179,7 +179,7 @@ export async function updatePost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 

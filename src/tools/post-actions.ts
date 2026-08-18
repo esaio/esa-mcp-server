@@ -33,7 +33,7 @@ export async function archivePost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -115,7 +115,7 @@ export async function duplicatePost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -177,7 +177,7 @@ export async function appendPost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -216,7 +216,7 @@ export async function prependPost(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 
@@ -272,7 +272,7 @@ export async function rollbackPostRevision(
       },
     );
 
-    if (error || !response.ok) {
+    if (error || !response.ok || !data) {
       return formatToolError(error || response.status);
     }
 

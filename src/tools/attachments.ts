@@ -161,7 +161,7 @@ export async function getAttachment(
         },
       );
 
-      if (error || !response.ok) {
+      if (error || !response.ok || !data) {
         return formatToolError(error || response.status);
       }
 
