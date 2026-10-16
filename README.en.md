@@ -34,6 +34,7 @@ This MCP server provides seamless integration between AI assistants and [esa.io]
 - `esa_archive_post` - Archive a post by moving to Archived/ category
 - `esa_ship_post` - Ship a post (mark as complete by setting wip to false)
 - `esa_duplicate_post` - Duplicate a post (create a new WIP post with the same title and body; cross-team duplication is also supported)
+- `esa_rollback_post_revision` - Roll back a post to a specified revision (the restored content is saved as a new revision; check the revision number via `revision_number` in `esa_get_post`)
 
 ### Comment Management
 
