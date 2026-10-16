@@ -47,4 +47,28 @@ describe("setupTools", () => {
       expect(handler).toBeTypeOf("function"); // Handler functionality tested in specific tool tests
     }
   });
+
+  // 省略した hint は MCP 仕様の既定値 (destructiveHint / openWorldHint は true) で解釈される
+  it("should set readOnlyHint, destructiveHint and openWorldHint explicitly on every tool", () => {
+    const registerToolSpy = vi.spyOn(server, "registerTool");
+
+    setupTools(server, context);
+
+    for (const call of registerToolSpy.mock.calls) {
+      const [toolName, config] = call as unknown as [
+        string,
+        { annotations?: Record<string, unknown> },
+      ];
+      const annotations = config.annotations ?? {};
+      for (const hint of ["readOnlyHint", "destructiveHint", "openWorldHint"]) {
+        expect(
+          typeof annotations[hint],
+          `${toolName}.annotations.${hint}`,
+        ).toBe("boolean");
+      }
+      if (annotations.readOnlyHint) {
+        expect(annotations.destructiveHint, toolName).toBe(false);
+      }
+    }
+  });
 });
