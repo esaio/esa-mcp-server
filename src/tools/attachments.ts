@@ -33,6 +33,12 @@ export const getAttachmentSchema = createSchemaWithTeamName({
 // Hosts that require signed URLs via the esa API
 const SIGNED_URL_HOSTS = ["files.esa.io", "dl.esa.io"];
 
+// Hosts that serve publicly accessible esa attachments
+const PUBLIC_HOSTS = [
+  "img.esa.io",
+  "esa-storage-tokyo.s3-ap-northeast-1.amazonaws.com",
+];
+
 /**
  * Checks if the URL needs a signed URL or can be fetched directly.
  * URLs from img.esa.io are publicly accessible and don't need signing.
@@ -50,6 +56,17 @@ function needsSignedUrl(url: string): boolean {
   } catch {
     // If URL parsing fails, assume it needs signing
     return true;
+  }
+}
+
+function isPublicEsaUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+    return (
+      urlObj.protocol === "https:" && PUBLIC_HOSTS.includes(urlObj.hostname)
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -185,6 +202,10 @@ export async function getAttachment(
           }`,
         );
       }
+    }
+
+    if (!isPublicEsaUrl(args.url)) {
+      throw new Error(`Not an esa attachment URL: ${args.url}`);
     }
 
     // URL doesn't need signing (e.g. img.esa.io) - fetch directly

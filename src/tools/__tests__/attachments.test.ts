@@ -493,6 +493,28 @@ describe("getAttachment", () => {
     });
   });
 
+  it.each([
+    "https://example.com/image.png",
+    "http://img.esa.io/uploads/example/image.png",
+    "http://127.0.0.1:9001/",
+  ])("should reject non-esa URL %s without fetching", async (url) => {
+    const result = await getAttachment(mockClient, {
+      teamName: "test-team",
+      url,
+    });
+
+    expect(mockClient.GET).not.toHaveBeenCalled();
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      content: [
+        {
+          type: "text",
+          text: `Error: Not an esa attachment URL: ${url}`,
+        },
+      ],
+    });
+  });
+
   it("should use signed_urls API for files.esa.io URLs", async () => {
     const signedUrl = "https://s3.amazonaws.com/bucket/doc.pdf?signature=123";
 

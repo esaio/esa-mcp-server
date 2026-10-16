@@ -75,6 +75,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTeamsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTeamsSchema>) =>
@@ -90,6 +92,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTeamStatsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTeamStatsSchema>) =>
@@ -105,6 +109,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTeamTagsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTeamTagsSchema>) =>
@@ -120,6 +126,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTeamMembersSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTeamMembersSchema>) =>
@@ -135,6 +143,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getPostSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getPostSchema>) =>
@@ -149,6 +159,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: searchPostsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof searchPostsSchema>) =>
@@ -163,7 +175,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Creates a new post in an esa team with optional tags, category, and WIP status.",
       inputSchema: createPostSchema.shape,
       annotations: {
-        destructiveHint: true,
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof createPostSchema>) =>
@@ -178,7 +192,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Updates an existing post in an esa team by post number. You can update the title, content, tags, category, and WIP status. To ship a post (mark as complete), set wip to false - this is preferred over using esa_ship_post when updating other fields simultaneously. To only add content to the start or end of the body, use esa_append_post or esa_prepend_post instead.",
       inputSchema: updatePostSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof updatePostSchema>) =>
@@ -193,7 +209,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Appends Markdown content to the end of an existing post's body, saving it as a new revision. Unlike esa_update_post, this does not require fetching the current body first, making it ideal for adding to a post (e.g. log entries, meeting notes). Optionally set wip to change the WIP state.",
       inputSchema: appendPostSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof appendPostSchema>) =>
@@ -208,7 +226,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Prepends Markdown content to the beginning of an existing post's body, saving it as a new revision. Unlike esa_update_post, this does not require fetching the current body first. Behaves the same as esa_append_post except content is inserted at the start of the body. Optionally set wip to change the WIP state.",
       inputSchema: prependPostSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof prependPostSchema>) =>
@@ -224,6 +244,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getCommentSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getCommentSchema>) =>
@@ -237,7 +259,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description: "Creates a new comment on an existing post in an esa team.",
       inputSchema: createCommentSchema.shape,
       annotations: {
-        destructiveHint: true,
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof createCommentSchema>) =>
@@ -251,7 +275,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description: "Updates an existing comment in an esa team by comment ID.",
       inputSchema: updateCommentSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof updateCommentSchema>) =>
@@ -265,7 +291,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       description: "Deletes a comment from an esa team by comment ID.",
       inputSchema: deleteCommentSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof deleteCommentSchema>) =>
@@ -281,6 +309,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getPostBacklinksSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getPostBacklinksSchema>) =>
@@ -296,6 +326,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getPostCommentsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getPostCommentsSchema>) =>
@@ -311,6 +343,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTeamCommentsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTeamCommentsSchema>) =>
@@ -326,6 +360,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getCategoriesSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getCategoriesSchema>) =>
@@ -340,6 +376,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getTopCategoriesSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getTopCategoriesSchema>) =>
@@ -355,6 +393,8 @@ export function setupTools(server: McpServer, context: MCPContext): void {
       inputSchema: getAllCategoryPathsSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getAllCategoryPathsSchema>) =>
@@ -369,7 +409,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Archives a post by moving it to the Archived/ category. If the post is in 'dev/docs', it becomes 'Archived/dev/docs'. Posts without category go to 'Archived'.",
       inputSchema: archivePostSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof archivePostSchema>) =>
@@ -384,7 +426,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Ships a post by setting wip to false. This marks the post as complete and ready to be published. Use this only when you need to ship without making other changes - if you're also updating title, content, or other fields, use esa_update_post with wip: false instead.",
       inputSchema: shipPostSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof shipPostSchema>) =>
@@ -399,7 +443,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Duplicates a post by creating a new WIP post with the same name and body_md as the source post. By default the duplicate is created in the source team; specify targetTeamName to duplicate into a different team.",
       inputSchema: duplicatePostSchema.shape,
       annotations: {
-        destructiveHint: true,
+        readOnlyHint: false,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof duplicatePostSchema>) =>
@@ -414,7 +460,9 @@ export function setupTools(server: McpServer, context: MCPContext): void {
         "Rolls back a post to the specified revision, saving the restored content as a new revision.",
       inputSchema: rollbackPostRevisionSchema.shape,
       annotations: {
+        readOnlyHint: false,
         destructiveHint: true,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof rollbackPostRevisionSchema>) =>
@@ -432,6 +480,8 @@ ranges, tag filters, category searches, advanced operators).`,
       inputSchema: {},
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: Record<string, never>) =>
@@ -449,6 +499,8 @@ clarification on Markdown syntax, esa-specific extensions, or formatting options
       inputSchema: {},
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: Record<string, never>) =>
@@ -465,6 +517,8 @@ or request help with esa workflows that you're not familiar with.`,
       inputSchema: searchHelpSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof searchHelpSchema>) =>
@@ -480,6 +534,8 @@ or request help with esa workflows that you're not familiar with.`,
       inputSchema: getAttachmentSchema.shape,
       annotations: {
         readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: false,
       },
     },
     async (params: z.infer<typeof getAttachmentSchema>) =>
