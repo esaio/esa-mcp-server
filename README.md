@@ -34,6 +34,7 @@ AI アシスタントと情報共有サービス [esa](https://esa.io) をつな
 - `esa_archive_post` - 記事をアーカイブ（Archived/ カテゴリーへ移動）
 - `esa_ship_post` - 記事を Ship It!（WIP を外して公開）
 - `esa_duplicate_post` - 記事を複製（同じタイトル・本文の WIP 記事を作成。別チームへの複製も可能）
+- `esa_rollback_post_revision` - 記事を指定したリビジョンにロールバック（復元した内容は新しいリビジョンとして保存。リビジョン番号は `esa_get_post` の `revision_number` で確認可能）
 
 ### コメント管理
 
