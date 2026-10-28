@@ -81,11 +81,11 @@ export const duplicatePostSchema = createSchemaWithTeamName({
   postNumber: z.number().describe("The source post number to duplicate"),
   targetTeamName: z
     .string()
+    .transform((val) => (val ? normalizeTeamName(val) : undefined))
     .optional()
     .describe(
       "The destination team name for the duplicated post. Defaults to the source team when omitted.",
-    )
-    .transform((val) => (val ? normalizeTeamName(val) : undefined)),
+    ),
 });
 
 export async function duplicatePost(
