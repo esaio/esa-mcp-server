@@ -60,7 +60,6 @@ When extending functionality, new tools and resources should be registered with 
 ### Registry (`registry.json`)
 
 `registry.json` (リポジトリルート) は登録されている tool / resource / prompt の一覧を機械可読な形で公開するファイル。
-
 - 生成: `npm run build:registry` (`scripts/build-registry.ts` がランタイム検査で収集)
 - tools / resources / prompts を追加・改名・削除したら `npm run build:registry` を実行して
   `registry.json` をコミットすること
@@ -72,7 +71,6 @@ When extending functionality, new tools and resources should be registered with 
 ### Test Writing Principles
 
 When writing tests, follow these principles for maintainable and readable test code:
-
 1. **Import Order Optimization**
    - Type imports first (`import type`)
    - External dependencies next
@@ -104,4 +102,4 @@ When writing tests, follow these principles for maintainable and readable test c
 
 ### Example Test Pattern
 
-- READ src/__tests__/index.test.ts
+- READ src/**tests**/index.test.ts
