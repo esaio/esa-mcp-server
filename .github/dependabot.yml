@@ -1,30 +1,30 @@
 version: 2
 updates:
-- package-ecosystem: "github-actions"
-  directory: "/"
-  schedule:
-    interval: daily
-- package-ecosystem: npm
-  # サプライチェーン攻撃対策: 公開から 7 日未満のバージョンを bump しない
-  cooldown:
-    default-days: 7
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "03:00"
-    timezone: Asia/Tokyo
-  open-pull-requests-limit: 10
-  groups:
-    vitest:
-      patterns:
-        - "vitest"
-        - "@vitest/*"
-    openapi:
-      patterns:
-        - "openapi-fetch"
-        - "openapi-typescript"
-  ignore:
-    - dependency-name: "zod"
-      update-types: ["version-update:semver-major"]
-    - dependency-name: "@types/node"
-      update-types: ["version-update:semver-major"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: daily
+  - package-ecosystem: npm
+    # サプライチェーン攻撃対策: 公開から 7 日未満のバージョンを bump しない
+    cooldown:
+      default-days: 7
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 10
+    groups:
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+      openapi:
+        patterns:
+          - "openapi-fetch"
+          - "openapi-typescript"
+    ignore:
+      - dependency-name: "zod"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

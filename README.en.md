@@ -142,7 +142,9 @@ Add to `claude_desktop_config.json`:
 This package ships `registry.json` at the package root, exposing registered tools, resources, and prompts. It can be consumed programmatically without spawning the server:
 
 ```js
-import registry from "@esaio/esa-mcp-server/registry.json" with { type: "json" };
+import registry from "@esaio/esa-mcp-server/registry.json" with {
+  type: "json",
+};
 ```
 
 Schema:
@@ -151,7 +153,10 @@ Schema:
 {
   "tools": [{ "name": "esa_get_teams" }, "..."],
   "resources": [
-    { "name": "esa_recent_posts", "uriTemplate": "esa://teams/{teamName}/posts/recent" }
+    {
+      "name": "esa_recent_posts",
+      "uriTemplate": "esa://teams/{teamName}/posts/recent"
+    }
   ],
   "prompts": [{ "name": "esa_summarize_post" }]
 }
