@@ -34,6 +34,6 @@ export function setLanguage(lng: string) {
   return i18next.changeLanguage(lng);
 }
 
-export function t(key: string, options?: Record<string, unknown>) {
+export function t(key: string, options: Record<string, unknown> = {}) {
   return i18next.t(key, options);
 }
